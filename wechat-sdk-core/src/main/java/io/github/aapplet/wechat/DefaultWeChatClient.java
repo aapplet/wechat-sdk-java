@@ -5,74 +5,115 @@ import io.github.aapplet.wechat.base.WeChatClient;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.base.WeChatResponse;
 import io.github.aapplet.wechat.config.WeChatConfig;
-import io.github.aapplet.wechat.exception.WeChatException;
-import io.github.aapplet.wechat.util.WeChatUtil;
+import io.github.aapplet.wechat.constant.WeChatConstant;
+import io.github.aapplet.wechat.exception.WeChatExpireException;
+import io.github.aapplet.wechat.exception.WeChatRequestException;
+import io.github.aapplet.wechat.exception.WeChatValidationException;
+import io.github.aapplet.wechat.http.WeChatHttpRequest;
+import io.github.aapplet.wechat.response.WeChatDownload;
+import io.github.aapplet.wechat.response.WeChatNoContentResponse;
+import io.github.aapplet.wechat.response.WeChatPaymentResponse;
+import io.github.aapplet.wechat.response.WeChatPlatformResponse;
+import io.github.aapplet.wechat.token.WeChatAccessTokenManager;
+import io.github.aapplet.wechat.util.RetryTemplate;
+import io.github.aapplet.wechat.util.WeChatJsonUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.UUID;
 
+/**
+ * 默认客户端
+ */
 @RequiredArgsConstructor
 public final class DefaultWeChatClient implements WeChatClient {
 
+    /**
+     * 配置信息
+     */
     @Getter
     private final WeChatConfig weChatConfig;
 
+    /**
+     * 微信支付V3请求
+     *
+     * @param request 请求参数
+     * @param <T>     响应类型
+     * @return HTTP响应
+     */
     @Override
-    public <T extends WeChatResponse> T execute(WeChatRequest<T> request) {
-        WeChatAttribute<T> attribute = request.getAttribute(weChatConfig);
-
-        HttpRequest.Builder builder = HttpRequest.newBuilder();
-        builder.uri(URI.create(attribute.getRequestURL()));
-        builder.setHeader("Accept", "application/json");
-        builder.setHeader("Content-Type", "application/json");
-        if (attribute.hasAuth()) {
-            builder.setHeader("Authorization", this.authorization(attribute));
+    public <T extends WeChatResponse.V3> T execute(WeChatRequest.V3<T> request) {
+        final WeChatAttribute<T> attribute = request.getAttribute(weChatConfig);
+        final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.v3(weChatConfig, attribute);
+        final WeChatValidator validator = new WeChatValidator(weChatConfig, httpResponse);
+        if (validator.verifyFailed()) {
+            throw new WeChatValidationException("响应签名错误,验签失败");
         }
-        if (attribute.hasBody()) {
-            builder.method(attribute.getMethod(), HttpRequest.BodyPublishers.ofString(attribute.getRequestBody()));
-        } else {
-            builder.method(attribute.getMethod(), HttpRequest.BodyPublishers.noBody());
+        if (httpResponse.statusCode() == 200) {
+            return WeChatJsonUtil.fromJson(httpResponse.body(), attribute.getResponseClass());
         }
-        try {
-            HttpResponse<String> response = HttpClient.newHttpClient().send(builder.build(), HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() == 200 || response.statusCode() == 204) {
-                return WeChatUtil.fromJson(response.body(), attribute.getResponseClass());
-            } else {
-                throw new WeChatException(response.body(), response.statusCode());
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("请求失败", e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException("请求中断", e);
+        if (httpResponse.statusCode() == 204) {
+            return attribute.getResponseClass().cast(new WeChatNoContentResponse());
         }
+        throw new WeChatRequestException(WeChatPaymentResponse.fromJson(httpResponse.body()));
     }
 
     /**
-     * 授权
+     * 公众平台请求
+     *
+     * @param request 请求参数
+     * @param <T>     响应类型
+     * @return HTTP响应
      */
-    String authorization(WeChatAttribute<?> weChatAttribute) {
-        final String method = weChatAttribute.getMethod();
-        final String requestURI = weChatAttribute.getRequestURI();
-        final String requestBody = weChatAttribute.getRequestBody();
-        final String randomStr = UUID.randomUUID().toString();
-        final String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
-        final String readySign = method + "\n" + requestURI + "\n" + timestamp + "\n" + randomStr + "\n" + requestBody + "\n";
-        final String mchId = weChatConfig.getMchId();
-        final String schema = weChatConfig.getSchema();
-        final String serialNo = weChatConfig.getSerialNo();
-        final String signature = weChatConfig.signature(readySign);
-        return schema + " " +
-               "mchid=\"" + mchId + "\"," +
-               "serial_no=\"" + serialNo + "\"," +
-               "nonce_str=\"" + randomStr + "\"," +
-               "timestamp=\"" + timestamp + "\"," +
-               "signature=\"" + signature + "\"";
+    @Override
+    public <T extends WeChatResponse.MP> T execute(WeChatRequest.MP<T> request) {
+        return RetryTemplate.submit(() -> {
+            final WeChatAttribute<T> attribute = request.getAttribute(weChatConfig);
+            final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.mp(weChatConfig, attribute);
+            final T result = WeChatJsonUtil.fromJson(httpResponse.body(), attribute.getResponseClass());
+            final Integer errCode = result.getErrCode();
+            final String errMsg = result.getErrMsg();
+            if (errCode == null || errCode == 0) {
+                return result;
+            }
+            if (errCode == 40001 || errCode == 42001) {
+                WeChatAccessTokenManager.removeAccessToken(weChatConfig);
+                throw new WeChatExpireException(errMsg);
+            }
+            throw new WeChatRequestException(errMsg);
+        }, WeChatExpireException.class);
+    }
+
+    /**
+     * 微信支付V3文件下载
+     *
+     * @param download 下载参数
+     * @return bytes处理
+     */
+    @Override
+    public WeChatDownload execute(WeChatRequest.V3Download<WeChatDownload> download) {
+        final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.v3(weChatConfig, download);
+        if (httpResponse.statusCode() == 200) {
+            return new WeChatDownload(httpResponse.body());
+        }
+        throw new WeChatRequestException(WeChatPaymentResponse.fromJson(httpResponse.body()));
+    }
+
+    /**
+     * 公众平台文件下载
+     *
+     * @param download 下载参数
+     * @return bytes处理
+     */
+    @Override
+    public WeChatDownload execute(WeChatRequest.MPDownload<WeChatDownload> download) {
+        final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.mp(weChatConfig, download);
+        httpResponse.headers().allValues(WeChatConstant.CONTENT_TYPE).forEach(header -> {
+            if (header.contains(WeChatConstant.APPLICATION_JSON)) {
+                throw new WeChatRequestException(WeChatPlatformResponse.fromJson(httpResponse.body()));
+            }
+        });
+        return new WeChatDownload(httpResponse.body());
     }
 
 }

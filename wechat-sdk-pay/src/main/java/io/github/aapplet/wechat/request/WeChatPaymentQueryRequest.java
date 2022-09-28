@@ -1,0 +1,67 @@
+package io.github.aapplet.wechat.request;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.github.aapplet.wechat.attribute.AbstractAttribute;
+import io.github.aapplet.wechat.attribute.WeChatPayAttribute;
+import io.github.aapplet.wechat.base.WeChatAttribute;
+import io.github.aapplet.wechat.base.WeChatRequest;
+import io.github.aapplet.wechat.config.WeChatConfig;
+import io.github.aapplet.wechat.exception.WeChatParamsException;
+import io.github.aapplet.wechat.response.WeChatPaymentQueryResponse;
+import lombok.Data;
+import lombok.experimental.Accessors;
+
+/**
+ * 查询订单API
+ * <p>
+ * https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_5_2.shtml
+ */
+@Data
+@Accessors(chain = true)
+public class WeChatPaymentQueryRequest implements WeChatRequest.V3<WeChatPaymentQueryResponse> {
+
+    /**
+     * 直连商户号
+     */
+    @JsonProperty("mchid")
+    private String mchId;
+    /**
+     * 商户订单号
+     */
+    @JsonProperty("out_trade_no")
+    private String outTradeNo;
+    /**
+     * 微信支付订单号
+     */
+    @JsonProperty("transaction_id")
+    private String transactionId;
+
+    /**
+     * 请求路径
+     */
+    String getRequestPath() {
+        // 微信支付订单号查询
+        if (transactionId != null) {
+            return "/v3/pay/transactions/id/" + transactionId;
+        }
+        // 商户订单号查询
+        if (outTradeNo != null) {
+            return "/v3/pay/transactions/out-trade-no/" + outTradeNo;
+        }
+        throw new WeChatParamsException("商户订单号和微信支付订单号不存在");
+    }
+
+    @Override
+    public WeChatAttribute<WeChatPaymentQueryResponse> getAttribute(WeChatConfig weChatConfig) {
+        if (mchId == null) {
+            mchId = weChatConfig.getMchId();
+        }
+        AbstractAttribute<WeChatPaymentQueryResponse> attribute = new WeChatPayAttribute<>();
+        attribute.setMethod("GET");
+        attribute.setRequestPath(this.getRequestPath());
+        attribute.setParameters("mchid=" + mchId);
+        attribute.setResponseClass(WeChatPaymentQueryResponse.class);
+        return attribute;
+    }
+
+}

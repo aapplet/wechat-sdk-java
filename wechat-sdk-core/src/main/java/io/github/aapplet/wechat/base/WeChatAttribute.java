@@ -1,6 +1,18 @@
 package io.github.aapplet.wechat.base;
 
+import io.github.aapplet.wechat.host.WeChatHost;
+
+/**
+ * 请求属性
+ *
+ * @param <T> 响应类型
+ */
 public interface WeChatAttribute<T extends WeChatResponse> {
+
+    /**
+     * 域名信息
+     */
+    WeChatHost getWeChatHost();
 
     /**
      * 请求方法
@@ -26,15 +38,5 @@ public interface WeChatAttribute<T extends WeChatResponse> {
      * 响应class
      */
     Class<T> getResponseClass();
-
-    /**
-     * 有授权
-     */
-    boolean hasAuth();
-
-    /**
-     * 有Body
-     */
-    boolean hasBody();
 
 }
