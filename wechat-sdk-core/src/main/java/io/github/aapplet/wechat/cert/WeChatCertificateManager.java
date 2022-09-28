@@ -3,7 +3,7 @@ package io.github.aapplet.wechat.cert;
 import io.github.aapplet.wechat.WeChatValidator;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.exception.WeChatException;
-import io.github.aapplet.wechat.exception.WeChatRequestException;
+import io.github.aapplet.wechat.exception.WeChatResponseException;
 import io.github.aapplet.wechat.exception.WeChatValidationException;
 import io.github.aapplet.wechat.http.WeChatHttpRequest;
 import io.github.aapplet.wechat.response.WeChatPaymentResponse;
@@ -106,7 +106,7 @@ public class WeChatCertificateManager {
             throw new WeChatException("签名信息错误,请检查配置信息");
         }
         if (httpResponse.statusCode() != 200) {
-            throw new WeChatRequestException(WeChatPaymentResponse.fromJson(httpResponse.body()));
+            throw new WeChatResponseException(WeChatPaymentResponse.fromJson(httpResponse.body()));
         }
         final WeChatValidator validator = new WeChatCertificateValidator(weChatConfig, httpResponse);
         final Map<String, X509Certificate> certificates = new HashMap<>(4);

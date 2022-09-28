@@ -6,8 +6,8 @@ import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.base.WeChatResponse;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.constant.WeChatConstant;
-import io.github.aapplet.wechat.exception.WeChatExpireException;
-import io.github.aapplet.wechat.exception.WeChatRequestException;
+import io.github.aapplet.wechat.exception.WeChatExpiredException;
+import io.github.aapplet.wechat.exception.WeChatResponseException;
 import io.github.aapplet.wechat.exception.WeChatValidationException;
 import io.github.aapplet.wechat.http.WeChatHttpRequest;
 import io.github.aapplet.wechat.response.WeChatDownload;
@@ -55,7 +55,7 @@ public final class DefaultWeChatClient implements WeChatClient {
         if (httpResponse.statusCode() == 204) {
             return attribute.getResponseClass().cast(new WeChatNoContentResponse());
         }
-        throw new WeChatRequestException(WeChatPaymentResponse.fromJson(httpResponse.body()));
+        throw new WeChatResponseException(WeChatPaymentResponse.fromJson(httpResponse.body()));
     }
 
     /**
@@ -72,16 +72,15 @@ public final class DefaultWeChatClient implements WeChatClient {
             final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.mp(weChatConfig, attribute);
             final T result = WeChatJsonUtil.fromJson(httpResponse.body(), attribute.getResponseClass());
             final Integer errCode = result.getErrCode();
-            final String errMsg = result.getErrMsg();
             if (errCode == null || errCode == 0) {
                 return result;
             }
             if (errCode == 40001 || errCode == 42001) {
                 WeChatAccessTokenManager.removeAccessToken(weChatConfig);
-                throw new WeChatExpireException(errMsg);
+                throw new WeChatExpiredException(result.getErrMsg());
             }
-            throw new WeChatRequestException(errMsg);
-        }, WeChatExpireException.class);
+            throw new WeChatResponseException(result.getErrMsg());
+        }, WeChatExpiredException.class);
     }
 
     /**
@@ -96,7 +95,7 @@ public final class DefaultWeChatClient implements WeChatClient {
         if (httpResponse.statusCode() == 200) {
             return new WeChatDownload(httpResponse.body());
         }
-        throw new WeChatRequestException(WeChatPaymentResponse.fromJson(httpResponse.body()));
+        throw new WeChatResponseException(WeChatPaymentResponse.fromJson(httpResponse.body()));
     }
 
     /**
@@ -110,7 +109,7 @@ public final class DefaultWeChatClient implements WeChatClient {
         final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.mp(weChatConfig, download);
         httpResponse.headers().allValues(WeChatConstant.CONTENT_TYPE).forEach(header -> {
             if (header.contains(WeChatConstant.APPLICATION_JSON)) {
-                throw new WeChatRequestException(WeChatPlatformResponse.fromJson(httpResponse.body()));
+                throw new WeChatResponseException(WeChatPlatformResponse.fromJson(httpResponse.body()));
             }
         });
         return new WeChatDownload(httpResponse.body());

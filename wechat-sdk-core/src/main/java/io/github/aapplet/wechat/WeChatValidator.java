@@ -41,13 +41,13 @@ public class WeChatValidator {
      */
     protected WeChatValidator(WeChatConfig weChatConfig, Map<String, ?> headers, String body) {
         if (weChatConfig == null) {
-            throw new WeChatException("weChatConfig不能为空");
+            throw new WeChatException("weChatConfig为空,验签失败");
         }
         if (headers == null) {
-            throw new WeChatException("headers不能为空");
+            throw new WeChatException("headers为空,验签失败");
         }
         if (body == null) {
-            throw new WeChatException("body不能为空");
+            throw new WeChatException("body为空,验签失败");
         }
         this.weChatConfig = weChatConfig;
         this.weChatHeaders = WeChatHeaders.fromObject(headers);
