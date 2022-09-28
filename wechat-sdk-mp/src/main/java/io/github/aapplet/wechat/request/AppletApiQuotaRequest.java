@@ -2,7 +2,7 @@ package io.github.aapplet.wechat.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.attribute.AbstractAttribute;
-import io.github.aapplet.wechat.attribute.WeChatMPAttribute;
+import io.github.aapplet.wechat.attribute.WeChatPlatformAttribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
@@ -37,7 +37,7 @@ public class AppletApiQuotaRequest implements WeChatRequest.MP<AppletApiQuotaRes
         if (accessToken == null) {
             this.accessToken = WeChatAccessTokenManager.getAccessToken(weChatConfig);
         }
-        AbstractAttribute<AppletApiQuotaResponse> attribute = new WeChatMPAttribute<>();
+        AbstractAttribute<AppletApiQuotaResponse> attribute = new WeChatPlatformAttribute<>();
         attribute.setMethod("POST");
         attribute.setRequestPath("/cgi-bin/openapi/quota/get");
         attribute.setParameters("access_token=" + accessToken);

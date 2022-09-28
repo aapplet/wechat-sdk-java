@@ -2,7 +2,7 @@ package io.github.aapplet.wechat.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.attribute.AbstractAttribute;
-import io.github.aapplet.wechat.attribute.WeChatMPAttribute;
+import io.github.aapplet.wechat.attribute.WeChatPlatformAttribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
@@ -102,7 +102,7 @@ public class AppletUnlimitedQRCodeRequest implements WeChatRequest.MPDownload<We
         if (accessToken == null) {
             this.accessToken = WeChatAccessTokenManager.getAccessToken(weChatConfig);
         }
-        AbstractAttribute<WeChatDownload> attribute = new WeChatMPAttribute<>();
+        AbstractAttribute<WeChatDownload> attribute = new WeChatPlatformAttribute<>();
         attribute.setMethod("POST");
         attribute.setRequestPath("/wxa/getwxacodeunlimit");
         attribute.setParameters("access_token=" + accessToken);

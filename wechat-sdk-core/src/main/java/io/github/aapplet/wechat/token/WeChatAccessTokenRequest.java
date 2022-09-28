@@ -2,7 +2,7 @@ package io.github.aapplet.wechat.token;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.attribute.AbstractAttribute;
-import io.github.aapplet.wechat.attribute.WeChatMPAttribute;
+import io.github.aapplet.wechat.attribute.WeChatPlatformAttribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
@@ -47,7 +47,7 @@ public class WeChatAccessTokenRequest implements WeChatRequest.MP<WeChatAccessTo
         if (grantType == null) {
             grantType = "client_credential";
         }
-        AbstractAttribute<WeChatAccessTokenResponse> attribute = new WeChatMPAttribute<>();
+        AbstractAttribute<WeChatAccessTokenResponse> attribute = new WeChatPlatformAttribute<>();
         attribute.setMethod("GET");
         attribute.setRequestPath("/cgi-bin/token");
         attribute.setParameters("appid=" + appId + "&secret=" + secret + "&grant_type=" + grantType);

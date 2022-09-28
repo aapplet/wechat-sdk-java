@@ -2,7 +2,7 @@ package io.github.aapplet.wechat.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.attribute.AbstractAttribute;
-import io.github.aapplet.wechat.attribute.WeChatMPAttribute;
+import io.github.aapplet.wechat.attribute.WeChatPlatformAttribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
@@ -51,7 +51,7 @@ public class AppletCode2SessionRequest implements WeChatRequest.MP<AppletCode2Se
         if (grantType == null) {
             grantType = "authorization_code";
         }
-        AbstractAttribute<AppletCode2SessionResponse> attribute = new WeChatMPAttribute<>();
+        AbstractAttribute<AppletCode2SessionResponse> attribute = new WeChatPlatformAttribute<>();
         attribute.setMethod("GET");
         attribute.setRequestPath("/sns/jscode2session");
         attribute.setParameters("appid=" + appId + "&secret=" + secret + "&js_code=" + jsCode + "&grant_type=" + grantType);

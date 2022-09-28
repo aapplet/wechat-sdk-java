@@ -2,7 +2,7 @@ package io.github.aapplet.wechat.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.attribute.AbstractAttribute;
-import io.github.aapplet.wechat.attribute.WeChatPayAttribute;
+import io.github.aapplet.wechat.attribute.WeChatPaymentAttribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
@@ -31,7 +31,7 @@ public class WeChatRefundQueryRequest implements WeChatRequest.V3<WeChatRefundRe
         if (outRefundNo == null || outRefundNo.isBlank()) {
             throw new WeChatParamsException("商户退款单号不存在");
         }
-        AbstractAttribute<WeChatRefundResponse> attribute = new WeChatPayAttribute<>();
+        AbstractAttribute<WeChatRefundResponse> attribute = new WeChatPaymentAttribute<>();
         attribute.setMethod("POST");
         attribute.setRequestPath("/v3/refund/domestic/refunds/" + outRefundNo);
         attribute.setResponseClass(WeChatRefundResponse.class);

@@ -2,7 +2,7 @@ package io.github.aapplet.wechat.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.attribute.AbstractAttribute;
-import io.github.aapplet.wechat.attribute.WeChatPayAttribute;
+import io.github.aapplet.wechat.attribute.WeChatPaymentAttribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
@@ -61,7 +61,7 @@ public class WeChatPayScoreSyncRequest implements WeChatRequest.V3<WeChatPayScor
         if (type == null) {
             throw new WeChatParamsException("场景类型不存在");
         }
-        AbstractAttribute<WeChatPayScoreSyncResponse> attribute = new WeChatPayAttribute<>();
+        AbstractAttribute<WeChatPayScoreSyncResponse> attribute = new WeChatPaymentAttribute<>();
         attribute.setMethod("POST");
         attribute.setRequestPath("/v3/payscore/serviceorder/" + outOrderNo + "/sync");
         attribute.setRequestBody(WeChatJsonUtil.toJson(this));

@@ -2,7 +2,7 @@ package io.github.aapplet.wechat.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.attribute.AbstractAttribute;
-import io.github.aapplet.wechat.attribute.WeChatPayAttribute;
+import io.github.aapplet.wechat.attribute.WeChatPaymentAttribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
@@ -69,7 +69,7 @@ public class WeChatPayScoreQueryRequest implements WeChatRequest.V3<WeChatPaySco
         if (queryId == null && outOrderNo == null) {
             throw new WeChatParamsException("查询ID和商户服务订单号不存在");
         }
-        AbstractAttribute<WeChatPayScoreQueryResponse> attribute = new WeChatPayAttribute<>();
+        AbstractAttribute<WeChatPayScoreQueryResponse> attribute = new WeChatPaymentAttribute<>();
         attribute.setMethod("GET");
         attribute.setRequestPath("/v3/payscore/serviceorder");
         attribute.setParameters(this.getParameters());

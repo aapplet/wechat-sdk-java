@@ -2,7 +2,7 @@ package io.github.aapplet.wechat.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.attribute.AbstractAttribute;
-import io.github.aapplet.wechat.attribute.WeChatPayAttribute;
+import io.github.aapplet.wechat.attribute.WeChatPaymentAttribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
@@ -43,7 +43,7 @@ public class WeChatApplyDownloadRequest implements WeChatRequest.V3Download<WeCh
     @Override
     public WeChatAttribute<WeChatDownload> getAttribute(WeChatConfig weChatConfig) {
         final URL url = this.getUrl();
-        AbstractAttribute<WeChatDownload> attribute = new WeChatPayAttribute<>();
+        AbstractAttribute<WeChatDownload> attribute = new WeChatPaymentAttribute<>();
         attribute.setMethod("GET");
         attribute.setRequestPath(url.getPath());
         attribute.setParameters(url.getQuery());

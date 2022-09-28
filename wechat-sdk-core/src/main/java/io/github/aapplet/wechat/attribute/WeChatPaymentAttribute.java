@@ -8,9 +8,9 @@ import io.github.aapplet.wechat.host.WeChatHostStorage;
  *
  * @param <T>响应类型
  */
-public final class WeChatPayAttribute<T extends WeChatResponse> extends AbstractAttribute<T> {
+public final class WeChatPaymentAttribute<T extends WeChatResponse> extends AbstractAttribute<T> {
 
-    public WeChatPayAttribute() {
+    public WeChatPaymentAttribute() {
         super(WeChatHostStorage.PAY);
     }
 

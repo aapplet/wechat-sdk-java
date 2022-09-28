@@ -2,7 +2,7 @@ package io.github.aapplet.wechat.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.attribute.AbstractAttribute;
-import io.github.aapplet.wechat.attribute.WeChatPayAttribute;
+import io.github.aapplet.wechat.attribute.WeChatPaymentAttribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
@@ -73,7 +73,7 @@ public class WeChatPayScoreModifyRequest implements WeChatRequest.V3<WeChatPaySc
         if (reason == null) {
             throw new WeChatParamsException("修改原因不存在");
         }
-        AbstractAttribute<WeChatPayScoreModifyResponse> attribute = new WeChatPayAttribute<>();
+        AbstractAttribute<WeChatPayScoreModifyResponse> attribute = new WeChatPaymentAttribute<>();
         attribute.setMethod("POST");
         attribute.setRequestPath("/v3/payscore/serviceorder/" + outOrderNo + "/modify");
         attribute.setRequestBody(WeChatJsonUtil.toJson(this));

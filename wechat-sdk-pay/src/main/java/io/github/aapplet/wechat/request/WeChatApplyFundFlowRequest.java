@@ -2,7 +2,7 @@ package io.github.aapplet.wechat.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.attribute.AbstractAttribute;
-import io.github.aapplet.wechat.attribute.WeChatPayAttribute;
+import io.github.aapplet.wechat.attribute.WeChatPaymentAttribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
@@ -56,7 +56,7 @@ public class WeChatApplyFundFlowRequest implements WeChatRequest.V3<WeChatApplyB
 
     @Override
     public WeChatAttribute<WeChatApplyBillResponse> getAttribute(WeChatConfig weChatConfig) {
-        AbstractAttribute<WeChatApplyBillResponse> attribute = new WeChatPayAttribute<>();
+        AbstractAttribute<WeChatApplyBillResponse> attribute = new WeChatPaymentAttribute<>();
         attribute.setMethod("GET");
         attribute.setRequestPath("/v3/bill/fundflowbill");
         attribute.setParameters(this.getParameters());

@@ -1,7 +1,7 @@
 package io.github.aapplet.wechat.cert;
 
 import io.github.aapplet.wechat.attribute.AbstractAttribute;
-import io.github.aapplet.wechat.attribute.WeChatPayAttribute;
+import io.github.aapplet.wechat.attribute.WeChatPaymentAttribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
@@ -15,7 +15,7 @@ public class WeChatCertificateRequest implements WeChatRequest.V3<WeChatCertific
 
     @Override
     public WeChatAttribute<WeChatCertificateResponse> getAttribute(WeChatConfig weChatConfig) {
-        AbstractAttribute<WeChatCertificateResponse> attribute = new WeChatPayAttribute<>();
+        AbstractAttribute<WeChatCertificateResponse> attribute = new WeChatPaymentAttribute<>();
         attribute.setMethod("GET");
         attribute.setRequestPath("/v3/certificates");
         attribute.setResponseClass(WeChatCertificateResponse.class);

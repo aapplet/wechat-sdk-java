@@ -8,9 +8,9 @@ import io.github.aapplet.wechat.host.WeChatHostStorage;
  *
  * @param <T> 响应类型
  */
-public final class WeChatMPAttribute<T extends WeChatResponse> extends AbstractAttribute<T> {
+public final class WeChatPlatformAttribute<T extends WeChatResponse> extends AbstractAttribute<T> {
 
-    public WeChatMPAttribute() {
+    public WeChatPlatformAttribute() {
         super(WeChatHostStorage.MP);
     }
 

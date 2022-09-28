@@ -57,16 +57,12 @@ public class WeChatCertificateManager {
         X509Certificate x509Certificate = CERTIFICATE_MAP.get(serialNumber);
         if (x509Certificate == null) {
             synchronized (WeChatCertificateManager.class) {
-                x509Certificate = CERTIFICATE_MAP.get(serialNumber);
-                if (x509Certificate == null) {
+                if (!CERTIFICATE_MAP.containsKey(serialNumber)) {
                     this.loadCertificate();
                     this.checkCertificate(CERTIFICATE_MAP);
                 }
             }
-            if (x509Certificate == null) {
-                x509Certificate = CERTIFICATE_MAP.get(serialNumber);
-            }
-            if (x509Certificate == null) {
+            if ((x509Certificate = CERTIFICATE_MAP.get(serialNumber)) == null) {
                 throw new WeChatException("未知的平台证书序列号");
             }
         }
@@ -85,7 +81,7 @@ public class WeChatCertificateManager {
             x509Certificate.checkValidity();
         } catch (NullPointerException | CertificateExpiredException | CertificateNotYetValidException e) {
             synchronized (WeChatCertificateManager.class) {
-                if (x509Certificate == null || LATEST_MAP.remove(mchId, x509Certificate)) {
+                if (!LATEST_MAP.containsKey(mchId) || LATEST_MAP.remove(mchId, x509Certificate)) {
                     this.loadCertificate();
                     this.checkCertificate(LATEST_MAP);
                 }
