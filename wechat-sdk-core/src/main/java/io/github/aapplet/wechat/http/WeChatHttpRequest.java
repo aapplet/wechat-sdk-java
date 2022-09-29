@@ -123,10 +123,10 @@ public class WeChatHttpRequest {
         final String serialNo = weChatConfig.getSerialNo();
         final String signature = weChatConfig.signature(message);
         return schema + " mchid=\"" + mchId +
-               "\",serial_no=\"" + serialNo +
-               "\",nonce_str=\"" + nonceStr +
-               "\",timestamp=\"" + timestamp +
-               "\",signature=\"" + signature + "\"";
+                "\",serial_no=\"" + serialNo +
+                "\",nonce_str=\"" + nonceStr +
+                "\",timestamp=\"" + timestamp +
+                "\",signature=\"" + signature + "\"";
     }
 
     /**

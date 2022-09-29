@@ -3,19 +3,12 @@ package io.github.aapplet.wechat.util;
 import io.github.aapplet.wechat.exception.WeChatException;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.security.KeyFactory;
+import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
+import java.security.cert.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
@@ -31,19 +24,7 @@ public class WeChatPemUtil {
      * 加载商户证书私钥
      */
     public static PrivateKey loadPrivateKey(String path) {
-        // 加载资源
-        URL resource = Thread.currentThread().getContextClassLoader().getResource(path);
-        try {
-            if (resource == null) {
-                // 外部加载
-                return getPrivateKey(Files.readString(Path.of(path).toAbsolutePath(), StandardCharsets.UTF_8));
-            } else {
-                // 内部加载
-                return getPrivateKey(Files.readString(Path.of(resource.toURI()), StandardCharsets.UTF_8));
-            }
-        } catch (IOException | URISyntaxException e) {
-            throw new WeChatException("加载私钥失败,请检查路径是否正确", e);
-        }
+        return getPrivateKey(WeChatFileUtil.readString(path));
     }
 
     /**
@@ -64,7 +45,7 @@ public class WeChatPemUtil {
     }
 
     /**
-     * 获取平台证书
+     * 生成证书
      */
     public static X509Certificate getCertificate(byte[] bytes) {
         try {
@@ -73,6 +54,31 @@ public class WeChatPemUtil {
             return (X509Certificate) cf.generateCertificate(inputStream);
         } catch (CertificateException e) {
             throw new WeChatException("无效的平台证书", e);
+        }
+    }
+
+    /**
+     * 加载商户证书
+     *
+     * @param mchId 商户号
+     * @param path  证书路径
+     * @return 商户证书私钥
+     */
+    public static PrivateKey loadPKCS12(String mchId, String path) {
+        final byte[] bytes = WeChatFileUtil.readAllBytes(path);
+        final InputStream inputStream = new ByteArrayInputStream(bytes);
+        try {
+            final char[] password = mchId.toCharArray();
+            final KeyStore store = KeyStore.getInstance("PKCS12");
+            store.load(inputStream, password);
+            final String alias = store.aliases().nextElement();
+            final X509Certificate certificate = (X509Certificate) store.getCertificate(alias);
+            certificate.checkValidity();
+            return (PrivateKey) store.getKey(alias, password);
+        } catch (CertificateExpiredException | CertificateNotYetValidException e) {
+            throw new WeChatException("商户证书已过期", e);
+        } catch (Exception e) {
+            throw new WeChatException("无效的商户证书", e);
         }
     }
 

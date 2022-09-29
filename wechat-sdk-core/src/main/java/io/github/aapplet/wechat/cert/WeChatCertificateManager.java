@@ -13,10 +13,7 @@ import java.net.http.HttpResponse;
 import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.X509Certificate;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
@@ -54,19 +51,19 @@ public class WeChatCertificateManager {
      * @return 平台证书
      */
     private X509Certificate getCertificate(String serialNumber) {
-        X509Certificate x509Certificate = CERTIFICATE_MAP.get(serialNumber);
-        if (x509Certificate == null) {
+        X509Certificate certificate = CERTIFICATE_MAP.get(serialNumber);
+        if (certificate == null) {
             synchronized (WeChatCertificateManager.class) {
                 if (!CERTIFICATE_MAP.containsKey(serialNumber)) {
                     this.loadCertificate();
                     this.checkCertificate(CERTIFICATE_MAP);
                 }
             }
-            if ((x509Certificate = CERTIFICATE_MAP.get(serialNumber)) == null) {
+            if ((certificate = CERTIFICATE_MAP.get(serialNumber)) == null) {
                 throw new WeChatException("未知的平台证书序列号");
             }
         }
-        return x509Certificate;
+        return certificate;
     }
 
     /**
@@ -76,21 +73,22 @@ public class WeChatCertificateManager {
      */
     private X509Certificate getCertificate() {
         final String mchId = weChatConfig.getMchId();
-        X509Certificate x509Certificate = LATEST_MAP.get(mchId);
+        X509Certificate certificate = LATEST_MAP.get(mchId);
         try {
-            x509Certificate.checkValidity();
+            certificate.checkValidity();
         } catch (NullPointerException | CertificateExpiredException | CertificateNotYetValidException e) {
             synchronized (WeChatCertificateManager.class) {
-                if (!LATEST_MAP.containsKey(mchId) || LATEST_MAP.remove(mchId, x509Certificate)) {
+                final X509Certificate validation = LATEST_MAP.get(mchId);
+                if (validation == null || Objects.equals(validation, certificate)) {
                     this.loadCertificate();
                     this.checkCertificate(LATEST_MAP);
                 }
             }
-            if ((x509Certificate = LATEST_MAP.get(mchId)) == null) {
+            if ((certificate = LATEST_MAP.get(mchId)) == null) {
                 throw new WeChatException("平台证书加载失败");
             }
         }
-        return x509Certificate;
+        return certificate;
     }
 
     /**
