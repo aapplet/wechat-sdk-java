@@ -44,9 +44,6 @@ public class WeChatHeaders {
      * 参数校验
      */
     private WeChatHeaders validate() {
-        if (requestId == null || requestId.isEmpty()) {
-            throw new WeChatValidationException("request-id为空,验签失败");
-        }
         if (serial == null || serial.isEmpty()) {
             throw new WeChatValidationException("wechatpay-serial为空,验签失败");
         }
@@ -58,9 +55,6 @@ public class WeChatHeaders {
         }
         if (signature == null || signature.isEmpty()) {
             throw new WeChatValidationException("wechatpay-signature为空,验签失败");
-        }
-        if (signatureType == null || signatureType.isEmpty()) {
-            throw new WeChatValidationException("wechatpay-signature-type为空,验签失败");
         }
         return this;
     }
