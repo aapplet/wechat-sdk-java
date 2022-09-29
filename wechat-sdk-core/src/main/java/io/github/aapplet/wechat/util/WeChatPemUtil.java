@@ -64,7 +64,7 @@ public class WeChatPemUtil {
      * @param path  证书路径
      * @return 商户证书私钥
      */
-    public static KeyPair loadPKCS12(String mchId, String path) {
+    public static PrivateKey loadPKCS12(String mchId, String path) {
         if (mchId == null || mchId.isEmpty()) {
             throw new WeChatException("商户号不能为空");
         }
@@ -77,7 +77,7 @@ public class WeChatPemUtil {
             final String alias = store.aliases().nextElement();
             final X509Certificate certificate = (X509Certificate) store.getCertificate(alias);
             certificate.checkValidity();
-            return new KeyPair(certificate.getPublicKey(), (PrivateKey) store.getKey(alias, password));
+            return (PrivateKey) store.getKey(alias, password);
         } catch (KeyStoreException | NoSuchAlgorithmException e) {
             throw new WeChatException("当前Java环境不支持PKCS12", e);
         } catch (UnrecoverableKeyException | CertificateException e) {
