@@ -86,17 +86,17 @@ public class WeChatConfig {
     }
 
     /**
-     * 设置商户证书
-     */
-    public void loadPKCS12(String path) {
-        this.privateKey = WeChatPemUtil.loadPKCS12(mchId, path);
-    }
-
-    /**
      * 加载私钥
      */
     public void loadPrivateKey(String path) {
         this.privateKey = WeChatPemUtil.loadPrivateKey(path);
+    }
+
+    /**
+     * 设置商户证书
+     */
+    public void loadPKCS12(String path) {
+        this.privateKey = WeChatPemUtil.loadPKCS12(mchId, path).getPrivate();
     }
 
     /**
