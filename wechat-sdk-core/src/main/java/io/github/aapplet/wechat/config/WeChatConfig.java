@@ -1,11 +1,17 @@
 package io.github.aapplet.wechat.config;
 
+import io.github.aapplet.wechat.cert.WeChatCertificateManager;
+import io.github.aapplet.wechat.cert.WeChatCertificateService;
+import io.github.aapplet.wechat.token.WeChatAccessTokenManager;
+import io.github.aapplet.wechat.token.WeChatAccessTokenService;
 import io.github.aapplet.wechat.util.WeChatAesUtil;
 import io.github.aapplet.wechat.util.WeChatPemUtil;
 import io.github.aapplet.wechat.util.WeChatShaUtil;
 import lombok.Data;
+import lombok.NonNull;
 
 import java.security.PrivateKey;
+import java.util.function.Function;
 
 /**
  * 配置信息
@@ -26,7 +32,7 @@ public class WeChatConfig {
      */
     private String mchId;
     /**
-     * 商户秘钥,APIv3密钥
+     * 商户秘钥
      */
     private String mchKey;
     /**
@@ -77,6 +83,52 @@ public class WeChatConfig {
      * 容灾检测时间间隔,默认15秒
      */
     private int disasterDetectInterval = 1000 * 15;
+    /**
+     * 平台证书管理器
+     */
+    private WeChatCertificateManager certificateManager;
+    /**
+     * AccessToken管理器
+     */
+    private WeChatAccessTokenManager accessTokenManager;
+
+    /**
+     * @return 平台证书管理器
+     */
+    public WeChatCertificateManager getCertificateManager() {
+        if (certificateManager == null) {
+            this.certificateManager = new WeChatCertificateService(this);
+        }
+        return certificateManager;
+    }
+
+    /**
+     * @return AccessToken管理器
+     */
+    public WeChatAccessTokenManager getAccessTokenManager() {
+        if (accessTokenManager == null) {
+            this.accessTokenManager = new WeChatAccessTokenService(this);
+        }
+        return accessTokenManager;
+    }
+
+    /**
+     * 自定义平台证书管理器
+     *
+     * @param function 注入新的平台证书管理器
+     */
+    public void setCertificateManager(@NonNull Function<WeChatConfig, WeChatCertificateManager> function) {
+        this.certificateManager = function.apply(this);
+    }
+
+    /**
+     * 自定义AccessToken管理器
+     *
+     * @param function 注入新的AccessToken管理器
+     */
+    public void setAccessTokenManager(@NonNull Function<WeChatConfig, WeChatAccessTokenManager> function) {
+        this.accessTokenManager = function.apply(this);
+    }
 
     /**
      * 设置私钥

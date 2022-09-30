@@ -1,6 +1,5 @@
 package io.github.aapplet.wechat;
 
-import io.github.aapplet.wechat.cert.WeChatCertificateManager;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.exception.WeChatException;
 import io.github.aapplet.wechat.http.WeChatHeaders;
@@ -74,7 +73,7 @@ public class WeChatValidator {
      * 签名验证失败
      */
     public boolean verify() {
-        return verify(WeChatCertificateManager.getCertificate(weChatConfig, weChatHeaders.getSerial()));
+        return verify(weChatConfig.getCertificateManager().getCertificate(weChatHeaders.getSerial()));
     }
 
     /**

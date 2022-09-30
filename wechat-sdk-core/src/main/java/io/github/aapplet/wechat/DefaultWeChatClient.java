@@ -14,7 +14,6 @@ import io.github.aapplet.wechat.response.WeChatDownload;
 import io.github.aapplet.wechat.response.WeChatNoContentResponse;
 import io.github.aapplet.wechat.response.WeChatPaymentResponse;
 import io.github.aapplet.wechat.response.WeChatPlatformResponse;
-import io.github.aapplet.wechat.token.WeChatAccessTokenManager;
 import io.github.aapplet.wechat.util.RetryTemplate;
 import io.github.aapplet.wechat.util.WeChatJsonUtil;
 import lombok.Getter;
@@ -76,7 +75,7 @@ public final class DefaultWeChatClient implements WeChatClient {
                 return result;
             }
             if (errCode == 40001 || errCode == 42001) {
-                WeChatAccessTokenManager.removeAccessToken(weChatConfig);
+                weChatConfig.getAccessTokenManager().removeAccessToken();
                 throw new WeChatExpiredException(result.getErrMsg());
             }
             throw new WeChatResponseException(result.getErrMsg());

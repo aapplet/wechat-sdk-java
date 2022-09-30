@@ -7,7 +7,6 @@ import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.response.AppletApiQuotaResponse;
-import io.github.aapplet.wechat.token.WeChatAccessTokenManager;
 import io.github.aapplet.wechat.util.WeChatJsonUtil;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -35,7 +34,7 @@ public class AppletApiQuotaRequest implements WeChatRequest.MP<AppletApiQuotaRes
     @Override
     public WeChatAttribute<AppletApiQuotaResponse> getAttribute(WeChatConfig weChatConfig) {
         if (accessToken == null) {
-            this.accessToken = WeChatAccessTokenManager.getAccessToken(weChatConfig);
+            this.accessToken = weChatConfig.getAccessTokenManager().getAccessToken();
         }
         AbstractAttribute<AppletApiQuotaResponse> attribute = new WeChatPlatformAttribute<>();
         attribute.setMethod("POST");

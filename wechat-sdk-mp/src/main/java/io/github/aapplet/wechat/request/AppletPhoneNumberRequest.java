@@ -7,7 +7,6 @@ import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.response.AppletPhoneNumberResponse;
-import io.github.aapplet.wechat.token.WeChatAccessTokenManager;
 import io.github.aapplet.wechat.util.WeChatJsonUtil;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -36,7 +35,7 @@ public class AppletPhoneNumberRequest implements WeChatRequest.MP<AppletPhoneNum
     @Override
     public WeChatAttribute<AppletPhoneNumberResponse> getAttribute(WeChatConfig weChatConfig) {
         if (accessToken == null) {
-            this.accessToken = WeChatAccessTokenManager.getAccessToken(weChatConfig);
+            this.accessToken = weChatConfig.getAccessTokenManager().getAccessToken();
         }
         AbstractAttribute<AppletPhoneNumberResponse> attribute = new WeChatPlatformAttribute<>();
         attribute.setMethod("POST");

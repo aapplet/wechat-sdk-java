@@ -7,7 +7,6 @@ import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.response.WeChatDownload;
-import io.github.aapplet.wechat.token.WeChatAccessTokenManager;
 import io.github.aapplet.wechat.util.WeChatJsonUtil;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -100,7 +99,7 @@ public class AppletUnlimitedQRCodeRequest implements WeChatRequest.MPDownload<We
     @Override
     public WeChatAttribute<WeChatDownload> getAttribute(WeChatConfig weChatConfig) {
         if (accessToken == null) {
-            this.accessToken = WeChatAccessTokenManager.getAccessToken(weChatConfig);
+            this.accessToken = weChatConfig.getAccessTokenManager().getAccessToken();
         }
         AbstractAttribute<WeChatDownload> attribute = new WeChatPlatformAttribute<>();
         attribute.setMethod("POST");
