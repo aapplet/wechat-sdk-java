@@ -60,10 +60,6 @@ public class WeChatConfig {
      */
     private PrivateKey privateKey;
     /**
-     * 认证类型
-     */
-    private String schema = "WECHATPAY2-SHA256-RSA2048";
-    /**
      * http连接超时时间,默认5秒
      */
     private int httpConnectTimeout = 1000 * 5;
@@ -91,6 +87,10 @@ public class WeChatConfig {
      * AccessToken管理器
      */
     private WeChatAccessTokenManager accessTokenManager;
+    /**
+     * 认证类型
+     */
+    private String schema = "WECHATPAY2-SHA256-RSA2048";
 
     /**
      * @return 平台证书管理器
@@ -131,24 +131,10 @@ public class WeChatConfig {
     }
 
     /**
-     * 设置私钥
-     */
-    public void setPrivateKey(String privateKey) {
-        this.privateKey = WeChatPemUtil.getPrivateKey(privateKey);
-    }
-
-    /**
      * 加载私钥
      */
     public void loadPrivateKey(String path) {
         this.privateKey = WeChatPemUtil.loadPrivateKey(path);
-    }
-
-    /**
-     * 设置商户证书
-     */
-    public void loadPKCS12(String path) {
-        this.privateKey = WeChatPemUtil.loadPKCS12(mchId, path);
     }
 
     /**
