@@ -1,7 +1,5 @@
 package io.github.aapplet.wechat.host;
 
-import io.github.aapplet.wechat.config.WeChatConfig;
-
 /**
  * 域名分配,失败重试,容灾检测
  */
@@ -52,12 +50,10 @@ public class WeChatHostAllocate implements WeChatHost {
 
     /**
      * 容灾检测
-     *
-     * @param weChatConfig 配置信息
      */
     @Override
-    public void disaster(WeChatConfig weChatConfig) {
-        hostStorage.getDisaster().disaster(weChatConfig);
+    public void disaster() {
+        hostStorage.getDisaster().disaster();
     }
 
 }

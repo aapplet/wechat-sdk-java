@@ -19,6 +19,7 @@ public class WeChatAccessTokenService implements WeChatAccessTokenManager {
      * value = AccessToken
      */
     private static final Map<String, WeChatAccessToken> ACCESS_TOKEN_MAP = new ConcurrentHashMap<>(4);
+
     /**
      * 配置信息
      */
@@ -83,10 +84,8 @@ public class WeChatAccessTokenService implements WeChatAccessTokenManager {
     public void removeAccessToken() {
         final String appId = weChatConfig.getAppId();
         final WeChatAccessToken accessToken = ACCESS_TOKEN_MAP.get(appId);
-        synchronized (ACCESS_TOKEN_MAP) {
-            if (accessToken != null && accessToken.pastTime() > 1000 * 60 * 3) {
-                ACCESS_TOKEN_MAP.remove(appId, accessToken);
-            }
+        if (accessToken != null && accessToken.pastTime() > 1000 * 60 * 3) {
+            ACCESS_TOKEN_MAP.remove(appId, accessToken);
         }
     }
 

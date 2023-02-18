@@ -68,18 +68,6 @@ public class WeChatConfig {
      */
     private int httpResponseTimeout = 1000 * 10;
     /**
-     * 容灾检测连接超时时间,默认1秒
-     */
-    private int disasterConnectTimeout = 1000;
-    /**
-     * 容灾检测响应超时时间,默认1秒
-     */
-    private int disasterResponseTimeout = 1000;
-    /**
-     * 容灾检测时间间隔,默认15秒
-     */
-    private int disasterDetectInterval = 1000 * 15;
-    /**
      * 平台证书管理器
      */
     private WeChatCertificateManager certificateManager;

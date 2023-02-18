@@ -44,10 +44,10 @@ public class WeChatHttpRequest {
      * @param weChatAttribute 请求属性
      */
     private WeChatHttpRequest(WeChatConfig weChatConfig, WeChatAttribute<?> weChatAttribute) {
-        this.weChatConfig = weChatConfig;
-        this.weChatAttribute = weChatAttribute;
         final Duration httpConnectTimeout = Duration.ofMillis(weChatConfig.getHttpConnectTimeout());
         final Duration httpResponseTimeout = Duration.ofMillis(weChatConfig.getHttpResponseTimeout());
+        this.weChatConfig = weChatConfig;
+        this.weChatAttribute = weChatAttribute;
         this.httpClient = HttpClient.newBuilder().connectTimeout(httpConnectTimeout).build();
         this.httpRequest = HttpRequest.newBuilder().timeout(httpResponseTimeout);
     }
@@ -95,7 +95,7 @@ public class WeChatHttpRequest {
             // 失败重试,切换另一个域名
             if (weChatHost.retry()) {
                 // 容灾检测
-                weChatHost.disaster(weChatConfig);
+                weChatHost.disaster();
                 // 请求重试
                 return execute();
             } else {

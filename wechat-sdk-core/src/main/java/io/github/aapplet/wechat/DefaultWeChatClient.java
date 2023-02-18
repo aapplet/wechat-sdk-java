@@ -45,7 +45,7 @@ public final class DefaultWeChatClient implements WeChatClient {
         final WeChatAttribute<T> attribute = request.getAttribute(weChatConfig);
         final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.v3(weChatConfig, attribute);
         final WeChatValidator validator = new WeChatValidator(weChatConfig, httpResponse);
-        if (validator.verifyFailed()) {
+        if (!validator.verify()) {
             throw new WeChatValidationException("响应签名错误,验签失败");
         }
         if (httpResponse.statusCode() == 200) {

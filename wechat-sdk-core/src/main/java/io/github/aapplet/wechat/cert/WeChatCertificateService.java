@@ -104,7 +104,6 @@ public class WeChatCertificateService implements WeChatCertificateManager {
         if (httpResponse.statusCode() != 200) {
             throw new WeChatResponseException(WeChatPaymentResponse.fromJson(httpResponse.body()));
         }
-        final WeChatValidator validator = new WeChatCertificateValidator(weChatConfig, httpResponse);
         final Map<String, X509Certificate> certificates = new HashMap<>(4);
         final WeChatCertificateResponse certificateResponse = WeChatCertificateResponse.fromJson(httpResponse.body());
         for (WeChatCertificateResponse.WeChatCertificate certificate : certificateResponse.getCertificates()) {
@@ -116,7 +115,9 @@ public class WeChatCertificateService implements WeChatCertificateManager {
             final byte[] decrypt = weChatConfig.decrypt(nonceStr, associatedData, ciphertext);
             certificates.put(serialNumber, WeChatPemUtil.getCertificate(decrypt));
         }
-        if (validator.verify(certificates.get(validator.getWeChatHeaders().getSerial()))) {
+        final WeChatValidator validator = new WeChatCertificateValidator(weChatConfig, httpResponse);
+        final X509Certificate validatorCertificate = certificates.get(validator.getWeChatHeaders().getSerial());
+        if (validatorCertificate != null && validator.verify(validatorCertificate)) {
             CERTIFICATE_MAP.putAll(certificates);
             final Stream<X509Certificate> stream = certificates.values().stream();
             final Optional<X509Certificate> optional = stream.max(Comparator.comparing(X509Certificate::getNotBefore));
