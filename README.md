@@ -22,7 +22,7 @@
 <dependency>
     <groupId>io.github.aapplet</groupId>
     <artifactId>wechat-sdk-all</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.3</version>
 </dependency>
 ```
 
