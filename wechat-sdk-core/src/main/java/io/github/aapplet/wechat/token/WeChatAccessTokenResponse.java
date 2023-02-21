@@ -1,13 +1,13 @@
 package io.github.aapplet.wechat.token;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.aapplet.wechat.response.WeChatPlatformResponse;
+import io.github.aapplet.wechat.response.WeChatStatusCodeResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class WeChatAccessTokenResponse extends WeChatPlatformResponse {
+public class WeChatAccessTokenResponse extends WeChatStatusCodeResponse {
 
     /**
      * 凭证

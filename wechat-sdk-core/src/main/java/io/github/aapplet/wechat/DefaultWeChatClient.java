@@ -13,7 +13,7 @@ import io.github.aapplet.wechat.http.WeChatHttpRequest;
 import io.github.aapplet.wechat.response.WeChatDownload;
 import io.github.aapplet.wechat.response.WeChatNoContentResponse;
 import io.github.aapplet.wechat.response.WeChatPaymentResponse;
-import io.github.aapplet.wechat.response.WeChatPlatformResponse;
+import io.github.aapplet.wechat.response.WeChatStatusCodeResponse;
 import io.github.aapplet.wechat.util.RetryTemplate;
 import io.github.aapplet.wechat.util.WeChatJsonUtil;
 import lombok.Getter;
@@ -70,15 +70,16 @@ public final class DefaultWeChatClient implements WeChatClient {
             final WeChatAttribute<T> attribute = request.getAttribute(weChatConfig);
             final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.mp(weChatConfig, attribute);
             final T result = WeChatJsonUtil.fromJson(httpResponse.body(), attribute.getResponseClass());
-            final Integer errCode = result.getErrCode();
+            final WeChatStatusCodeResponse statusCode = (WeChatStatusCodeResponse) result;
+            final Integer errCode = statusCode.getErrCode();
             if (errCode == null || errCode == 0) {
                 return result;
             }
             if (errCode == 40001 || errCode == 42001) {
                 weChatConfig.getAccessTokenManager().removeAccessToken();
-                throw new WeChatExpiredException(result.getErrMsg());
+                throw new WeChatExpiredException(statusCode.getErrMsg());
             }
-            throw new WeChatResponseException(result.getErrMsg());
+            throw new WeChatResponseException(statusCode.getErrMsg());
         }, WeChatExpiredException.class);
     }
 
@@ -108,7 +109,7 @@ public final class DefaultWeChatClient implements WeChatClient {
         final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.mp(weChatConfig, download);
         httpResponse.headers().allValues(WeChatConstant.CONTENT_TYPE).forEach(header -> {
             if (header.contains(WeChatConstant.APPLICATION_JSON)) {
-                throw new WeChatResponseException(WeChatPlatformResponse.fromJson(httpResponse.body()));
+                throw new WeChatResponseException(WeChatStatusCodeResponse.fromJson(httpResponse.body()));
             }
         });
         return new WeChatDownload(httpResponse.body());

@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AppletApiQuotaResponse extends WeChatPlatformResponse {
+public class AppletApiQuotaResponse extends WeChatStatusCodeResponse {
 
     /**
      * quota详情

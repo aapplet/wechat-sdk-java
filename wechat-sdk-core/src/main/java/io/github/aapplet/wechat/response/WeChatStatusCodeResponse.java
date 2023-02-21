@@ -9,7 +9,7 @@ import lombok.Data;
  * 公众平台状态码
  */
 @Data
-public class WeChatPlatformResponse implements WeChatResponse.MP {
+public class WeChatStatusCodeResponse implements WeChatResponse.MP {
 
     /**
      * 失败时返回错误码
@@ -25,8 +25,8 @@ public class WeChatPlatformResponse implements WeChatResponse.MP {
     /**
      * Json转对象
      */
-    public static WeChatPlatformResponse fromJson(byte[] bytes) {
-        return WeChatJsonUtil.fromJson(bytes, WeChatPlatformResponse.class);
+    public static WeChatStatusCodeResponse fromJson(byte[] bytes) {
+        return WeChatJsonUtil.fromJson(bytes, WeChatStatusCodeResponse.class);
     }
 
 }

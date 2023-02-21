@@ -56,18 +56,10 @@ public class WeChatAccessTokenService implements WeChatAccessTokenManager {
     public String getAccessToken() {
         String appId = weChatConfig.getAppId();
         WeChatAccessToken accessToken = ACCESS_TOKEN_MAP.get(appId);
-        if (accessToken == null) {
+        if (accessToken == null || accessToken.validate()) {
             synchronized (WeChatAccessTokenManager.class) {
                 accessToken = ACCESS_TOKEN_MAP.get(appId);
-                if (accessToken == null) {
-                    accessToken = refreshAccessToken();
-                }
-            }
-        }
-        if (accessToken.validate()) {
-            synchronized (WeChatAccessTokenManager.class) {
-                accessToken = ACCESS_TOKEN_MAP.get(appId);
-                if (accessToken.validate()) {
+                if (accessToken == null || accessToken.validate()) {
                     accessToken = refreshAccessToken();
                 }
             }
@@ -78,13 +70,13 @@ public class WeChatAccessTokenService implements WeChatAccessTokenManager {
     /**
      * 删除AccessToken
      * <p>
-     * 只删除创建时间大于三分钟的凭证
+     * 只删除创建时间大于三十秒的凭证
      */
     @Override
     public void removeAccessToken() {
         final String appId = weChatConfig.getAppId();
         final WeChatAccessToken accessToken = ACCESS_TOKEN_MAP.get(appId);
-        if (accessToken != null && accessToken.pastTime() > 1000 * 60 * 3) {
+        if (accessToken != null && accessToken.pastTime() > 1000 * 30) {
             ACCESS_TOKEN_MAP.remove(appId, accessToken);
         }
     }

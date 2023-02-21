@@ -15,15 +15,6 @@ public interface WeChatResponse {
      * 公众平台
      */
     interface MP extends WeChatResponse {
-        /**
-         * 错误码
-         */
-        Integer getErrCode();
-
-        /**
-         * 描述
-         */
-        String getErrMsg();
     }
 
     /**

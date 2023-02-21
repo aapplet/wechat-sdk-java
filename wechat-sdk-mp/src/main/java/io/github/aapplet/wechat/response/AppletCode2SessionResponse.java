@@ -6,7 +6,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AppletCode2SessionResponse extends WeChatPlatformResponse {
+public class AppletCode2SessionResponse extends WeChatStatusCodeResponse {
 
     /**
      * 用户唯一标识

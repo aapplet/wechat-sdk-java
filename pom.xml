@@ -7,7 +7,7 @@
     <groupId>io.github.aapplet</groupId>
     <artifactId>wechat-sdk-java</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2</version>
 
     <name>WeChat SDK Java</name>
     <description>WeChat SDK Integration</description>
@@ -81,6 +81,11 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.14.2</version>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
