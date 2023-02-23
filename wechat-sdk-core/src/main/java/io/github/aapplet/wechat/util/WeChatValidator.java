@@ -1,10 +1,9 @@
-package io.github.aapplet.wechat;
+package io.github.aapplet.wechat.util;
 
 import io.github.aapplet.wechat.cert.WeChatCertificateManager;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.exception.WeChatException;
 import io.github.aapplet.wechat.http.WeChatHeaders;
-import io.github.aapplet.wechat.util.WeChatShaUtil;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -31,7 +30,7 @@ public class WeChatValidator {
      * @param weChatConfig 配置信息
      * @param httpResponse HTTP响应
      */
-    protected WeChatValidator(WeChatConfig weChatConfig, HttpResponse<byte[]> httpResponse) {
+    public WeChatValidator(WeChatConfig weChatConfig, HttpResponse<byte[]> httpResponse) {
         this(weChatConfig, httpResponse.headers().map(), new String(httpResponse.body(), StandardCharsets.UTF_8));
     }
 
@@ -40,7 +39,7 @@ public class WeChatValidator {
      * @param headers      请求头
      * @param body         请求内容
      */
-    protected WeChatValidator(WeChatConfig weChatConfig, Map<String, ?> headers, String body) {
+    public WeChatValidator(WeChatConfig weChatConfig, Map<String, ?> headers, String body) {
         if (weChatConfig == null) {
             throw new WeChatException("weChatConfig为空,验签失败");
         }
@@ -56,19 +55,13 @@ public class WeChatValidator {
     }
 
     /**
-     * 签名串
-     */
-    protected String message() {
-        return weChatHeaders.getTimestamp() + "\n" + weChatHeaders.getNonce() + "\n" + body + "\n";
-    }
-
-    /**
      * 签名验证
      *
      * @param certificate 平台证书
      */
     public boolean verify(Certificate certificate) {
-        return WeChatShaUtil.verify(certificate, message(), weChatHeaders.getSignature());
+        final String content = weChatHeaders.getTimestamp() + "\n" + weChatHeaders.getNonce() + "\n" + body + "\n";
+        return WeChatShaUtil.verify(certificate, content, weChatHeaders.getSignature());
     }
 
     /**

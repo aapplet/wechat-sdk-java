@@ -4,18 +4,19 @@ import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatClient;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.base.WeChatResponse;
+import io.github.aapplet.wechat.common.WeChatDownload;
+import io.github.aapplet.wechat.common.WeChatNoContentResponse;
+import io.github.aapplet.wechat.common.WeChatPaymentResponse;
+import io.github.aapplet.wechat.common.WeChatStatusCodeBase;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.constant.WeChatConstant;
 import io.github.aapplet.wechat.exception.WeChatExpiredException;
 import io.github.aapplet.wechat.exception.WeChatResponseException;
 import io.github.aapplet.wechat.exception.WeChatValidationException;
 import io.github.aapplet.wechat.http.WeChatHttpRequest;
-import io.github.aapplet.wechat.response.WeChatDownload;
-import io.github.aapplet.wechat.response.WeChatNoContentResponse;
-import io.github.aapplet.wechat.response.WeChatPaymentResponse;
-import io.github.aapplet.wechat.response.WeChatStatusCodeResponse;
 import io.github.aapplet.wechat.util.RetryTemplate;
 import io.github.aapplet.wechat.util.WeChatJsonUtil;
+import io.github.aapplet.wechat.util.WeChatValidator;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -70,7 +71,7 @@ public final class DefaultWeChatClient implements WeChatClient {
             final WeChatAttribute<T> attribute = request.getAttribute(weChatConfig);
             final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.mp(weChatConfig, attribute);
             final T result = WeChatJsonUtil.fromJson(httpResponse.body(), attribute.getResponseClass());
-            final WeChatStatusCodeResponse statusCode = (WeChatStatusCodeResponse) result;
+            final WeChatStatusCodeBase statusCode = (WeChatStatusCodeBase) result;
             final Integer errCode = statusCode.getErrCode();
             if (errCode == null || errCode == 0) {
                 return result;
@@ -109,7 +110,7 @@ public final class DefaultWeChatClient implements WeChatClient {
         final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.mp(weChatConfig, download);
         httpResponse.headers().allValues(WeChatConstant.CONTENT_TYPE).forEach(header -> {
             if (header.contains(WeChatConstant.APPLICATION_JSON)) {
-                throw new WeChatResponseException(WeChatStatusCodeResponse.fromJson(httpResponse.body()));
+                throw new WeChatResponseException(WeChatStatusCodeBase.fromJson(httpResponse.body()));
             }
         });
         return new WeChatDownload(httpResponse.body());

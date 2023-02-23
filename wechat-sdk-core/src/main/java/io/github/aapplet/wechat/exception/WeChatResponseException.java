@@ -1,7 +1,7 @@
 package io.github.aapplet.wechat.exception;
 
-import io.github.aapplet.wechat.response.WeChatPaymentResponse;
-import io.github.aapplet.wechat.response.WeChatStatusCodeResponse;
+import io.github.aapplet.wechat.common.WeChatPaymentResponse;
+import io.github.aapplet.wechat.common.WeChatStatusCodeBase;
 
 /**
  * 请求异常
@@ -16,7 +16,7 @@ public class WeChatResponseException extends WeChatException {
         super(response.getMessage());
     }
 
-    public WeChatResponseException(WeChatStatusCodeResponse response) {
+    public WeChatResponseException(WeChatStatusCodeBase response) {
         super(response.getErrMsg());
     }
 

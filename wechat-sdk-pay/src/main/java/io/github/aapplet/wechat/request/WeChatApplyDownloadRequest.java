@@ -5,9 +5,9 @@ import io.github.aapplet.wechat.attribute.AbstractAttribute;
 import io.github.aapplet.wechat.attribute.WeChatPaymentAttribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
+import io.github.aapplet.wechat.common.WeChatDownload;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.exception.WeChatParamsException;
-import io.github.aapplet.wechat.response.WeChatDownload;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

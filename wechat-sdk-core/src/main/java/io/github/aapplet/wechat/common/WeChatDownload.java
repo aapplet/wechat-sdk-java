@@ -1,4 +1,4 @@
-package io.github.aapplet.wechat.response;
+package io.github.aapplet.wechat.common;
 
 import io.github.aapplet.wechat.base.WeChatResponse;
 import io.github.aapplet.wechat.exception.WeChatException;

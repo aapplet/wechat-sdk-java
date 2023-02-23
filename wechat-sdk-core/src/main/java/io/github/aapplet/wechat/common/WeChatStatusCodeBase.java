@@ -1,4 +1,4 @@
-package io.github.aapplet.wechat.response;
+package io.github.aapplet.wechat.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.base.WeChatResponse;
@@ -9,7 +9,7 @@ import lombok.Data;
  * 公众平台状态码
  */
 @Data
-public class WeChatStatusCodeResponse implements WeChatResponse.MP {
+public class WeChatStatusCodeBase implements WeChatResponse.MP {
 
     /**
      * 失败时返回错误码
@@ -25,8 +25,8 @@ public class WeChatStatusCodeResponse implements WeChatResponse.MP {
     /**
      * Json转对象
      */
-    public static WeChatStatusCodeResponse fromJson(byte[] bytes) {
-        return WeChatJsonUtil.fromJson(bytes, WeChatStatusCodeResponse.class);
+    public static WeChatStatusCodeBase fromJson(byte[] bytes) {
+        return WeChatJsonUtil.fromJson(bytes, WeChatStatusCodeBase.class);
     }
 
 }

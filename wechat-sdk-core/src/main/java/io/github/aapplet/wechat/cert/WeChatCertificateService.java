@@ -1,13 +1,13 @@
 package io.github.aapplet.wechat.cert;
 
-import io.github.aapplet.wechat.WeChatValidator;
+import io.github.aapplet.wechat.common.WeChatPaymentResponse;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.exception.WeChatException;
 import io.github.aapplet.wechat.exception.WeChatResponseException;
 import io.github.aapplet.wechat.exception.WeChatValidationException;
 import io.github.aapplet.wechat.http.WeChatHttpRequest;
-import io.github.aapplet.wechat.response.WeChatPaymentResponse;
 import io.github.aapplet.wechat.util.WeChatPemUtil;
+import io.github.aapplet.wechat.util.WeChatValidator;
 
 import java.net.http.HttpResponse;
 import java.security.cert.CertificateExpiredException;
@@ -115,7 +115,7 @@ public class WeChatCertificateService implements WeChatCertificateManager {
             final byte[] decrypt = weChatConfig.decrypt(nonceStr, associatedData, ciphertext);
             certificates.put(serialNumber, WeChatPemUtil.getCertificate(decrypt));
         }
-        final WeChatValidator validator = new WeChatCertificateValidator(weChatConfig, httpResponse);
+        final WeChatValidator validator = new WeChatValidator(weChatConfig, httpResponse);
         final X509Certificate validatorCertificate = certificates.get(validator.getWeChatHeaders().getSerial());
         if (validatorCertificate != null && validator.verify(validatorCertificate)) {
             CERTIFICATE_MAP.putAll(certificates);

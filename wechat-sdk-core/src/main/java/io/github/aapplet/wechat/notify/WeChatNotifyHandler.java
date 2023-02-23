@@ -1,10 +1,10 @@
 package io.github.aapplet.wechat.notify;
 
-import io.github.aapplet.wechat.WeChatValidator;
 import io.github.aapplet.wechat.base.WeChatResponse;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.exception.WeChatValidationException;
 import io.github.aapplet.wechat.util.WeChatJsonUtil;
+import io.github.aapplet.wechat.util.WeChatValidator;
 
 import java.util.Map;
 

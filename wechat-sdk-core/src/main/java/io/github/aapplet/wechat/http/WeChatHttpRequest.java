@@ -59,6 +59,7 @@ public class WeChatHttpRequest {
      */
     private WeChatHttpRequest auth() {
         httpRequest.setHeader(WeChatConstant.ACCEPT, WeChatConstant.APPLICATION_JSON);
+        httpRequest.setHeader(WeChatConstant.USER_AGENT, WeChatConstant.USER_AGENT_VALUE);
         httpRequest.setHeader(WeChatConstant.CONTENT_TYPE, WeChatConstant.APPLICATION_JSON);
         httpRequest.setHeader(WeChatConstant.AUTHORIZATION, this.authorization());
         return this;
