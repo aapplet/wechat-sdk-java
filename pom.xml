@@ -9,9 +9,9 @@
     <version>${revision}</version>
     <packaging>pom</packaging>
 
-    <name>${project.groupId}:${project.artifactId}</name>
+    <name>WeChat SDK Java</name>
     <description>WeChat SDK Integration</description>
-    <url>https://github.com/aapplet/wechat-sdk-java</url>
+    <url>https://github.com/aapplet/wechat-sdk-java/tree/master</url>
 
     <modules>
         <module>wechat-sdk-all</module>
@@ -36,7 +36,7 @@
     </developers>
 
     <scm>
-        <url>https://github.com/aapplet/wechat-sdk-java</url>
+        <url>https://github.com/aapplet/wechat-sdk-java/tree/master</url>
         <connection>scm:git:https://github.com/aapplet/wechat-sdk-java.git</connection>
         <developerConnection>scm:git:https://github.com/aapplet/wechat-sdk-java.git</developerConnection>
     </scm>
@@ -134,7 +134,7 @@
                 <artifactId>flatten-maven-plugin</artifactId>
                 <version>1.6.0</version>
                 <configuration>
-                    <flattenMode>clean</flattenMode>
+                    <flattenMode>oss</flattenMode>
                 </configuration>
                 <executions>
                     <execution>
