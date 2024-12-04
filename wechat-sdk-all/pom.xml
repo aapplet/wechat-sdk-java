@@ -15,12 +15,12 @@
         <dependency>
             <groupId>io.github.aapplet</groupId>
             <artifactId>wechat-sdk-mp</artifactId>
-            <version>${version}</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>io.github.aapplet</groupId>
             <artifactId>wechat-sdk-pay</artifactId>
-            <version>${version}</version>
+            <version>${revision}</version>
         </dependency>
     </dependencies>
 
