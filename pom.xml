@@ -5,12 +5,18 @@
 
     <groupId>io.github.aapplet</groupId>
     <artifactId>wechat-sdk-java</artifactId>
+    <version>${revision}</version>
     <packaging>pom</packaging>
-    <version>0.0.1</version>
 
     <name>WeChat SDK Java</name>
     <description>WeChat SDK Integration</description>
     <url>https://github.com/aapplet/wechat-sdk-java</url>
+
+    <properties>
+        <revision>0.0.1</revision>
+        <maven.compiler.release>11</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <modules>
         <module>wechat-sdk-all</module>
@@ -39,11 +45,6 @@
         <connection>scm:git:https://github.com/aapplet/wechat-sdk-java.git</connection>
         <developerConnection>scm:git:https://github.com/aapplet/wechat-sdk-java.git</developerConnection>
     </scm>
-
-    <properties>
-        <maven.compiler.release>11</maven.compiler.release>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <dependencyManagement>
         <dependencies>
@@ -109,11 +110,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.18.0</version>
             </plugin>
             <plugin>
                 <groupId>org.sonatype.central</groupId>
