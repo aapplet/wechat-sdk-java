@@ -9,16 +9,9 @@
     <version>${revision}</version>
     <packaging>pom</packaging>
 
-    <name>WeChat SDK Java</name>
+    <name>${project.groupId}:${project.artifactId}</name>
     <description>WeChat SDK Integration</description>
     <url>https://github.com/aapplet/wechat-sdk-java</url>
-
-    <properties>
-        <revision>0.0.1</revision>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <modules>
         <module>wechat-sdk-all</module>
@@ -29,7 +22,7 @@
 
     <licenses>
         <license>
-            <name>Apache License, Version 2.0</name>
+            <name>The Apache License, Version 2.0</name>
             <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
@@ -48,8 +41,31 @@
         <developerConnection>scm:git:https://github.com/aapplet/wechat-sdk-java.git</developerConnection>
     </scm>
 
+    <properties>
+        <revision>0.0.1</revision>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>io.github.aapplet</groupId>
+                <artifactId>wechat-sdk-core</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aapplet</groupId>
+                <artifactId>wechat-sdk-mp</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.aapplet</groupId>
+                <artifactId>wechat-sdk-pay</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <!---->
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
@@ -114,21 +130,11 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.sonatype.central</groupId>
-                <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.6.0</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <publishingServerId>central</publishingServerId>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
                 <version>1.6.0</version>
                 <configuration>
-                    <updatePomFile>true</updatePomFile>
-                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                    <flattenMode>clean</flattenMode>
                 </configuration>
                 <executions>
                     <execution>
@@ -146,6 +152,15 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.6.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                </configuration>
             </plugin>
         </plugins>
     </build>
