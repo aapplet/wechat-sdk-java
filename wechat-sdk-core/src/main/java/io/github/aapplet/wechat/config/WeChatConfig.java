@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NonNull;
 
 import java.security.PrivateKey;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 /**
@@ -79,6 +80,15 @@ public class WeChatConfig {
      * 认证类型
      */
     private String schema = "WECHATPAY2-SHA256-RSA2048";
+
+    /**
+     * 自定义accessToken获取方式
+     */
+    public Function<String, String> accessTokenSelect;
+    /**
+     * 自定义accessToken更新方式
+     */
+    public BiConsumer<Object, Object> accessTokenUpdate;
 
     /**
      * @return 平台证书管理器

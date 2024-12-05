@@ -6,17 +6,22 @@ import io.github.aapplet.wechat.attribute.WeChatPlatformAttribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
+import io.github.aapplet.wechat.util.WeChatJsonUtil;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 /**
- * access_token是公众号的全局唯一接口调用凭据,公众号调用各接口时都需使用access_token。开发者需要进行妥善保存
- * <p>
- * https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/mp-access-token/getAccessToken.html
+ * <a href="https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/mp-access-token/getStableAccessToken.html">获取稳定版接口调用凭据</a>
  */
 @Data
 @Accessors(chain = true)
 public class WeChatAccessTokenRequest implements WeChatRequest.MP<WeChatAccessTokenResponse> {
+
+    /**
+     * 填写 client_credential
+     */
+    @JsonProperty("grant_type")
+    private String grantType;
 
     /**
      * AppID
@@ -31,26 +36,29 @@ public class WeChatAccessTokenRequest implements WeChatRequest.MP<WeChatAccessTo
     private String secret;
 
     /**
-     * 填写 client_credential
+     * 强制刷新模式
      */
-    @JsonProperty("grant_type")
-    private String grantType;
+    @JsonProperty("force_refresh")
+    private Boolean forceRefresh;
 
     @Override
     public WeChatAttribute<WeChatAccessTokenResponse> getAttribute(WeChatConfig weChatConfig) {
+        if (grantType == null) {
+            grantType = "client_credential";
+        }
         if (appId == null) {
             appId = weChatConfig.getAppId();
         }
         if (secret == null) {
             secret = weChatConfig.getAppSecret();
         }
-        if (grantType == null) {
-            grantType = "client_credential";
+        if (forceRefresh == null) {
+            forceRefresh = false;
         }
         AbstractAttribute<WeChatAccessTokenResponse> attribute = new WeChatPlatformAttribute<>();
-        attribute.setMethod("GET");
-        attribute.setRequestPath("/cgi-bin/token");
-        attribute.setParameters("appid=" + appId + "&secret=" + secret + "&grant_type=" + grantType);
+        attribute.setMethod("POST");
+        attribute.setRequestPath("/cgi-bin/stable_token");
+        attribute.setRequestBody(WeChatJsonUtil.toJson(this));
         attribute.setResponseClass(WeChatAccessTokenResponse.class);
         return attribute;
     }

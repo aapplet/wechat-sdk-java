@@ -1,9 +1,7 @@
 package io.github.aapplet.wechat.token;
 
 /**
- * AccessToken管理器
- * <p>
- * https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/mp-access-token/getAccessToken.html
+ * <a href="https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/mp-access-token/getStableAccessToken.html">获取稳定版接口调用凭据</a>
  */
 public interface WeChatAccessTokenManager {
 
