@@ -75,12 +75,12 @@ public class WeChatPayScoreCompleteRequest implements WeChatRequest.V3<WeChatPay
     private String goodsTag;
 
     @Override
-    public WeChatAttribute<WeChatPayScoreCompleteResponse> getAttribute(WeChatConfig weChatConfig) {
+    public WeChatAttribute<WeChatPayScoreCompleteResponse> getAttribute(WeChatConfig wechatConfig) {
         if (appId == null) {
-            appId = weChatConfig.getAppId();
+            appId = wechatConfig.getAppId();
         }
         if (serviceId == null) {
-            serviceId = weChatConfig.getServiceId();
+            serviceId = wechatConfig.getServiceId();
         }
         if (outOrderNo == null) {
             throw new WeChatParamsException("商户服务订单号不存在");

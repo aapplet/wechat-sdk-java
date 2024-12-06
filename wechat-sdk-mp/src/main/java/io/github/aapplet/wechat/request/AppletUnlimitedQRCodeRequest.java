@@ -97,9 +97,9 @@ public class AppletUnlimitedQRCodeRequest implements WeChatRequest.MPDownload<We
     }
 
     @Override
-    public WeChatAttribute<WeChatDownload> getAttribute(WeChatConfig weChatConfig) {
+    public WeChatAttribute<WeChatDownload> getAttribute(WeChatConfig wechatConfig) {
         if (accessToken == null) {
-            this.accessToken = weChatConfig.getAccessTokenManager().getAccessToken();
+            this.accessToken = wechatConfig.getAccessTokenManager().getAccessToken();
         }
         AbstractAttribute<WeChatDownload> attribute = new WeChatPlatformAttribute<>();
         attribute.setMethod("POST");

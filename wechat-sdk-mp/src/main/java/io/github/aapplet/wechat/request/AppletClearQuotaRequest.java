@@ -42,9 +42,9 @@ public class AppletClearQuotaRequest implements WeChatRequest.MP<WeChatStatusCod
     private String appId;
 
     @Override
-    public WeChatAttribute<WeChatStatusCodeBase> getAttribute(WeChatConfig weChatConfig) {
+    public WeChatAttribute<WeChatStatusCodeBase> getAttribute(WeChatConfig wechatConfig) {
         if (accessToken == null) {
-            accessToken = weChatConfig.getAccessTokenManager().getAccessToken();
+            accessToken = wechatConfig.getAccessTokenManager().getAccessToken();
         }
         var attribute = new WeChatPlatformAttribute<WeChatStatusCodeBase>();
         attribute.setMethod("POST");

@@ -93,15 +93,15 @@ public class WeChatPaymentJsapiRequest implements WeChatRequest.V3<WeChatPayment
     private WeChatPayment.SettleInfo settleInfo;
 
     @Override
-    public WeChatAttribute<WeChatPaymentJsapiResponse> getAttribute(WeChatConfig weChatConfig) {
+    public WeChatAttribute<WeChatPaymentJsapiResponse> getAttribute(WeChatConfig wechatConfig) {
         if (appId == null) {
-            appId = weChatConfig.getAppId();
+            appId = wechatConfig.getAppId();
         }
         if (mchId == null) {
-            mchId = weChatConfig.getMchId();
+            mchId = wechatConfig.getMchId();
         }
         if (notifyUrl == null) {
-            notifyUrl = weChatConfig.getPayNotifyUrl();
+            notifyUrl = wechatConfig.getPayNotifyUrl();
         }
         AbstractAttribute<WeChatPaymentJsapiResponse> attribute = new WeChatPaymentAttribute<>();
         attribute.setMethod("POST");

@@ -32,9 +32,9 @@ public class WeChatPaymentCloseRequest implements WeChatRequest.V3<WeChatNoConte
     private String outTradeNo;
 
     @Override
-    public WeChatAttribute<WeChatNoContentResponse> getAttribute(WeChatConfig weChatConfig) {
+    public WeChatAttribute<WeChatNoContentResponse> getAttribute(WeChatConfig wechatConfig) {
         if (mchId == null) {
-            mchId = weChatConfig.getMchId();
+            mchId = wechatConfig.getMchId();
         }
         if (outTradeNo == null) {
             throw new WeChatParamsException("商户订单号不存在");

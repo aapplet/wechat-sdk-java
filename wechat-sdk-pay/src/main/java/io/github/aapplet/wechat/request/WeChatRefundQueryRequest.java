@@ -27,7 +27,7 @@ public class WeChatRefundQueryRequest implements WeChatRequest.V3<WeChatRefundRe
     private String outRefundNo;
 
     @Override
-    public WeChatAttribute<WeChatRefundResponse> getAttribute(WeChatConfig weChatConfig) {
+    public WeChatAttribute<WeChatRefundResponse> getAttribute(WeChatConfig wechatConfig) {
         if (outRefundNo == null || outRefundNo.isBlank()) {
             throw new WeChatParamsException("商户退款单号不存在");
         }

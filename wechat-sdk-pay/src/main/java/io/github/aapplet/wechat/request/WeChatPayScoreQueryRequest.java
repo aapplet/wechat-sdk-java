@@ -59,12 +59,12 @@ public class WeChatPayScoreQueryRequest implements WeChatRequest.V3<WeChatPaySco
     }
 
     @Override
-    public WeChatAttribute<WeChatPayScoreQueryResponse> getAttribute(WeChatConfig weChatConfig) {
+    public WeChatAttribute<WeChatPayScoreQueryResponse> getAttribute(WeChatConfig wechatConfig) {
         if (appId == null) {
-            appId = weChatConfig.getAppId();
+            appId = wechatConfig.getAppId();
         }
         if (serviceId == null) {
-            serviceId = weChatConfig.getServiceId();
+            serviceId = wechatConfig.getServiceId();
         }
         if (queryId == null && outOrderNo == null) {
             throw new WeChatParamsException("查询ID和商户服务订单号不存在");

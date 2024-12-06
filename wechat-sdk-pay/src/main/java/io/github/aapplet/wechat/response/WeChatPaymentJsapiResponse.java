@@ -59,14 +59,14 @@ public class WeChatPaymentJsapiResponse implements WeChatResponse.V3 {
     /**
      * 小程序调起支付
      */
-    public JsapiResult jsapi(WeChatConfig weChatConfig) {
+    public JsapiResult jsapi(WeChatConfig wechatConfig) {
         JsapiResult jsapiResult = new JsapiResult();
-        jsapiResult.setAppId(weChatConfig.getAppId());
+        jsapiResult.setAppId(wechatConfig.getAppId());
         jsapiResult.setTimeStamp(String.valueOf(System.currentTimeMillis() / 1000));
         jsapiResult.setNonceStr(WeChatStrUtil.random());
         jsapiResult.setPackageValue("prepay_id=" + prepayId);
         jsapiResult.setSignType("RSA");
-        jsapiResult.setPaySign(weChatConfig.signature(jsapiResult.getSignContent()));
+        jsapiResult.setPaySign(wechatConfig.signature(jsapiResult.getSignContent()));
         return jsapiResult;
     }
 

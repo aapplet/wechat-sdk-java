@@ -32,7 +32,7 @@ public final class DefaultWeChatClient implements WeChatClient {
     /**
      * 配置信息
      */
-    private final WeChatConfig weChatConfig;
+    private final WeChatConfig wechatConfig;
 
     /**
      * 微信支付V3请求
@@ -43,9 +43,9 @@ public final class DefaultWeChatClient implements WeChatClient {
      */
     @Override
     public <T extends WeChatResponse.V3> T execute(WeChatRequest.V3<T> request) {
-        final WeChatAttribute<T> attribute = request.getAttribute(weChatConfig);
-        final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.v3(weChatConfig, attribute);
-        final WeChatValidator validator = new WeChatValidator(weChatConfig, httpResponse);
+        final WeChatAttribute<T> attribute = request.getAttribute(wechatConfig);
+        final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.v3(wechatConfig, attribute);
+        final WeChatValidator validator = new WeChatValidator(wechatConfig, httpResponse);
         if (!validator.verify()) {
             throw new WeChatValidationException("响应签名错误,验签失败");
         }
@@ -68,8 +68,8 @@ public final class DefaultWeChatClient implements WeChatClient {
     @Override
     public <T extends WeChatResponse.MP> T execute(WeChatRequest.MP<T> request) {
         return RetryTemplate.submit(() -> {
-            final WeChatAttribute<T> attribute = request.getAttribute(weChatConfig);
-            final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.mp(weChatConfig, attribute);
+            final WeChatAttribute<T> attribute = request.getAttribute(wechatConfig);
+            final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.mp(wechatConfig, attribute);
             final T result = WeChatJsonUtil.fromJson(httpResponse.body(), attribute.getResponseClass());
             final WeChatStatusCodeBase statusCode = (WeChatStatusCodeBase) result;
             final Integer errCode = statusCode.getErrCode();
@@ -77,7 +77,7 @@ public final class DefaultWeChatClient implements WeChatClient {
                 return result;
             }
             if (errCode == 40001 || errCode == 42001) {
-                weChatConfig.getAccessTokenManager().removeAccessToken();
+                wechatConfig.getAccessTokenManager().removeAccessToken();
                 throw new WeChatExpiredException(statusCode.getErrMsg());
             }
             throw new WeChatResponseException(WeChatJsonUtil.toJson(result));
@@ -92,7 +92,7 @@ public final class DefaultWeChatClient implements WeChatClient {
      */
     @Override
     public WeChatDownload execute(WeChatRequest.V3Download<WeChatDownload> download) {
-        final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.v3(weChatConfig, download);
+        final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.v3(wechatConfig, download);
         if (httpResponse.statusCode() == 200) {
             return new WeChatDownload(httpResponse.body());
         }
@@ -107,7 +107,7 @@ public final class DefaultWeChatClient implements WeChatClient {
      */
     @Override
     public WeChatDownload execute(WeChatRequest.MPDownload<WeChatDownload> download) {
-        final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.mp(weChatConfig, download);
+        final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.mp(wechatConfig, download);
         httpResponse.headers().allValues(WeChatConstant.CONTENT_TYPE).forEach(header -> {
             if (header.contains(WeChatConstant.APPLICATION_JSON)) {
                 throw new WeChatResponseException(WeChatJsonUtil.fromJson(httpResponse.body(), WeChatStatusCodeBase.class));

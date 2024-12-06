@@ -33,9 +33,9 @@ public class AppletPhoneNumberRequest implements WeChatRequest.MP<AppletPhoneNum
 
 
     @Override
-    public WeChatAttribute<AppletPhoneNumberResponse> getAttribute(WeChatConfig weChatConfig) {
+    public WeChatAttribute<AppletPhoneNumberResponse> getAttribute(WeChatConfig wechatConfig) {
         if (accessToken == null) {
-            this.accessToken = weChatConfig.getAccessTokenManager().getAccessToken();
+            this.accessToken = wechatConfig.getAccessTokenManager().getAccessToken();
         }
         AbstractAttribute<AppletPhoneNumberResponse> attribute = new WeChatPlatformAttribute<>();
         attribute.setMethod("POST");

@@ -22,26 +22,26 @@ import java.util.Map;
 @ToString
 public class WeChatValidator {
 
-    protected final WeChatConfig weChatConfig;
-    protected final WeChatHeaders weChatHeaders;
+    protected final WeChatConfig wechatConfig;
+    protected final WeChatHeaders wechatHeaders;
     protected final String body;
 
     /**
-     * @param weChatConfig 配置信息
+     * @param wechatConfig 配置信息
      * @param httpResponse HTTP响应
      */
-    public WeChatValidator(WeChatConfig weChatConfig, HttpResponse<byte[]> httpResponse) {
-        this(weChatConfig, httpResponse.headers().map(), new String(httpResponse.body(), StandardCharsets.UTF_8));
+    public WeChatValidator(WeChatConfig wechatConfig, HttpResponse<byte[]> httpResponse) {
+        this(wechatConfig, httpResponse.headers().map(), new String(httpResponse.body(), StandardCharsets.UTF_8));
     }
 
     /**
-     * @param weChatConfig 配置信息
+     * @param wechatConfig 配置信息
      * @param headers      请求头
      * @param body         请求内容
      */
-    public WeChatValidator(WeChatConfig weChatConfig, Map<String, ?> headers, String body) {
-        if (weChatConfig == null) {
-            throw new WeChatException("weChatConfig为空,验签失败");
+    public WeChatValidator(WeChatConfig wechatConfig, Map<String, ?> headers, String body) {
+        if (wechatConfig == null) {
+            throw new WeChatException("wechatConfig为空,验签失败");
         }
         if (headers == null) {
             throw new WeChatException("headers为空,验签失败");
@@ -49,8 +49,8 @@ public class WeChatValidator {
         if (body == null) {
             throw new WeChatException("body为空,验签失败");
         }
-        this.weChatConfig = weChatConfig;
-        this.weChatHeaders = WeChatHeaders.fromObject(headers);
+        this.wechatConfig = wechatConfig;
+        this.wechatHeaders = WeChatHeaders.fromObject(headers);
         this.body = body;
     }
 
@@ -60,16 +60,16 @@ public class WeChatValidator {
      * @param certificate 平台证书
      */
     public boolean verify(Certificate certificate) {
-        final String content = weChatHeaders.getTimestamp() + "\n" + weChatHeaders.getNonce() + "\n" + body + "\n";
-        return WeChatShaUtil.verify(certificate, content, weChatHeaders.getSignature());
+        final String content = wechatHeaders.getTimestamp() + "\n" + wechatHeaders.getNonce() + "\n" + body + "\n";
+        return WeChatShaUtil.verify(certificate, content, wechatHeaders.getSignature());
     }
 
     /**
      * 签名验证失败
      */
     public boolean verify() {
-        WeChatCertificateManager certificateManager = weChatConfig.getCertificateManager();
-        X509Certificate certificate = certificateManager.getCertificate(weChatHeaders.getSerial());
+        WeChatCertificateManager certificateManager = wechatConfig.getCertificateManager();
+        X509Certificate certificate = certificateManager.getCertificate(wechatHeaders.getSerial());
         return verify(certificate);
     }
 

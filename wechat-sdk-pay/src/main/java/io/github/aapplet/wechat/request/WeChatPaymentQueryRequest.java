@@ -52,9 +52,9 @@ public class WeChatPaymentQueryRequest implements WeChatRequest.V3<WeChatPayment
     }
 
     @Override
-    public WeChatAttribute<WeChatPaymentQueryResponse> getAttribute(WeChatConfig weChatConfig) {
+    public WeChatAttribute<WeChatPaymentQueryResponse> getAttribute(WeChatConfig wechatConfig) {
         if (mchId == null) {
-            mchId = weChatConfig.getMchId();
+            mchId = wechatConfig.getMchId();
         }
         AbstractAttribute<WeChatPaymentQueryResponse> attribute = new WeChatPaymentAttribute<>();
         attribute.setMethod("GET");

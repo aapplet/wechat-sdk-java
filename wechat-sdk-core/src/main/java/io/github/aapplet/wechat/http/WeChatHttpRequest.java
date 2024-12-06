@@ -25,11 +25,11 @@ public class WeChatHttpRequest {
     /**
      * 配置信息
      */
-    private final WeChatConfig weChatConfig;
+    private final WeChatConfig wechatConfig;
     /**
      * 请求属性
      */
-    private final WeChatAttribute<?> weChatAttribute;
+    private final WeChatAttribute<?> wechatAttribute;
     /**
      * http客户端
      */
@@ -40,14 +40,14 @@ public class WeChatHttpRequest {
     private final HttpRequest.Builder httpRequest;
 
     /**
-     * @param weChatConfig    配置信息
-     * @param weChatAttribute 请求属性
+     * @param wechatConfig    配置信息
+     * @param wechatAttribute 请求属性
      */
-    private WeChatHttpRequest(WeChatConfig weChatConfig, WeChatAttribute<?> weChatAttribute) {
-        final Duration httpConnectTimeout = Duration.ofMillis(weChatConfig.getHttpConnectTimeout());
-        final Duration httpResponseTimeout = Duration.ofMillis(weChatConfig.getHttpResponseTimeout());
-        this.weChatConfig = weChatConfig;
-        this.weChatAttribute = weChatAttribute;
+    private WeChatHttpRequest(WeChatConfig wechatConfig, WeChatAttribute<?> wechatAttribute) {
+        final Duration httpConnectTimeout = Duration.ofMillis(wechatConfig.getHttpConnectTimeout());
+        final Duration httpResponseTimeout = Duration.ofMillis(wechatConfig.getHttpResponseTimeout());
+        this.wechatConfig = wechatConfig;
+        this.wechatAttribute = wechatAttribute;
         this.httpClient = HttpClient.newBuilder().connectTimeout(httpConnectTimeout).build();
         this.httpRequest = HttpRequest.newBuilder().timeout(httpResponseTimeout);
     }
@@ -71,11 +71,11 @@ public class WeChatHttpRequest {
      * @return this
      */
     private WeChatHttpRequest body() {
-        String requestBody = weChatAttribute.getRequestBody();
+        String requestBody = wechatAttribute.getRequestBody();
         if (requestBody == null) {
-            httpRequest.method(weChatAttribute.getMethod(), HttpRequest.BodyPublishers.noBody());
+            httpRequest.method(wechatAttribute.getMethod(), HttpRequest.BodyPublishers.noBody());
         } else {
-            httpRequest.method(weChatAttribute.getMethod(), HttpRequest.BodyPublishers.ofString(requestBody));
+            httpRequest.method(wechatAttribute.getMethod(), HttpRequest.BodyPublishers.ofString(requestBody));
         }
         return this;
     }
@@ -86,17 +86,17 @@ public class WeChatHttpRequest {
      * @return HTTP响应
      */
     private HttpResponse<byte[]> execute() {
-        final URI uri = URI.create(weChatAttribute.getRequestURL());
+        final URI uri = URI.create(wechatAttribute.getRequestURL());
         final HttpRequest request = httpRequest.uri(uri).build();
         try {
             return logger(httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray()));
         } catch (IOException | InterruptedException e) {
             // 域名信息
-            final WeChatHost weChatHost = weChatAttribute.getWeChatHost();
+            final WeChatHost wechatHost = wechatAttribute.getWechatHost();
             // 失败重试,切换另一个域名
-            if (weChatHost.retry()) {
+            if (wechatHost.retry()) {
                 // 容灾检测
-                weChatHost.disaster();
+                wechatHost.disaster();
                 // 请求重试
                 return execute();
             } else {
@@ -113,16 +113,16 @@ public class WeChatHttpRequest {
      */
     private String authorization() {
         final String nonceStr = WeChatStrUtil.random();
-        final String method = weChatAttribute.getMethod();
-        final String requestURI = weChatAttribute.getRequestURI();
-        final String requestBody = weChatAttribute.getRequestBody();
+        final String method = wechatAttribute.getMethod();
+        final String requestURI = wechatAttribute.getRequestURI();
+        final String requestBody = wechatAttribute.getRequestBody();
         final String body = requestBody == null ? "" : requestBody;
         final String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
         final String message = method + "\n" + requestURI + "\n" + timestamp + "\n" + nonceStr + "\n" + body + "\n";
-        final String mchId = weChatConfig.getMchId();
-        final String schema = weChatConfig.getSchema();
-        final String serialNo = weChatConfig.getSerialNo();
-        final String signature = weChatConfig.signature(message);
+        final String mchId = wechatConfig.getMchId();
+        final String schema = wechatConfig.getSchema();
+        final String serialNo = wechatConfig.getSerialNo();
+        final String signature = wechatConfig.signature(message);
         return schema + " mchid=\"" + mchId +
                 "\",serial_no=\"" + serialNo +
                 "\",nonce_str=\"" + nonceStr +
@@ -141,13 +141,13 @@ public class WeChatHttpRequest {
             final StringJoiner join = new StringJoiner("\n").add(LocalDateTime.now().toString());
             final byte[] bytes = httpResponse.body();
             final HttpRequest request = httpResponse.request();
-            final String requestBody = weChatAttribute.getRequestBody();
+            final String requestBody = wechatAttribute.getRequestBody();
             final String responseBody = bytes.length > 8192 ? null : new String(bytes, StandardCharsets.UTF_8);
             join.add("================================================== Start ==================================================");
             join.add(">>>>>Request-URL........：" + request.uri());
             join.add(">>>>>Request-Method.....：" + request.method());
-            join.add(">>>>>Request-MchId......：" + weChatConfig.getMchId());
-            join.add(">>>>>Request-AppId......：" + weChatConfig.getAppId());
+            join.add(">>>>>Request-MchId......：" + wechatConfig.getMchId());
+            join.add(">>>>>Request-AppId......：" + wechatConfig.getAppId());
             join.add(">>>>>Request-Body.......：" + requestBody);
             join.add(">>>>>Request-Headers....：" + request.headers().map());
             join.add(">>>>>Response-Headers...：" + httpResponse.headers().map());
@@ -163,45 +163,45 @@ public class WeChatHttpRequest {
     /**
      * 微信支付V3请求
      *
-     * @param weChatConfig 配置信息
+     * @param wechatConfig 配置信息
      * @param request      请求信息
      * @return HTTP响应
      */
-    public static HttpResponse<byte[]> v3(WeChatConfig weChatConfig, WeChatRequest<?> request) {
-        return v3(weChatConfig, request.getAttribute(weChatConfig));
+    public static HttpResponse<byte[]> v3(WeChatConfig wechatConfig, WeChatRequest<?> request) {
+        return v3(wechatConfig, request.getAttribute(wechatConfig));
     }
 
     /**
      * 微信支付V3请求
      *
-     * @param weChatConfig    配置信息
-     * @param weChatAttribute 请求属性
+     * @param wechatConfig    配置信息
+     * @param wechatAttribute 请求属性
      * @return HTTP响应
      */
-    public static HttpResponse<byte[]> v3(WeChatConfig weChatConfig, WeChatAttribute<?> weChatAttribute) {
-        return new WeChatHttpRequest(weChatConfig, weChatAttribute).auth().body().execute();
+    public static HttpResponse<byte[]> v3(WeChatConfig wechatConfig, WeChatAttribute<?> wechatAttribute) {
+        return new WeChatHttpRequest(wechatConfig, wechatAttribute).auth().body().execute();
     }
 
     /**
      * 公众平台请求
      *
-     * @param weChatConfig 配置信息
+     * @param wechatConfig 配置信息
      * @param request      请求信息
      * @return HTTP响应
      */
-    public static HttpResponse<byte[]> mp(WeChatConfig weChatConfig, WeChatRequest<?> request) {
-        return mp(weChatConfig, request.getAttribute(weChatConfig));
+    public static HttpResponse<byte[]> mp(WeChatConfig wechatConfig, WeChatRequest<?> request) {
+        return mp(wechatConfig, request.getAttribute(wechatConfig));
     }
 
     /**
      * 公众平台请求
      *
-     * @param weChatConfig    配置信息
-     * @param weChatAttribute 请求属性
+     * @param wechatConfig    配置信息
+     * @param wechatAttribute 请求属性
      * @return HTTP响应
      */
-    public static HttpResponse<byte[]> mp(WeChatConfig weChatConfig, WeChatAttribute<?> weChatAttribute) {
-        return new WeChatHttpRequest(weChatConfig, weChatAttribute).body().execute();
+    public static HttpResponse<byte[]> mp(WeChatConfig wechatConfig, WeChatAttribute<?> wechatAttribute) {
+        return new WeChatHttpRequest(wechatConfig, wechatAttribute).body().execute();
     }
 
 }

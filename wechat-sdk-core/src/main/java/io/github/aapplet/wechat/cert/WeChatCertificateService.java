@@ -35,13 +35,13 @@ public class WeChatCertificateService implements WeChatCertificateManager {
     /**
      * 配置信息
      */
-    private final WeChatConfig weChatConfig;
+    private final WeChatConfig wechatConfig;
 
     /**
-     * @param weChatConfig 配置信息
+     * @param wechatConfig 配置信息
      */
-    public WeChatCertificateService(WeChatConfig weChatConfig) {
-        this.weChatConfig = weChatConfig;
+    public WeChatCertificateService(WeChatConfig wechatConfig) {
+        this.wechatConfig = wechatConfig;
     }
 
     /**
@@ -51,7 +51,7 @@ public class WeChatCertificateService implements WeChatCertificateManager {
      */
     @Override
     public X509Certificate getCertificate() {
-        final String mchId = weChatConfig.getMchId();
+        final String mchId = wechatConfig.getMchId();
         X509Certificate certificate = LATEST_MAP.get(mchId);
         try {
             certificate.checkValidity();
@@ -97,7 +97,7 @@ public class WeChatCertificateService implements WeChatCertificateManager {
      * 加载平台证书
      */
     private void loadCertificate() {
-        final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.v3(weChatConfig, new WeChatCertificateRequest());
+        final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.v3(wechatConfig, new WeChatCertificateRequest());
         if (httpResponse.statusCode() == 401) {
             throw new WeChatException("签名信息错误,请检查配置信息");
         }
@@ -112,16 +112,16 @@ public class WeChatCertificateService implements WeChatCertificateManager {
             final String ciphertext = encryptCertificate.getCiphertext();
             final String nonceStr = encryptCertificate.getNonce();
             final String serialNumber = certificate.getSerialNo();
-            final byte[] decrypt = weChatConfig.decrypt(nonceStr, associatedData, ciphertext);
+            final byte[] decrypt = wechatConfig.decrypt(nonceStr, associatedData, ciphertext);
             certificates.put(serialNumber, WeChatPemUtil.getCertificate(decrypt));
         }
-        final WeChatValidator validator = new WeChatValidator(weChatConfig, httpResponse);
-        final X509Certificate validatorCertificate = certificates.get(validator.getWeChatHeaders().getSerial());
+        final WeChatValidator validator = new WeChatValidator(wechatConfig, httpResponse);
+        final X509Certificate validatorCertificate = certificates.get(validator.getWechatHeaders().getSerial());
         if (validatorCertificate != null && validator.verify(validatorCertificate)) {
             CERTIFICATE_MAP.putAll(certificates);
             final Stream<X509Certificate> stream = certificates.values().stream();
             final Optional<X509Certificate> optional = stream.max(Comparator.comparing(X509Certificate::getNotBefore));
-            optional.ifPresent(certificate -> LATEST_MAP.put(weChatConfig.getMchId(), certificate));
+            optional.ifPresent(certificate -> LATEST_MAP.put(wechatConfig.getMchId(), certificate));
         } else {
             throw new WeChatValidationException("平台证书错误,验签失败");
         }

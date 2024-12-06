@@ -49,12 +49,12 @@ public class AppletCode2SessionRequest implements WeChatRequest.MP<AppletCode2Se
     private String grantType;
 
     @Override
-    public WeChatAttribute<AppletCode2SessionResponse> getAttribute(WeChatConfig weChatConfig) {
+    public WeChatAttribute<AppletCode2SessionResponse> getAttribute(WeChatConfig wechatConfig) {
         if (appId == null) {
-            appId = weChatConfig.getAppId();
+            appId = wechatConfig.getAppId();
         }
         if (secret == null) {
-            secret = weChatConfig.getAppSecret();
+            secret = wechatConfig.getAppSecret();
         }
         if (grantType == null) {
             grantType = "authorization_code";

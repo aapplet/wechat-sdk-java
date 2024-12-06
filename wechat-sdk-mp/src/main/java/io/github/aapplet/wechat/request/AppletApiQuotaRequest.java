@@ -42,9 +42,9 @@ public class AppletApiQuotaRequest implements WeChatRequest.MP<AppletApiQuotaRes
     private String cgiPath;
 
     @Override
-    public WeChatAttribute<AppletApiQuotaResponse> getAttribute(WeChatConfig weChatConfig) {
+    public WeChatAttribute<AppletApiQuotaResponse> getAttribute(WeChatConfig wechatConfig) {
         if (accessToken == null) {
-            accessToken = weChatConfig.getAccessTokenManager().getAccessToken();
+            accessToken = wechatConfig.getAccessTokenManager().getAccessToken();
         }
         var attribute = new WeChatPlatformAttribute<AppletApiQuotaResponse>();
         attribute.setMethod("POST");

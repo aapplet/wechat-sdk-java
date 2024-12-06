@@ -1,7 +1,6 @@
 package io.github.aapplet.wechat.token;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.aapplet.wechat.attribute.AbstractAttribute;
 import io.github.aapplet.wechat.attribute.WeChatPlatformAttribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
@@ -51,20 +50,20 @@ public class WeChatAccessTokenRequest implements WeChatRequest.MP<WeChatAccessTo
     private Boolean forceRefresh;
 
     @Override
-    public WeChatAttribute<WeChatAccessTokenResponse> getAttribute(WeChatConfig weChatConfig) {
+    public WeChatAttribute<WeChatAccessTokenResponse> getAttribute(WeChatConfig wechatConfig) {
         if (grantType == null) {
             grantType = "client_credential";
         }
         if (appId == null) {
-            appId = weChatConfig.getAppId();
+            appId = wechatConfig.getAppId();
         }
         if (secret == null) {
-            secret = weChatConfig.getAppSecret();
+            secret = wechatConfig.getAppSecret();
         }
         if (forceRefresh == null) {
             forceRefresh = false;
         }
-        AbstractAttribute<WeChatAccessTokenResponse> attribute = new WeChatPlatformAttribute<>();
+        var attribute = new WeChatPlatformAttribute<WeChatAccessTokenResponse>();
         attribute.setMethod("POST");
         attribute.setRequestPath("/cgi-bin/stable_token");
         attribute.setRequestBody(WeChatJsonUtil.toJson(this));

@@ -63,9 +63,9 @@ public class WeChatRefundRequest implements WeChatRequest.V3<WeChatRefundRespons
     private WeChatRefund.GoodsDetail goodsDetail;
 
     @Override
-    public WeChatAttribute<WeChatRefundResponse> getAttribute(WeChatConfig weChatConfig) {
+    public WeChatAttribute<WeChatRefundResponse> getAttribute(WeChatConfig wechatConfig) {
         if (notifyUrl == null) {
-            notifyUrl = weChatConfig.getRefundNotifyUrl();
+            notifyUrl = wechatConfig.getRefundNotifyUrl();
         }
         AbstractAttribute<WeChatRefundResponse> attribute = new WeChatPaymentAttribute<>();
         attribute.setMethod("POST");

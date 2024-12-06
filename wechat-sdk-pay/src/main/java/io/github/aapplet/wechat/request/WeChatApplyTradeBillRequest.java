@@ -55,7 +55,7 @@ public class WeChatApplyTradeBillRequest implements WeChatRequest.V3<WeChatApply
     }
 
     @Override
-    public WeChatAttribute<WeChatApplyBillResponse> getAttribute(WeChatConfig weChatConfig) {
+    public WeChatAttribute<WeChatApplyBillResponse> getAttribute(WeChatConfig wechatConfig) {
         AbstractAttribute<WeChatApplyBillResponse> attribute = new WeChatPaymentAttribute<>();
         attribute.setMethod("GET");
         attribute.setRequestPath("/v3/bill/tradebill");

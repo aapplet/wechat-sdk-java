@@ -11,7 +11,7 @@ public interface WeChatClient {
     /**
      * 获取配置
      */
-    WeChatConfig getWeChatConfig();
+    WeChatConfig getWechatConfig();
 
     /**
      * 微信支付V3请求

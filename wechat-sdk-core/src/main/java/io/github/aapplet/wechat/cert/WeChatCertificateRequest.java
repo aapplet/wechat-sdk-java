@@ -14,7 +14,7 @@ import io.github.aapplet.wechat.config.WeChatConfig;
 public class WeChatCertificateRequest implements WeChatRequest.V3<WeChatCertificateResponse> {
 
     @Override
-    public WeChatAttribute<WeChatCertificateResponse> getAttribute(WeChatConfig weChatConfig) {
+    public WeChatAttribute<WeChatCertificateResponse> getAttribute(WeChatConfig wechatConfig) {
         AbstractAttribute<WeChatCertificateResponse> attribute = new WeChatPaymentAttribute<>();
         attribute.setMethod("GET");
         attribute.setRequestPath("/v3/certificates");

@@ -16,7 +16,7 @@ public class WeChatAccessTokenService implements WeChatAccessTokenManager {
     /**
      * 配置信息
      */
-    private final WeChatConfig weChatConfig;
+    private final WeChatConfig wechatConfig;
 
     /**
      * key   = appId
@@ -30,23 +30,23 @@ public class WeChatAccessTokenService implements WeChatAccessTokenManager {
      * @return AccessToken
      */
     private WeChatAccessToken refreshAccessToken() {
-        var client = new DefaultWeChatClient(weChatConfig);
+        var client = new DefaultWeChatClient(wechatConfig);
         var response = client.execute(new WeChatAccessTokenRequest());
         var accessToken = new WeChatAccessToken();
         var currentTimeMillis = System.currentTimeMillis();
         accessToken.setAccessToken(response.getAccessToken());
         accessToken.setCreateTimestamp(currentTimeMillis);
         accessToken.setExpireTimestamp(currentTimeMillis + (response.getExpiresIn() - 60 * 3) * 1000);
-        ACCESS_TOKENS.put(weChatConfig.getAppId(), accessToken);
+        ACCESS_TOKENS.put(wechatConfig.getAppId(), accessToken);
         return accessToken;
     }
 
     @Override
     public String getAccessToken() {
-        var appId = weChatConfig.getAppId();
+        var appId = wechatConfig.getAppId();
         var accessToken = ACCESS_TOKENS.get(appId);
         if (accessToken == null || accessToken.isExpired()) {
-            synchronized (weChatConfig) {
+            synchronized (wechatConfig) {
                 accessToken = ACCESS_TOKENS.get(appId);
                 if (accessToken == null || accessToken.isExpired()) {
                     accessToken = refreshAccessToken();
@@ -58,7 +58,7 @@ public class WeChatAccessTokenService implements WeChatAccessTokenManager {
 
     @Override
     public void removeAccessToken() {
-        var appId = weChatConfig.getAppId();
+        var appId = wechatConfig.getAppId();
         var accessToken = ACCESS_TOKENS.get(appId);
         // 强制刷新20秒内重复使用无效,所以获取到的AccessToken至少能使用20秒
         if (accessToken != null && accessToken.duration() > 15 * 1000) {

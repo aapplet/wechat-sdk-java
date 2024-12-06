@@ -90,15 +90,15 @@ public class WeChatPayScoreCreateRequest implements WeChatRequest.V3<WeChatPaySc
     private Boolean needUserConfirm;
 
     @Override
-    public WeChatAttribute<WeChatPayScoreCreateResponse> getAttribute(WeChatConfig weChatConfig) {
+    public WeChatAttribute<WeChatPayScoreCreateResponse> getAttribute(WeChatConfig wechatConfig) {
         if (appId == null) {
-            appId = weChatConfig.getAppId();
+            appId = wechatConfig.getAppId();
         }
         if (serviceId == null) {
-            serviceId = weChatConfig.getServiceId();
+            serviceId = wechatConfig.getServiceId();
         }
         if (serviceId == null) {
-            notifyUrl = weChatConfig.getPayScoreNotifyUrl();
+            notifyUrl = wechatConfig.getPayScoreNotifyUrl();
         }
         AbstractAttribute<WeChatPayScoreCreateResponse> attribute = new WeChatPaymentAttribute<>();
         attribute.setMethod("POST");

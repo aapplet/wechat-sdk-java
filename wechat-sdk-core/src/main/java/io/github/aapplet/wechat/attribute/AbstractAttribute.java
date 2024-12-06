@@ -6,7 +6,6 @@ import io.github.aapplet.wechat.host.WeChatHost;
 import io.github.aapplet.wechat.host.WeChatHostAllocate;
 import io.github.aapplet.wechat.host.WeChatHostStorage;
 import lombok.Data;
-import lombok.Getter;
 
 /**
  * 请求属性
@@ -19,14 +18,13 @@ public abstract class AbstractAttribute<T extends WeChatResponse> implements WeC
     /**
      * 域名分配
      */
-    @Getter
-    private final WeChatHost weChatHost;
+    private final WeChatHost wechatHost;
 
     /**
      * @param hostStorage 域名信息
      */
     public AbstractAttribute(WeChatHostStorage hostStorage) {
-        this.weChatHost = new WeChatHostAllocate(hostStorage);
+        this.wechatHost = new WeChatHostAllocate(hostStorage);
     }
 
     /**
@@ -51,7 +49,7 @@ public abstract class AbstractAttribute<T extends WeChatResponse> implements WeC
     private Class<T> responseClass;
 
     /**
-     * 请求资源(路径+参数)
+     * @return 请求资源(路径 + 参数)
      */
     @Override
     public String getRequestURI() {
@@ -59,11 +57,11 @@ public abstract class AbstractAttribute<T extends WeChatResponse> implements WeC
     }
 
     /**
-     * 请求URL(域名+路径+参数)
+     * @return 请求URL(域名 + 路径 + 参数)
      */
     @Override
     public String getRequestURL() {
-        return weChatHost.getHost() + getRequestURI();
+        return wechatHost.getHost() + getRequestURI();
     }
 
 }

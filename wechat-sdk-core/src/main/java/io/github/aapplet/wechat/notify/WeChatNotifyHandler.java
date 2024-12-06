@@ -16,12 +16,12 @@ public class WeChatNotifyHandler extends WeChatValidator {
     /**
      * 回调通知签名验证
      *
-     * @param weChatConfig 配置信息
+     * @param wechatConfig 配置信息
      * @param headers      请求头
      * @param body         请求内容
      */
-    public WeChatNotifyHandler(WeChatConfig weChatConfig, Map<String, ?> headers, String body) {
-        super(weChatConfig, headers, body);
+    public WeChatNotifyHandler(WeChatConfig wechatConfig, Map<String, ?> headers, String body) {
+        super(wechatConfig, headers, body);
     }
 
     /**
@@ -36,7 +36,7 @@ public class WeChatNotifyHandler extends WeChatValidator {
         final String nonce = resource.getNonce();
         final String ciphertext = resource.getCiphertext();
         final String associatedData = resource.getAssociatedData();
-        final byte[] decrypt = weChatConfig.decrypt(nonce, associatedData, ciphertext);
+        final byte[] decrypt = wechatConfig.decrypt(nonce, associatedData, ciphertext);
         if (this.verify()) {
             return WeChatJsonUtil.fromJson(decrypt, valueType);
         } else {

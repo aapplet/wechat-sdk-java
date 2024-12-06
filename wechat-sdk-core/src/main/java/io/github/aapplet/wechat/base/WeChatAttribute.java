@@ -12,7 +12,7 @@ public interface WeChatAttribute<T extends WeChatResponse> {
     /**
      * 域名信息
      */
-    WeChatHost getWeChatHost();
+    WeChatHost getWechatHost();
 
     /**
      * 请求方法

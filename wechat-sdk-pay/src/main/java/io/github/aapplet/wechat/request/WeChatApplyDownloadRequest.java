@@ -41,7 +41,7 @@ public class WeChatApplyDownloadRequest implements WeChatRequest.V3Download<WeCh
     }
 
     @Override
-    public WeChatAttribute<WeChatDownload> getAttribute(WeChatConfig weChatConfig) {
+    public WeChatAttribute<WeChatDownload> getAttribute(WeChatConfig wechatConfig) {
         final URL url = this.getUrl();
         AbstractAttribute<WeChatDownload> attribute = new WeChatPaymentAttribute<>();
         attribute.setMethod("GET");

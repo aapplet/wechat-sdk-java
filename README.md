@@ -35,15 +35,15 @@ public class WeChatConfiguration {
 
     @Bean
     WeChatClient client() {
-        WeChatConfig weChatConfig = new WeChatConfig();
-        weChatConfig.setAppId(".........Appid............");
-        weChatConfig.setAppSecret(".....AppSecret........");
-        weChatConfig.setMchId(".........MchId............");
-        weChatConfig.setMchKey("........MchKey...........");
-        weChatConfig.setServiceId(".....ServiceId........");
-        weChatConfig.setSerialNo("......SerialNo.........");
-        weChatConfig.loadPrivateKey("...PrivateKey.pem...");
-        return new DefaultWeChatClient(weChatConfig);
+        WeChatConfig wechatConfig = new WeChatConfig();
+        wechatConfig.setAppId(".........Appid............");
+        wechatConfig.setAppSecret(".....AppSecret........");
+        wechatConfig.setMchId(".........MchId............");
+        wechatConfig.setMchKey("........MchKey...........");
+        wechatConfig.setServiceId(".....ServiceId........");
+        wechatConfig.setSerialNo("......SerialNo.........");
+        wechatConfig.loadPrivateKey("...PrivateKey.pem...");
+        return new DefaultWeChatClient(wechatConfig);
     }
 
 }
@@ -72,13 +72,13 @@ public class WeChatConfiguration {
 @RequiredArgsConstructor
 public class NotifyController {
 
-    private final WeChatClient weChatClient;
+    private final WeChatClient wechatClient;
 
     @PostMapping("/notify")
     public void notify(@RequestHeader HttpHeaders headers, @RequestBody String body) {
         final Map<String, String> map = headers.toSingleValueMap();
-        final WeChatConfig weChatConfig = weChatClient.getWeChatConfig();
-        final WeChatNotifyHandler handler = new WeChatNotifyHandler(weChatConfig, map, body);
+        final WeChatConfig wechatConfig = wechatClient.getWeChatConfig();
+        final WeChatNotifyHandler handler = new WeChatNotifyHandler(wechatConfig, map, body);
         final WeChatPaymentNotify paymentNotify = handler.transform(WeChatPaymentNotify.class);
         System.out.println(paymentNotify);
     }

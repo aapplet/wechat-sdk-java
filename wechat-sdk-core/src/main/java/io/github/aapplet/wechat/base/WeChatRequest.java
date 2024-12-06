@@ -12,10 +12,10 @@ public interface WeChatRequest<T extends WeChatResponse> {
     /**
      * 获取属性
      *
-     * @param weChatConfig 配置信息
+     * @param wechatConfig 配置信息
      * @return 请求属性
      */
-    WeChatAttribute<T> getAttribute(WeChatConfig weChatConfig);
+    WeChatAttribute<T> getAttribute(WeChatConfig wechatConfig);
 
     /**
      * 微信支付V3请求

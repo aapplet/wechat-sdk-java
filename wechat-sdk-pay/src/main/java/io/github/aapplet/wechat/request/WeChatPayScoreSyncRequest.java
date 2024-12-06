@@ -48,12 +48,12 @@ public class WeChatPayScoreSyncRequest implements WeChatRequest.V3<WeChatPayScor
     private WeChatPayScore.SyncDetail detail;
 
     @Override
-    public WeChatAttribute<WeChatPayScoreSyncResponse> getAttribute(WeChatConfig weChatConfig) {
+    public WeChatAttribute<WeChatPayScoreSyncResponse> getAttribute(WeChatConfig wechatConfig) {
         if (appId == null) {
-            appId = weChatConfig.getAppId();
+            appId = wechatConfig.getAppId();
         }
         if (serviceId == null) {
-            serviceId = weChatConfig.getServiceId();
+            serviceId = wechatConfig.getServiceId();
         }
         if (outOrderNo == null) {
             throw new WeChatParamsException("商户服务订单号不存在");
