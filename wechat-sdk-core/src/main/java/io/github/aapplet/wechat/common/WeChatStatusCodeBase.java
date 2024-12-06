@@ -2,7 +2,6 @@ package io.github.aapplet.wechat.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.base.WeChatResponse;
-import io.github.aapplet.wechat.util.WeChatJsonUtil;
 import lombok.Data;
 
 /**
@@ -21,12 +20,5 @@ public class WeChatStatusCodeBase implements WeChatResponse.MP {
      */
     @JsonProperty("errmsg")
     private String errMsg;
-
-    /**
-     * Json转对象
-     */
-    public static WeChatStatusCodeBase fromJson(byte[] bytes) {
-        return WeChatJsonUtil.fromJson(bytes, WeChatStatusCodeBase.class);
-    }
 
 }

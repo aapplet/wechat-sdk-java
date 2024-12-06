@@ -1,7 +1,6 @@
 package io.github.aapplet.wechat.token;
 
 import io.github.aapplet.wechat.DefaultWeChatClient;
-import io.github.aapplet.wechat.base.WeChatClient;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import lombok.RequiredArgsConstructor;
 
@@ -23,7 +22,7 @@ public class WeChatAccessTokenService implements WeChatAccessTokenManager {
      * key   = appId
      * value = AccessToken
      */
-    private static final Map<String, WeChatAccessToken> ACCESS_TOKENS = new ConcurrentHashMap<>(4);
+    private static final Map<String, WeChatAccessToken> ACCESS_TOKENS = new ConcurrentHashMap<>(2);
 
     /**
      * 刷新AccessToken
@@ -31,27 +30,23 @@ public class WeChatAccessTokenService implements WeChatAccessTokenManager {
      * @return AccessToken
      */
     private WeChatAccessToken refreshAccessToken() {
-        final WeChatClient weChatClient = new DefaultWeChatClient(weChatConfig);
-        final WeChatAccessTokenResponse response = weChatClient.execute(new WeChatAccessTokenRequest());
-        final long currentTimeMillis = System.currentTimeMillis();
-        WeChatAccessToken accessToken = new WeChatAccessToken();
+        var client = new DefaultWeChatClient(weChatConfig);
+        var response = client.execute(new WeChatAccessTokenRequest());
+        var accessToken = new WeChatAccessToken();
+        var currentTimeMillis = System.currentTimeMillis();
         accessToken.setAccessToken(response.getAccessToken());
-        accessToken.setExpiresIn(response.getExpiresIn());
         accessToken.setCreateTimestamp(currentTimeMillis);
         accessToken.setExpireTimestamp(currentTimeMillis + (response.getExpiresIn() - 60 * 3) * 1000);
         ACCESS_TOKENS.put(weChatConfig.getAppId(), accessToken);
         return accessToken;
     }
 
-    /**
-     * 获取AccessToken
-     */
     @Override
     public String getAccessToken() {
-        String appId = weChatConfig.getAppId();
-        WeChatAccessToken accessToken = ACCESS_TOKENS.get(appId);
+        var appId = weChatConfig.getAppId();
+        var accessToken = ACCESS_TOKENS.get(appId);
         if (accessToken == null || accessToken.isExpired()) {
-            synchronized (WeChatAccessTokenManager.class) {
+            synchronized (weChatConfig) {
                 accessToken = ACCESS_TOKENS.get(appId);
                 if (accessToken == null || accessToken.isExpired()) {
                     accessToken = refreshAccessToken();
@@ -61,16 +56,12 @@ public class WeChatAccessTokenService implements WeChatAccessTokenManager {
         return accessToken.getAccessToken();
     }
 
-    /**
-     * 删除AccessToken
-     * <p>
-     * 只删除创建时间大于三十秒的凭证
-     */
     @Override
     public void removeAccessToken() {
-        final String appId = weChatConfig.getAppId();
-        final WeChatAccessToken accessToken = ACCESS_TOKENS.get(appId);
-        if (accessToken != null && accessToken.pastTime() > 30 * 1000) {
+        var appId = weChatConfig.getAppId();
+        var accessToken = ACCESS_TOKENS.get(appId);
+        // 强制刷新20秒内重复使用无效,所以获取到的AccessToken至少能使用20秒
+        if (accessToken != null && accessToken.duration() > 15 * 1000) {
             ACCESS_TOKENS.remove(appId, accessToken);
         }
     }

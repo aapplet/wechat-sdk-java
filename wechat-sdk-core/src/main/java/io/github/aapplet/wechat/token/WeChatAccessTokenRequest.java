@@ -8,6 +8,7 @@ import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.util.WeChatJsonUtil;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
@@ -15,7 +16,15 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
+@NoArgsConstructor
 public class WeChatAccessTokenRequest implements WeChatRequest.MP<WeChatAccessTokenResponse> {
+
+    /**
+     * @param forceRefresh 强制刷新模式
+     */
+    public WeChatAccessTokenRequest(Boolean forceRefresh) {
+        this.forceRefresh = forceRefresh;
+    }
 
     /**
      * 填写 client_credential

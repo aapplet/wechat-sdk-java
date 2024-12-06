@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.attribute.WeChatPlatformAttribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
+import io.github.aapplet.wechat.common.WeChatStatusCodeBase;
 import io.github.aapplet.wechat.config.WeChatConfig;
-import io.github.aapplet.wechat.response.AppletApiQuotaResponse;
 import io.github.aapplet.wechat.util.WeChatJsonUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,19 +14,19 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
- * <a href="https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/openApi-mgnt/getApiQuota.html">查询API调用额度</a>
+ * <a href="https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/openApi-mgnt/clearQuota.html">重置API调用次数</a>
  */
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppletApiQuotaRequest implements WeChatRequest.MP<AppletApiQuotaResponse> {
+public class AppletClearQuotaRequest implements WeChatRequest.MP<WeChatStatusCodeBase> {
 
     /**
-     * @param cgiPath api的请求地址
+     * @param appId 要被清空的账号的appid
      */
-    public AppletApiQuotaRequest(String cgiPath) {
-        this.cgiPath = cgiPath;
+    public AppletClearQuotaRequest(String appId) {
+        this.appId = appId;
     }
 
     /**
@@ -36,22 +36,22 @@ public class AppletApiQuotaRequest implements WeChatRequest.MP<AppletApiQuotaRes
     private String accessToken;
 
     /**
-     * api的请求地址
+     * 要被清空的账号的appid
      */
-    @JsonProperty("cgi_path")
-    private String cgiPath;
+    @JsonProperty("appid")
+    private String appId;
 
     @Override
-    public WeChatAttribute<AppletApiQuotaResponse> getAttribute(WeChatConfig weChatConfig) {
+    public WeChatAttribute<WeChatStatusCodeBase> getAttribute(WeChatConfig weChatConfig) {
         if (accessToken == null) {
             accessToken = weChatConfig.getAccessTokenManager().getAccessToken();
         }
-        var attribute = new WeChatPlatformAttribute<AppletApiQuotaResponse>();
+        var attribute = new WeChatPlatformAttribute<WeChatStatusCodeBase>();
         attribute.setMethod("POST");
-        attribute.setRequestPath("/cgi-bin/openapi/quota/get");
+        attribute.setRequestPath("/cgi-bin/clear_quota");
         attribute.setParameters("access_token=" + accessToken);
         attribute.setRequestBody(WeChatJsonUtil.toJson(this));
-        attribute.setResponseClass(AppletApiQuotaResponse.class);
+        attribute.setResponseClass(WeChatStatusCodeBase.class);
         return attribute;
     }
 

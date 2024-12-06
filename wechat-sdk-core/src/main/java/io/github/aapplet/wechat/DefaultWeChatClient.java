@@ -25,13 +25,13 @@ import java.net.http.HttpResponse;
 /**
  * 默认客户端
  */
+@Getter
 @RequiredArgsConstructor
 public final class DefaultWeChatClient implements WeChatClient {
 
     /**
      * 配置信息
      */
-    @Getter
     private final WeChatConfig weChatConfig;
 
     /**
@@ -80,7 +80,7 @@ public final class DefaultWeChatClient implements WeChatClient {
                 weChatConfig.getAccessTokenManager().removeAccessToken();
                 throw new WeChatExpiredException(statusCode.getErrMsg());
             }
-            throw new WeChatResponseException(statusCode.getErrMsg());
+            throw new WeChatResponseException(WeChatJsonUtil.toJson(result));
         }, WeChatExpiredException.class);
     }
 
@@ -110,7 +110,7 @@ public final class DefaultWeChatClient implements WeChatClient {
         final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.mp(weChatConfig, download);
         httpResponse.headers().allValues(WeChatConstant.CONTENT_TYPE).forEach(header -> {
             if (header.contains(WeChatConstant.APPLICATION_JSON)) {
-                throw new WeChatResponseException(WeChatStatusCodeBase.fromJson(httpResponse.body()));
+                throw new WeChatResponseException(WeChatJsonUtil.fromJson(httpResponse.body(), WeChatStatusCodeBase.class));
             }
         });
         return new WeChatDownload(httpResponse.body());
