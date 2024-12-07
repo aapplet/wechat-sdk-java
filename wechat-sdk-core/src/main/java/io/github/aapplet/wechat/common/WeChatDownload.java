@@ -3,6 +3,7 @@ package io.github.aapplet.wechat.common;
 import io.github.aapplet.wechat.base.WeChatResponse;
 import io.github.aapplet.wechat.exception.WeChatException;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,14 +12,11 @@ import java.nio.file.Path;
 /**
  * 下载处理
  */
+@Getter
+@RequiredArgsConstructor
 public class WeChatDownload implements WeChatResponse.Download {
 
-    @Getter
     private final byte[] bytes;
-
-    public WeChatDownload(byte[] bytes) {
-        this.bytes = bytes;
-    }
 
     /**
      * 保存文件

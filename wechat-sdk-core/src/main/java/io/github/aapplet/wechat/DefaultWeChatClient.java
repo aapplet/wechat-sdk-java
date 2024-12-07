@@ -76,11 +76,11 @@ public final class DefaultWeChatClient implements WeChatClient {
             if (errCode == null || errCode == 0) {
                 return result;
             }
-            if (errCode == 40001 || errCode == 42001) {
+            if (errCode == 42001) {
                 wechatConfig.getAccessTokenManager().removeAccessToken();
-                throw new WeChatExpiredException(statusCode.getErrMsg());
+                throw new WeChatExpiredException(WeChatJsonUtil.toJson(statusCode));
             }
-            throw new WeChatResponseException(WeChatJsonUtil.toJson(result));
+            throw new WeChatResponseException(WeChatJsonUtil.toJson(statusCode));
         }, WeChatExpiredException.class);
     }
 
@@ -110,7 +110,7 @@ public final class DefaultWeChatClient implements WeChatClient {
         final HttpResponse<byte[]> httpResponse = WeChatHttpRequest.mp(wechatConfig, download);
         httpResponse.headers().allValues(WeChatConstant.CONTENT_TYPE).forEach(header -> {
             if (header.contains(WeChatConstant.APPLICATION_JSON)) {
-                throw new WeChatResponseException(WeChatJsonUtil.fromJson(httpResponse.body(), WeChatStatusCodeBase.class));
+                throw new WeChatResponseException(WeChatJsonUtil.toJson(WeChatJsonUtil.fromJson(httpResponse.body(), WeChatStatusCodeBase.class)));
             }
         });
         return new WeChatDownload(httpResponse.body());

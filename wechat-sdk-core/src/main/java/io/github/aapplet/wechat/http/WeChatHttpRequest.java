@@ -137,7 +137,7 @@ public class WeChatHttpRequest {
      * @return HTTP响应
      */
     private HttpResponse<byte[]> logger(HttpResponse<byte[]> httpResponse) {
-        if (log.isDebugEnabled()) {
+        if (wechatConfig.isDebug()) {
             final StringJoiner join = new StringJoiner("\n").add(LocalDateTime.now().toString());
             final byte[] bytes = httpResponse.body();
             final HttpRequest request = httpResponse.request();
@@ -155,7 +155,7 @@ public class WeChatHttpRequest {
             join.add(">>>>>Response-Length....：" + bytes.length);
             join.add(">>>>>Response-Status....：" + httpResponse.statusCode());
             join.add("=================================================== End ===================================================");
-            log.debug(join.toString());
+            log.info(join.toString());
         }
         return httpResponse;
     }

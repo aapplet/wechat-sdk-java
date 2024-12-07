@@ -16,7 +16,10 @@ import java.security.PrivateKey;
  */
 @Data
 public class WeChatConfig {
-
+    /**
+     * 是否开启debug
+     */
+    private boolean debug;
     /**
      * 公众平台应用ID
      */

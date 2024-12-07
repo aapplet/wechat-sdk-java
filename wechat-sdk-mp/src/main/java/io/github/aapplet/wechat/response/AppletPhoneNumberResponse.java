@@ -45,7 +45,7 @@ public class AppletPhoneNumberResponse extends WeChatStatusCodeBase {
          * 用户获取手机号操作的时间戳
          */
         @JsonProperty("timestamp")
-        private String timestamp;
+        private Long timestamp;
         /**
          * 小程序appid
          */
