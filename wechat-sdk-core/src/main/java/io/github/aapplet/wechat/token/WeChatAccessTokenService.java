@@ -19,7 +19,7 @@ public class WeChatAccessTokenService implements WeChatAccessTokenManager {
     private final WeChatConfig wechatConfig;
 
     /**
-     * key   = appId
+     * key   = AppId
      * value = AccessToken
      */
     private static final Map<String, WeChatAccessToken> ACCESS_TOKENS = new ConcurrentHashMap<>(2);
@@ -60,7 +60,7 @@ public class WeChatAccessTokenService implements WeChatAccessTokenManager {
     public void removeAccessToken() {
         var appId = wechatConfig.getAppId();
         var accessToken = ACCESS_TOKENS.get(appId);
-        // 强制刷新20秒内重复使用无效,所以获取到的AccessToken至少能使用20秒
+        // 强制刷新间隔20秒
         if (accessToken != null && accessToken.duration() > 15 * 1000) {
             ACCESS_TOKENS.remove(appId, accessToken);
         }
