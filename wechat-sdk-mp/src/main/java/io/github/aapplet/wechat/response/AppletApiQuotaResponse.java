@@ -23,7 +23,7 @@ public class AppletApiQuotaResponse extends WeChatStatusCodeBase {
      * 代调用频率限制
      */
     @JsonProperty("component_rate_limit")
-    private ComponentRateLimit componentRateLimit;
+    private RateLimit componentRateLimit;
 
     @Data
     public static class Quota {
@@ -46,20 +46,6 @@ public class AppletApiQuotaResponse extends WeChatStatusCodeBase {
 
     @Data
     public static class RateLimit {
-        /**
-         * 周期内可调用数量，单位 次
-         */
-        @JsonProperty("call_count")
-        private String callCount;
-        /**
-         * 更新周期，单位 秒
-         */
-        @JsonProperty("refresh_second")
-        private String refreshSecond;
-    }
-
-    @Data
-    public static class ComponentRateLimit {
         /**
          * 周期内可调用数量，单位 次
          */

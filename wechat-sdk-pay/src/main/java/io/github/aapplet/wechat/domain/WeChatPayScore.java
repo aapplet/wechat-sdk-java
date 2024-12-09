@@ -1,9 +1,6 @@
 package io.github.aapplet.wechat.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.aapplet.wechat.request.WeChatPayScoreCompleteRequest;
-import io.github.aapplet.wechat.request.WeChatPayScoreCreateRequest;
-import io.github.aapplet.wechat.response.WeChatPayScoreModifyResponse;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -21,22 +18,22 @@ public class WeChatPayScore {
     @Accessors(chain = true)
     public static class PostPayment {
         /**
-         * 付费项目名称
+         * 后付费项目名称
          */
         @JsonProperty("name")
         private String name;
         /**
-         * 付费数量
+         * 后付费项目的数量
          */
         @JsonProperty("count")
         private Integer count;
         /**
-         * 金额
+         * 后付费项目金额
          */
         @JsonProperty("amount")
         private Integer amount;
         /**
-         * 计费说明
+         * 后付费项目说明
          */
         @JsonProperty("description")
         private String description;
@@ -60,8 +57,6 @@ public class WeChatPayScore {
         private Integer count;
         /**
          * 优惠金额
-         * <p>
-         * except {@link WeChatPayScoreCreateRequest}
          */
         @JsonProperty("amount")
         private Integer amount;
@@ -73,13 +68,13 @@ public class WeChatPayScore {
     }
 
     /**
-     * 订单风险金
+     * 服务风险金
      */
     @Data
     @Accessors(chain = true)
     public static class RiskFund {
         /**
-         * 风险金名称
+         * 风险名称
          */
         @JsonProperty("name")
         private String name;
@@ -107,17 +102,17 @@ public class WeChatPayScore {
         @JsonProperty("start_time")
         private String startTime;
         /**
+         * 服务结束时间
+         */
+        @JsonProperty("end_time")
+        private String endTime;
+        /**
          * 服务开始时间备注
          */
         @JsonProperty("start_time_remark")
         private String startTimeRemark;
         /**
-         * 预计服务结束时间
-         */
-        @JsonProperty("end_time")
-        private String endTime;
-        /**
-         * 预计服务结束时间备注
+         * 服务结束时间备注
          */
         @JsonProperty("end_time_remark")
         private String endTimeRemark;
@@ -131,13 +126,11 @@ public class WeChatPayScore {
     public static class Location {
         /**
          * 服务开始地点
-         * <p>
-         * except {@link WeChatPayScoreCompleteRequest}
          */
         @JsonProperty("start_location")
         private String startLocation;
         /**
-         * 预计服务结束位置
+         * 服务结束地点
          */
         @JsonProperty("end_location")
         private String endLocation;
@@ -151,6 +144,8 @@ public class WeChatPayScore {
     public static class Collection {
         /**
          * 收款状态
+         * <li>USER_PAYING：待支付</li>
+         * <li>USER_PAID：已支付</li>
          */
         @JsonProperty("state")
         private String state;
@@ -209,24 +204,9 @@ public class WeChatPayScore {
         private String transactionId;
         /**
          * 优惠功能
-         * <p>
-         * except {@link WeChatPayScoreModifyResponse}
          */
         @JsonProperty("promotion_detail")
-        private List<WeChatPromotion.PromotionDetail> promotionDetail;
-    }
-
-    /**
-     * 内容信息详情
-     */
-    @Data
-    @Accessors(chain = true)
-    public static class SyncDetail {
-        /**
-         * 收款成功时间
-         */
-        @JsonProperty("paid_time")
-        private String paidTime;
+        private List<WeChatPromotion.PromotionDetail> promotionDetails;
     }
 
 }

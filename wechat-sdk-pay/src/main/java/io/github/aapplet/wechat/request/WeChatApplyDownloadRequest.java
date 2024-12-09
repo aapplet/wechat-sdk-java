@@ -15,9 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * 下载账单API
- * <p>
- * https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_5_8.shtml
+ * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012084687">下载账单</a>
  */
 @Data
 @Accessors(chain = true)

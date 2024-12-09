@@ -1,7 +1,6 @@
 package io.github.aapplet.wechat.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.aapplet.wechat.response.WeChatRefundResponse;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -13,44 +12,11 @@ import java.util.List;
 public class WeChatRefund {
 
     /**
-     * 退款金额
+     * 金额信息
      */
     @Data
     @Accessors(chain = true)
-    public static class RefundAmount {
-        /**
-         * 退款金额
-         */
-        @JsonProperty("refund")
-        private Integer refund;
-        /**
-         * 退款出资账户及金额
-         */
-        @JsonProperty("from")
-        private List<From> from;
-        /**
-         * 原订单金额
-         */
-        @JsonProperty("total")
-        private Integer total;
-        /**
-         * 退款币种
-         */
-        @JsonProperty("currency")
-        private String currency;
-        /**
-         * 手续费退款金额
-         */
-        @JsonProperty("refund_fee")
-        private Integer refundFee;
-    }
-
-    /**
-     * 退款金额明细
-     */
-    @Data
-    @Accessors(chain = true)
-    public static class RefundDetail {
+    public static class Amount {
         /**
          * 订单金额
          */
@@ -63,11 +29,9 @@ public class WeChatRefund {
         private Integer refund;
         /**
          * 退款出资账户及金额
-         * <p>
-         * from {@link WeChatRefundResponse}
          */
         @JsonProperty("from")
-        private List<WeChatRefund.From> from;
+        private List<From> from;
         /**
          * 用户支付金额
          */
@@ -80,36 +44,26 @@ public class WeChatRefund {
         private Integer payerRefund;
         /**
          * 应结退款金额
-         * <p>
-         * from {@link WeChatRefundResponse}
          */
         @JsonProperty("settlement_refund")
         private Integer settlementRefund;
         /**
          * 应结订单金额
-         * <p>
-         * from {@link WeChatRefundResponse}
          */
         @JsonProperty("settlement_total")
         private Integer settlementTotal;
         /**
          * 优惠退款金额
-         * <p>
-         * from {@link WeChatRefundResponse}
          */
         @JsonProperty("discount_refund")
         private Integer discountRefund;
         /**
          * 退款币种
-         * <p>
-         * from {@link WeChatRefundResponse}
          */
         @JsonProperty("currency")
         private String currency;
         /**
          * 手续费退款金额
-         * <p>
-         * from {@link WeChatRefundResponse}
          */
         @JsonProperty("refund_fee")
         private Integer refundFee;
@@ -146,11 +100,15 @@ public class WeChatRefund {
         private String promotionId;
         /**
          * 优惠范围
+         * <li>GLOBAL: 全场代金券-以订单整体可优惠的金额为优惠门槛的代金券</li>
+         * <li>SINGLE: 单品优惠-以订单中具体某个单品的总金额为优惠门槛的代金券</li>
          */
         @JsonProperty("scope")
         private String scope;
         /**
          * 优惠类型
+         * <li>CASH: 预充值-带有结算资金的代金券，会随订单结算给订单收款商户</li>
+         * <li>NOCASH: 免充值-不带有结算资金的代金券，无资金结算给订单收款商户</li>
          */
         @JsonProperty("type")
         private String type;
@@ -172,7 +130,7 @@ public class WeChatRefund {
     }
 
     /**
-     * 退款商品
+     * 商品列表
      */
     @Data
     @Accessors(chain = true)
@@ -183,7 +141,7 @@ public class WeChatRefund {
         @JsonProperty("merchant_goods_id")
         private String merchantGoodsId;
         /**
-         * 微信支付商品编码
+         * 微信侧商品编码
          */
         @JsonProperty("wechatpay_goods_id")
         private String wechatPayGoodsId;

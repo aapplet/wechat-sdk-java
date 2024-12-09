@@ -1,7 +1,6 @@
 package io.github.aapplet.wechat.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.aapplet.wechat.attribute.AbstractAttribute;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.aapplet.wechat.attribute.WeChatPaymentAttribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
@@ -12,9 +11,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 /**
- * 查询单笔退款API
- * <p>
- * https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_5_10.shtml
+ * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012587973">微信支付分-查询退款</a>
  */
 @Data
 @Accessors(chain = true)
@@ -23,16 +20,16 @@ public class WeChatRefundQueryRequest implements WeChatRequest.V3<WeChatRefundRe
     /**
      * 商户退款单号
      */
-    @JsonProperty("out_refund_no")
+    @JsonIgnore
     private String outRefundNo;
 
     @Override
     public WeChatAttribute<WeChatRefundResponse> getAttribute(WeChatConfig wechatConfig) {
-        if (outRefundNo == null || outRefundNo.isBlank()) {
+        if (outRefundNo == null) {
             throw new WeChatParamsException("商户退款单号不存在");
         }
-        AbstractAttribute<WeChatRefundResponse> attribute = new WeChatPaymentAttribute<>();
-        attribute.setMethod("POST");
+        var attribute = new WeChatPaymentAttribute<WeChatRefundResponse>();
+        attribute.setMethod("GET");
         attribute.setRequestPath("/v3/refund/domestic/refunds/" + outRefundNo);
         attribute.setResponseClass(WeChatRefundResponse.class);
         return attribute;

@@ -1,7 +1,6 @@
 package io.github.aapplet.wechat.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.aapplet.wechat.attribute.AbstractAttribute;
 import io.github.aapplet.wechat.attribute.WeChatPaymentAttribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
@@ -15,19 +14,12 @@ import lombok.experimental.Accessors;
 import java.util.List;
 
 /**
- * 创建支付分订单API
- * <p>
- * https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter6_1_14.shtml
+ * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012587900">创建支付分订单</a>
  */
 @Data
 @Accessors(chain = true)
 public class WeChatPayScoreCreateRequest implements WeChatRequest.V3<WeChatPayScoreCreateResponse> {
 
-    /**
-     * 商户服务订单号
-     */
-    @JsonProperty("out_order_no")
-    private String outOrderNo;
     /**
      * 应用ID
      */
@@ -38,6 +30,11 @@ public class WeChatPayScoreCreateRequest implements WeChatRequest.V3<WeChatPaySc
      */
     @JsonProperty("service_id")
     private String serviceId;
+    /**
+     * 商户服务订单号
+     */
+    @JsonProperty("out_order_no")
+    private String outOrderNo;
     /**
      * 服务信息
      */
@@ -64,7 +61,7 @@ public class WeChatPayScoreCreateRequest implements WeChatRequest.V3<WeChatPaySc
     @JsonProperty("location")
     private WeChatPayScore.Location location;
     /**
-     * 订单风险金
+     * 服务风险金
      */
     @JsonProperty("risk_fund")
     private WeChatPayScore.RiskFund riskFund;
@@ -79,11 +76,6 @@ public class WeChatPayScoreCreateRequest implements WeChatRequest.V3<WeChatPaySc
     @JsonProperty("notify_url")
     private String notifyUrl;
     /**
-     * 用户标识
-     */
-    @JsonProperty("openid")
-    private String openId;
-    /**
      * 是否需要用户确认
      */
     @JsonProperty("need_user_confirm")
@@ -97,10 +89,10 @@ public class WeChatPayScoreCreateRequest implements WeChatRequest.V3<WeChatPaySc
         if (serviceId == null) {
             serviceId = wechatConfig.getServiceId();
         }
-        if (serviceId == null) {
+        if (notifyUrl == null) {
             notifyUrl = wechatConfig.getPayScoreNotifyUrl();
         }
-        AbstractAttribute<WeChatPayScoreCreateResponse> attribute = new WeChatPaymentAttribute<>();
+        var attribute = new WeChatPaymentAttribute<WeChatPayScoreCreateResponse>();
         attribute.setMethod("POST");
         attribute.setRequestPath("/v3/payscore/serviceorder");
         attribute.setRequestBody(WeChatJsonUtil.toJson(this));

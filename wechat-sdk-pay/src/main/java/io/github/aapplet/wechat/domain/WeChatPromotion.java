@@ -26,11 +26,15 @@ public class WeChatPromotion {
         private String name;
         /**
          * 优惠范围
+         * <li>GLOBAL：全场代金券-以订单整体可优惠的金额为优惠门槛的代金券</li>
+         * <li>SINGLE：单品优惠-以订单中具体某个单品的总金额为优惠门槛的代金券</li>
          */
         @JsonProperty("scope")
         private String scope;
         /**
          * 优惠类型
+         * <li>CASH：预充值-带有结算资金的代金券，会随订单结算给订单收款商户</li>
+         * <li>NOCASH：免充值-不带有结算资金的代金券，无资金结算给订单收款商户</li>
          */
         @JsonProperty("type")
         private String type;
@@ -68,7 +72,7 @@ public class WeChatPromotion {
          * 单品列表
          */
         @JsonProperty("goods_detail")
-        private List<GoodsDetail> goodsDetail;
+        private List<GoodsDetail> goodsDetails;
     }
 
     /**

@@ -1,7 +1,7 @@
 package io.github.aapplet.wechat.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.aapplet.wechat.attribute.AbstractAttribute;
 import io.github.aapplet.wechat.attribute.WeChatPaymentAttribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
@@ -16,9 +16,7 @@ import lombok.experimental.Accessors;
 import java.util.List;
 
 /**
- * 修改订单金额API
- * <p>
- * https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter6_1_17.shtml
+ * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012587957">修改订单金额</a>
  */
 @Data
 @Accessors(chain = true)
@@ -27,6 +25,7 @@ public class WeChatPayScoreModifyRequest implements WeChatRequest.V3<WeChatPaySc
     /**
      * 商户服务订单号
      */
+    @JsonIgnore
     private String outOrderNo;
     /**
      * 应用ID
@@ -61,19 +60,19 @@ public class WeChatPayScoreModifyRequest implements WeChatRequest.V3<WeChatPaySc
 
     @Override
     public WeChatAttribute<WeChatPayScoreModifyResponse> getAttribute(WeChatConfig wechatConfig) {
+        if (outOrderNo == null) {
+            throw new WeChatParamsException("商户服务订单号不存在");
+        }
         if (appId == null) {
             appId = wechatConfig.getAppId();
         }
         if (serviceId == null) {
             serviceId = wechatConfig.getServiceId();
         }
-        if (outOrderNo == null) {
-            throw new WeChatParamsException("商户服务订单号不存在");
-        }
         if (reason == null) {
             throw new WeChatParamsException("修改原因不存在");
         }
-        AbstractAttribute<WeChatPayScoreModifyResponse> attribute = new WeChatPaymentAttribute<>();
+        var attribute = new WeChatPaymentAttribute<WeChatPayScoreModifyResponse>();
         attribute.setMethod("POST");
         attribute.setRequestPath("/v3/payscore/serviceorder/" + outOrderNo + "/modify");
         attribute.setRequestBody(WeChatJsonUtil.toJson(this));

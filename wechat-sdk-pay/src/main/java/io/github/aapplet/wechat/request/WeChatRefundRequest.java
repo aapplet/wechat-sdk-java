@@ -1,7 +1,6 @@
 package io.github.aapplet.wechat.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.aapplet.wechat.attribute.AbstractAttribute;
 import io.github.aapplet.wechat.attribute.WeChatPaymentAttribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
@@ -12,10 +11,10 @@ import io.github.aapplet.wechat.util.WeChatJsonUtil;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
+import java.util.List;
+
 /**
- * 申请退款API
- * <p>
- * https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_5_9.shtml
+ * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012587971">微信支付分-申请退款</a>
  */
 @Data
 @Accessors(chain = true)
@@ -55,19 +54,19 @@ public class WeChatRefundRequest implements WeChatRequest.V3<WeChatRefundRespons
      * 金额信息
      */
     @JsonProperty("amount")
-    private WeChatRefund.RefundAmount amount;
+    private WeChatRefund.Amount amount;
     /**
      * 退款商品
      */
     @JsonProperty("goods_detail")
-    private WeChatRefund.GoodsDetail goodsDetail;
+    private List<WeChatRefund.GoodsDetail> goodsDetails;
 
     @Override
     public WeChatAttribute<WeChatRefundResponse> getAttribute(WeChatConfig wechatConfig) {
         if (notifyUrl == null) {
             notifyUrl = wechatConfig.getRefundNotifyUrl();
         }
-        AbstractAttribute<WeChatRefundResponse> attribute = new WeChatPaymentAttribute<>();
+        var attribute = new WeChatPaymentAttribute<WeChatRefundResponse>();
         attribute.setMethod("POST");
         attribute.setRequestPath("/v3/refund/domestic/refunds");
         attribute.setRequestBody(WeChatJsonUtil.toJson(this));

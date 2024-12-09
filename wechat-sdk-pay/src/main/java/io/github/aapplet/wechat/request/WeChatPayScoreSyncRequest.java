@@ -1,5 +1,6 @@
 package io.github.aapplet.wechat.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.attribute.AbstractAttribute;
 import io.github.aapplet.wechat.attribute.WeChatPaymentAttribute;
@@ -14,9 +15,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 /**
- * 同步服务订单信息API
- * <p>
- * https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter6_1_20.shtml
+ * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012587962">同步订单状态</a>
  */
 @Data
 @Accessors(chain = true)
@@ -25,6 +24,7 @@ public class WeChatPayScoreSyncRequest implements WeChatRequest.V3<WeChatPayScor
     /**
      * 商户服务订单号
      */
+    @JsonIgnore
     private String outOrderNo;
     /**
      * 应用ID
@@ -45,21 +45,24 @@ public class WeChatPayScoreSyncRequest implements WeChatRequest.V3<WeChatPayScor
      * 内容信息详情
      */
     @JsonProperty("detail")
-    private WeChatPayScore.SyncDetail detail;
+    private WeChatPayScore.CollectionDetail detail;
 
     @Override
     public WeChatAttribute<WeChatPayScoreSyncResponse> getAttribute(WeChatConfig wechatConfig) {
+        if (outOrderNo == null) {
+            throw new WeChatParamsException("商户服务订单号不存在");
+        }
         if (appId == null) {
             appId = wechatConfig.getAppId();
         }
         if (serviceId == null) {
             serviceId = wechatConfig.getServiceId();
         }
-        if (outOrderNo == null) {
-            throw new WeChatParamsException("商户服务订单号不存在");
-        }
         if (type == null) {
             throw new WeChatParamsException("场景类型不存在");
+        }
+        if (detail == null) {
+            throw new WeChatParamsException("内容信息详情不存在");
         }
         AbstractAttribute<WeChatPayScoreSyncResponse> attribute = new WeChatPaymentAttribute<>();
         attribute.setMethod("POST");

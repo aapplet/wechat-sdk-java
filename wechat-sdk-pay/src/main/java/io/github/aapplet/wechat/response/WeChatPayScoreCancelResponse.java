@@ -18,6 +18,11 @@ public class WeChatPayScoreCancelResponse implements WeChatResponse.V3 {
     @JsonProperty("mchid")
     private String mchId;
     /**
+     * 商户订单号
+     */
+    @JsonProperty("out_order_no")
+    private String outOrderNo;
+    /**
      * 服务ID
      */
     @JsonProperty("service_id")
@@ -27,10 +32,5 @@ public class WeChatPayScoreCancelResponse implements WeChatResponse.V3 {
      */
     @JsonProperty("order_id")
     private String orderId;
-    /**
-     * 商户订单号
-     */
-    @JsonProperty("out_order_no")
-    private String outOrderNo;
 
 }

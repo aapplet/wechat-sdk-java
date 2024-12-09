@@ -57,6 +57,6 @@ public class WeChatRefundNotify implements WeChatResponse.Notify {
      * 金额信息
      */
     @JsonProperty("amount")
-    private WeChatRefund.RefundDetail amount;
+    private WeChatRefund.Amount amount;
 
 }
