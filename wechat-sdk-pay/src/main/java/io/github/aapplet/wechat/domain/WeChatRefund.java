@@ -126,7 +126,7 @@ public class WeChatRefund {
          * 商品列表
          */
         @JsonProperty("goods_detail")
-        private GoodsDetail goodsDetail;
+        private List<GoodsDetail> goodsDetails;
     }
 
     /**
