@@ -26,23 +26,20 @@ public class WeChatAccessTokenRequest implements WeChatRequest.MP<WeChatAccessTo
     }
 
     /**
-     * 填写 client_credential
-     */
-    @JsonProperty("grant_type")
-    private String grantType;
-
-    /**
      * AppID
      */
     @JsonProperty("appid")
     private String appId;
-
     /**
      * AppSecret
      */
     @JsonProperty("secret")
     private String secret;
-
+    /**
+     * 填写 client_credential
+     */
+    @JsonProperty("grant_type")
+    private String grantType;
     /**
      * 强制刷新模式
      */
@@ -51,14 +48,14 @@ public class WeChatAccessTokenRequest implements WeChatRequest.MP<WeChatAccessTo
 
     @Override
     public WeChatAttribute<WeChatAccessTokenResponse> getAttribute(WeChatConfig wechatConfig) {
-        if (grantType == null) {
-            grantType = "client_credential";
-        }
         if (appId == null) {
             appId = wechatConfig.getAppId();
         }
         if (secret == null) {
             secret = wechatConfig.getAppSecret();
+        }
+        if (grantType == null) {
+            grantType = "client_credential";
         }
         if (forceRefresh == null) {
             forceRefresh = false;

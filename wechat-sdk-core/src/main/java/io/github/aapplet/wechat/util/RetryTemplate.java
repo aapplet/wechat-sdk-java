@@ -40,7 +40,7 @@ public class RetryTemplate<T> {
     }
 
     /**
-     * 执行函数方法,异常后重试
+     * @return 执行函数方法, 异常后重试
      */
     public T execute() {
         try {

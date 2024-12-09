@@ -60,7 +60,6 @@ public class WeChatAccessTokenService implements WeChatAccessTokenManager {
     public void removeAccessToken() {
         var appId = wechatConfig.getAppId();
         var accessToken = ACCESS_TOKENS.get(appId);
-        // 强制刷新间隔20秒
         if (accessToken != null && accessToken.duration() > 15 * 1000) {
             ACCESS_TOKENS.remove(appId, accessToken);
         }

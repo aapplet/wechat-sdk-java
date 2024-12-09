@@ -15,9 +15,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 /**
- * 证书和回调报文解密
- * <p>
- * https://pay.weixin.qq.com/wiki/doc/apiv3/wechatpay/wechatpay4_2.shtml
+ * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012071382">如何解密回调报文和平台证书</a>
  */
 public class WeChatAesUtil {
 
@@ -31,8 +29,8 @@ public class WeChatAesUtil {
      * @return 解密后信息
      */
     public static byte[] decrypt(String mchKey, String nonceStr, String associatedData, String ciphertext) {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(mchKey.getBytes(StandardCharsets.UTF_8), "AES");
-        GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, nonceStr.getBytes(StandardCharsets.UTF_8));
+        var secretKeySpec = new SecretKeySpec(mchKey.getBytes(StandardCharsets.UTF_8), "AES");
+        var gcmParameterSpec = new GCMParameterSpec(128, nonceStr.getBytes(StandardCharsets.UTF_8));
         try {
             Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
             cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, gcmParameterSpec);
