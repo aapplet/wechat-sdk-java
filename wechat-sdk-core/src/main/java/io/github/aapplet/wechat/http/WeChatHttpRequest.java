@@ -6,7 +6,6 @@ import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.constant.WeChatConstant;
 import io.github.aapplet.wechat.exception.WeChatHttpException;
 import io.github.aapplet.wechat.host.WeChatHost;
-import io.github.aapplet.wechat.util.WeChatStrUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -31,10 +30,6 @@ public class WeChatHttpRequest {
      */
     private final WeChatAttribute<?> wechatAttribute;
     /**
-     * http客户端
-     */
-    private final HttpClient httpClient;
-    /**
      * http请求构建器
      */
     private final HttpRequest.Builder httpRequest;
@@ -48,7 +43,6 @@ public class WeChatHttpRequest {
         final Duration httpResponseTimeout = Duration.ofMillis(wechatConfig.getHttpResponseTimeout());
         this.wechatConfig = wechatConfig;
         this.wechatAttribute = wechatAttribute;
-        this.httpClient = HttpClient.newBuilder().connectTimeout(httpConnectTimeout).build();
         this.httpRequest = HttpRequest.newBuilder().timeout(httpResponseTimeout);
     }
 
@@ -61,7 +55,7 @@ public class WeChatHttpRequest {
         httpRequest.setHeader(WeChatConstant.ACCEPT, WeChatConstant.APPLICATION_JSON);
         httpRequest.setHeader(WeChatConstant.USER_AGENT, WeChatConstant.USER_AGENT_VALUE);
         httpRequest.setHeader(WeChatConstant.CONTENT_TYPE, WeChatConstant.APPLICATION_JSON);
-        httpRequest.setHeader(WeChatConstant.AUTHORIZATION, this.authorization());
+        httpRequest.setHeader(WeChatConstant.AUTHORIZATION, WeChatAuthorization.sign(wechatConfig, wechatAttribute));
         return this;
     }
 
@@ -86,8 +80,9 @@ public class WeChatHttpRequest {
      * @return HTTP响应
      */
     private HttpResponse<byte[]> execute() {
-        final URI uri = URI.create(wechatAttribute.getRequestURL());
-        final HttpRequest request = httpRequest.uri(uri).build();
+        URI uri = URI.create(wechatAttribute.getRequestURL());
+        HttpRequest request = httpRequest.uri(uri).build();
+        HttpClient httpClient = wechatConfig.getHttpClient();
         try {
             return logger(httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray()));
         } catch (IOException | InterruptedException e) {
@@ -104,41 +99,6 @@ public class WeChatHttpRequest {
                 throw new WeChatHttpException("网络异常,请检查网络是否畅通", e);
             }
         }
-    }
-
-    /**
-     * <li>
-     * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012365334">请求参数里带Path参数（路径参数），如何计算签名</a>
-     * </li>
-     * <li>
-     * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012365336">请求参数里带Body参数(包体参数），如何计算签名</a>
-     * </li>
-     * <li>
-     * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012365337">请求参数里有Query（查询参数），如何计算签名</a>
-     * </li>
-     * <li>
-     * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012365335">图片上传接口，如何计算签名</a>
-     * </li>
-     *
-     * @return 签名值
-     */
-    private String authorization() {
-        final String nonceStr = WeChatStrUtil.random32();
-        final String method = wechatAttribute.getMethod();
-        final String requestURI = wechatAttribute.getRequestURI();
-        final String requestBody = wechatAttribute.getRequestBody();
-        final String body = requestBody == null ? "" : requestBody;
-        final String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
-        final String message = method + "\n" + requestURI + "\n" + timestamp + "\n" + nonceStr + "\n" + body + "\n";
-        final String mchId = wechatConfig.getMchId();
-        final String schema = wechatConfig.getSchema();
-        final String serialNo = wechatConfig.getSerialNo();
-        final String signature = wechatConfig.signature(message);
-        return schema + " mchid=\"" + mchId +
-               "\",serial_no=\"" + serialNo +
-               "\",nonce_str=\"" + nonceStr +
-               "\",timestamp=\"" + timestamp +
-               "\",signature=\"" + signature + "\"";
     }
 
     /**

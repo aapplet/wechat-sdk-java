@@ -2,6 +2,7 @@ package io.github.aapplet.wechat.config;
 
 import io.github.aapplet.wechat.cert.WeChatCertificateManager;
 import io.github.aapplet.wechat.cert.WeChatCertificateService;
+import io.github.aapplet.wechat.http.WeChatHttpClient;
 import io.github.aapplet.wechat.token.WeChatAccessTokenManager;
 import io.github.aapplet.wechat.token.WeChatAccessTokenService;
 import io.github.aapplet.wechat.util.WeChatAesUtil;
@@ -9,6 +10,7 @@ import io.github.aapplet.wechat.util.WeChatPemUtil;
 import io.github.aapplet.wechat.util.WeChatShaUtil;
 import lombok.Data;
 
+import java.net.http.HttpClient;
 import java.security.PrivateKey;
 
 /**
@@ -16,6 +18,7 @@ import java.security.PrivateKey;
  */
 @Data
 public class WeChatConfig {
+
     /**
      * 是否开启debug
      */
@@ -60,8 +63,14 @@ public class WeChatConfig {
      * 证书私钥
      */
     private PrivateKey privateKey;
+
     /**
-     * http连接超时时间,默认5秒
+     * Http客户端
+     */
+    private HttpClient httpClient;
+
+    /**
+     * http连接超时时间,默认10秒
      */
     private int httpConnectTimeout = 1000 * 10;
     /**
@@ -72,14 +81,16 @@ public class WeChatConfig {
      * 认证类型
      */
     private String schema = "WECHATPAY2-SHA256-RSA2048";
+
     /**
-     * 平台证书管理器
+     * @return Http客户端
      */
-    private WeChatCertificateManager certificateManager = new WeChatCertificateService(this);
-    /**
-     * AccessToken管理器
-     */
-    private WeChatAccessTokenManager accessTokenManager = new WeChatAccessTokenService(this);
+    public HttpClient getHttpClient() {
+        if (this.httpClient == null) {
+            return WeChatHttpClient.getInstance();
+        }
+        return httpClient;
+    }
 
     /**
      * 加载私钥
@@ -108,5 +119,14 @@ public class WeChatConfig {
     public byte[] decrypt(String nonceStr, String associatedData, String ciphertext) {
         return WeChatAesUtil.decrypt(mchKey, nonceStr, associatedData, ciphertext);
     }
+
+    /**
+     * 平台证书管理器
+     */
+    private WeChatCertificateManager certificateManager = new WeChatCertificateService(this);
+    /**
+     * AccessToken管理器
+     */
+    private WeChatAccessTokenManager accessTokenManager = new WeChatAccessTokenService(this);
 
 }
