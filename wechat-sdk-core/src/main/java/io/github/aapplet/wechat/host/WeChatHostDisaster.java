@@ -52,7 +52,7 @@ public class WeChatHostDisaster {
                     .build();
             // 启动定时探测
             executor.scheduleWithFixedDelay(() -> {
-                // 请求主域名是否畅通
+                // 异步请求主域名是否畅通
                 httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.discarding()).thenAccept(response -> {
                     // ***关闭线程池***
                     executor.shutdown();
