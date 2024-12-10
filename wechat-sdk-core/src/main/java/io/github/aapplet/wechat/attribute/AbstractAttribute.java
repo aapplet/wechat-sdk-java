@@ -3,7 +3,7 @@ package io.github.aapplet.wechat.attribute;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatResponse;
 import io.github.aapplet.wechat.host.WeChatHost;
-import io.github.aapplet.wechat.host.WeChatHostAllocate;
+import io.github.aapplet.wechat.host.WeChatHostAttribute;
 import io.github.aapplet.wechat.host.WeChatHostStorage;
 import lombok.Data;
 
@@ -24,7 +24,7 @@ public abstract class AbstractAttribute<T extends WeChatResponse> implements WeC
      * @param hostStorage 域名信息
      */
     public AbstractAttribute(WeChatHostStorage hostStorage) {
-        this.wechatHost = new WeChatHostAllocate(hostStorage);
+        this.wechatHost = new WeChatHostAttribute(hostStorage);
     }
 
     /**

@@ -3,7 +3,7 @@ package io.github.aapplet.wechat.host;
 /**
  * 域名分配,失败重试,容灾检测
  */
-public class WeChatHostAllocate implements WeChatHost {
+public class WeChatHostAttribute implements WeChatHost {
 
     /**
      * 重试状态
@@ -23,7 +23,7 @@ public class WeChatHostAllocate implements WeChatHost {
      *
      * @param hostStorage 域名信息
      */
-    public WeChatHostAllocate(WeChatHostStorage hostStorage) {
+    public WeChatHostAttribute(WeChatHostStorage hostStorage) {
         this.available = hostStorage.isAvailable();
         this.hostStorage = hostStorage;
     }
