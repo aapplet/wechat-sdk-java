@@ -63,7 +63,7 @@ public class WeChatConfig {
     /**
      * http连接超时时间,默认5秒
      */
-    private int httpConnectTimeout = 1000 * 5;
+    private int httpConnectTimeout = 1000 * 10;
     /**
      * HTTP响应超时时间,默认10秒
      */
@@ -86,6 +86,13 @@ public class WeChatConfig {
      */
     public void loadPrivateKey(String path) {
         this.privateKey = WeChatPemUtil.loadPrivateKey(path);
+    }
+
+    /**
+     * 加载私钥
+     */
+    public void setPrivateKey(String privateKey) {
+        this.privateKey = WeChatPemUtil.getPrivateKey(privateKey);
     }
 
     /**

@@ -107,12 +107,23 @@ public class WeChatHttpRequest {
     }
 
     /**
-     * API-V3 Authorization
-     * <p>
-     * https://pay.weixin.qq.com/wiki/doc/apiv3/wechatpay/wechatpay4_0.shtml
+     * <li>
+     * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012365334">请求参数里带Path参数（路径参数），如何计算签名</a>
+     * </li>
+     * <li>
+     * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012365336">请求参数里带Body参数(包体参数），如何计算签名</a>
+     * </li>
+     * <li>
+     * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012365337">请求参数里有Query（查询参数），如何计算签名</a>
+     * </li>
+     * <li>
+     * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012365335">图片上传接口，如何计算签名</a>
+     * </li>
+     *
+     * @return 签名值
      */
     private String authorization() {
-        final String nonceStr = WeChatStrUtil.random();
+        final String nonceStr = WeChatStrUtil.random32();
         final String method = wechatAttribute.getMethod();
         final String requestURI = wechatAttribute.getRequestURI();
         final String requestBody = wechatAttribute.getRequestBody();
@@ -124,10 +135,10 @@ public class WeChatHttpRequest {
         final String serialNo = wechatConfig.getSerialNo();
         final String signature = wechatConfig.signature(message);
         return schema + " mchid=\"" + mchId +
-                "\",serial_no=\"" + serialNo +
-                "\",nonce_str=\"" + nonceStr +
-                "\",timestamp=\"" + timestamp +
-                "\",signature=\"" + signature + "\"";
+               "\",serial_no=\"" + serialNo +
+               "\",nonce_str=\"" + nonceStr +
+               "\",timestamp=\"" + timestamp +
+               "\",signature=\"" + signature + "\"";
     }
 
     /**

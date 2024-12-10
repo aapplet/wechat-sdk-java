@@ -22,19 +22,22 @@ public class WeChatPemUtil {
 
     /**
      * 加载商户证书私钥
+     *
+     * @param path 私钥路径
+     * @return RSA私钥
      */
     public static PrivateKey loadPrivateKey(String path) {
         return getPrivateKey(WeChatFileUtil.readString(path));
     }
 
     /**
-     * 获取商户证书私钥
+     * 加载商户证书私钥
+     *
+     * @param privateKey 私钥字符串
+     * @return RSA私钥
      */
     public static PrivateKey getPrivateKey(String privateKey) {
-        privateKey = privateKey
-                .replace("-----BEGIN PRIVATE KEY-----", "")
-                .replace("-----END PRIVATE KEY-----", "")
-                .replaceAll("\\s+", "");
+        privateKey = privateKey.replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", "").replaceAll("\\s+", "");
         try {
             return KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKey)));
         } catch (NoSuchAlgorithmException e) {
