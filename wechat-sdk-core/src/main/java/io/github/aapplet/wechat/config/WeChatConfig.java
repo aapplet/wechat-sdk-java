@@ -7,7 +7,7 @@ import io.github.aapplet.wechat.host.WeChatDomainStorage;
 import io.github.aapplet.wechat.http.WeChatHttpClient;
 import io.github.aapplet.wechat.token.WeChatAccessTokenManager;
 import io.github.aapplet.wechat.token.WeChatAccessTokenService;
-import io.github.aapplet.wechat.util.WeChatCertificateUtil;
+import io.github.aapplet.wechat.util.WeChatCertUtil;
 import io.github.aapplet.wechat.util.WeChatCryptoUtil;
 import lombok.Data;
 
@@ -119,7 +119,7 @@ public class WeChatConfig {
      * @param filePath 私钥文件路径
      */
     public void privateKeyFromPath(String filePath) {
-        this.privateKey = WeChatCertificateUtil.getPrivateKey(filePath);
+        this.privateKey = WeChatCertUtil.getPrivateKey(filePath);
     }
 
     /**

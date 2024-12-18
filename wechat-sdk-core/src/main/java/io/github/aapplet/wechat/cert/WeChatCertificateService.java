@@ -7,7 +7,7 @@ import io.github.aapplet.wechat.exception.WeChatResponseException;
 import io.github.aapplet.wechat.exception.WeChatValidationException;
 import io.github.aapplet.wechat.http.WeChatHttpRequest;
 import io.github.aapplet.wechat.http.WeChatValidator;
-import io.github.aapplet.wechat.util.WeChatCertificateUtil;
+import io.github.aapplet.wechat.util.WeChatCertUtil;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -83,7 +83,7 @@ public class WeChatCertificateService implements WeChatCertificateManager {
             var nonceStr = encryptCertificate.getNonce();
             var serialNo = item.getSerialNo();
             var decrypt = wechatConfig.decrypt(nonceStr, associatedData, ciphertext);
-            var certificate = WeChatCertificateUtil.getCertificate(decrypt);
+            var certificate = WeChatCertUtil.getCertificate(decrypt);
             var issuer = certificate.getIssuerX500Principal().getName();
             if (issuer.contains(wechatConfig.getIssuer())) {
                 newCertificates.put(serialNo, certificate);

@@ -15,20 +15,21 @@ import java.security.cert.X509Certificate;
 import java.util.Base64;
 
 /**
- * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012365342">APIv3如何签名和验签</a><br>
- * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4013053420">如何使用平台证书验签名</a><br>
- * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012071382">如何解密回调报文和平台证书</a><br>
- * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4013053265">如何使用API证书解密敏感字段</a><br>
- * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4013053264">如何使用平台证书加密敏感字段</a><br>
+ * WeChatCryptoUtil 类提供了与微信加密解密相关的工具方法。
+ * 该类主要用于处理微信平台中涉及的数据加密和解密操作。
  */
 public class WeChatCryptoUtil {
 
     /**
-     * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012365342">APIv3如何签名和验签</a>
+     * 生成APIv3签名。
+     * <p>
+     * 参考文档: <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012365342">APIv3如何签名和验签</a>
+     * </p>
      *
-     * @param privateKey 商户证书私钥
-     * @param content    签名内容
-     * @return 签名值
+     * @param privateKey 商户证书私钥，用于签名
+     * @param content    需要签名的内容
+     * @return 签名值，Base64编码
+     * @throws WeChatException 如果签名过程中出现错误，如算法不支持、私钥无效等
      */
     public static String signature(PrivateKey privateKey, String content) {
         try {
@@ -46,12 +47,16 @@ public class WeChatCryptoUtil {
     }
 
     /**
-     * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4013053420">如何使用平台证书验签名</a>
+     * 验证平台证书的签名。
+     * <p>
+     * 参考文档: <a href="https://pay.weixin.qq.com/doc/v3/merchant/4013053420">如何使用平台证书验签名</a>
+     * </p>
      *
-     * @param certificate 平台证书公钥
-     * @param content     签名内容
-     * @param ciphertext  签名值
-     * @return 验签结果
+     * @param certificate 平台证书公钥，用于验签
+     * @param content     需要验签的内容
+     * @param ciphertext  签名值，Base64编码
+     * @return 验签结果，true表示验证通过，false表示验证失败
+     * @throws WeChatException 如果验签过程中出现错误，如算法不支持、公钥无效等
      */
     public static boolean verify(Certificate certificate, String content, String ciphertext) {
         try {
@@ -69,11 +74,15 @@ public class WeChatCryptoUtil {
     }
 
     /**
-     * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4013053264">如何使用平台证书加密敏感字段</a>
+     * 使用平台证书公钥加密敏感字段。
+     * <p>
+     * 参考文档: <a href="https://pay.weixin.qq.com/doc/v3/merchant/4013053264">如何使用平台证书加密敏感字段</a>
+     * </p>
      *
-     * @param certificate 平台证书公钥
-     * @param message     需要加密的消息
-     * @return 加密后数据
+     * @param certificate 平台证书公钥，用于加密
+     * @param message     需要加密的明文消息
+     * @return 加密后的密文，Base64编码
+     * @throws WeChatException 如果加密过程中出现错误，如算法不支持、证书无效等
      */
     public static String encrypt(X509Certificate certificate, String message) {
         try {
@@ -90,11 +99,15 @@ public class WeChatCryptoUtil {
     }
 
     /**
-     * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4013053265">如何使用API证书解密敏感字段</a>
+     * 使用商户私钥解密敏感字段。
+     * <p>
+     * 参考文档: <a href="https://pay.weixin.qq.com/doc/v3/merchant/4013053265">如何使用API证书解密敏感字段</a>
+     * </p>
      *
-     * @param privateKey 商户证书私钥
-     * @param ciphertext 加密后的密文
-     * @return 解密后数据
+     * @param privateKey 商户证书私钥，用于解密
+     * @param ciphertext 加密后的密文，Base64编码
+     * @return 解密后的明文数据
+     * @throws WeChatException 如果解密过程中出现错误，如算法不支持、私钥无效等
      */
     public static byte[] decrypt(PrivateKey privateKey, String ciphertext) {
         try {
@@ -111,13 +124,17 @@ public class WeChatCryptoUtil {
     }
 
     /**
-     * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012071382">如何解密回调报文和平台证书</a>
+     * 使用APIv3密钥解密回调报文和平台证书。
+     * <p>
+     * 参考文档: <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012071382">如何解密回调报文和平台证书</a>
+     * </p>
      *
-     * @param aesKey         APIv3密钥, 用于加密和解密的对称密钥
+     * @param aesKey         APIv3密钥，用于加密和解密的对称密钥
      * @param nonce          加密使用的随机串
      * @param associatedData 加密使用的附加数据
-     * @param ciphertext     加密后的密文
-     * @return 解密后数据
+     * @param ciphertext     加密后的密文，Base64编码
+     * @return 解密后的明文数据
+     * @throws WeChatException 如果解密过程中出现错误，如算法不支持、密钥无效等
      */
     public static byte[] decrypt(String aesKey, String nonce, String associatedData, String ciphertext) {
         var secretKeySpec = new SecretKeySpec(aesKey.getBytes(StandardCharsets.UTF_8), "AES");
