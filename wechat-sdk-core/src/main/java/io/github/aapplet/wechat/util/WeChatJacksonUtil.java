@@ -12,22 +12,23 @@ import io.github.aapplet.wechat.exception.WeChatException;
 import java.io.IOException;
 
 /**
- * json工具类
+ * Json工具类，用于处理JSON字符串与Java对象之间的转换。
  */
 public class WeChatJacksonUtil {
 
+    // 静态初始化的ObjectMapper实例，用于处理JSON相关的操作
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     static {
-        // 序列化属性时忽略空值
+        // 序列化属性时忽略空值，即属性值为null时不输出到JSON字符串中
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        // 序列化空对象不抛出异常
+        // 序列化空对象时不抛出异常，即使对象没有任何属性也能正常序列化
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        // 反序列化将单值数组强制转换为相应的值类型, [value] => value
+        // 反序列化时将单值数组强制转换为相应的值类型，例如 JSON 字符串 "[123]" 将转换为 int 类型的 123
         objectMapper.configure(DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS, true);
-        // 反序列化未知属性不抛出异常
+        // 反序列化时未知属性不抛出异常，即使JSON字符串中包含Java对象未定义的属性也能正常反序列化
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        // 只序列化@JsonProperty注解标记的属性
+        // 只序列化使用@JsonProperty注解标记的属性，其他属性将被忽略
         objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
     }
 
@@ -48,14 +49,14 @@ public class WeChatJacksonUtil {
     /**
      * 将JSON字符串反序列化为指定对象类型。
      *
-     * @param body      JSON字符串
+     * @param json      JSON字符串
      * @param valueType 目标对象类
      * @param <T>       目标对象类型
      * @return 反序列化后的对象
      */
-    public static <T> T fromJson(String body, Class<T> valueType) {
+    public static <T> T fromJson(String json, Class<T> valueType) {
         try {
-            return objectMapper.readValue(body, valueType);
+            return objectMapper.readValue(json, valueType);
         } catch (IOException e) {
             throw new WeChatException("Json转对象异常", e);
         }
