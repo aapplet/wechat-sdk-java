@@ -4,7 +4,7 @@ import io.github.aapplet.wechat.base.WeChatResponse;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.exception.WeChatValidationException;
 import io.github.aapplet.wechat.http.WeChatValidator;
-import io.github.aapplet.wechat.util.WeChatJsonUtil;
+import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 
 import java.util.Map;
 
@@ -37,7 +37,7 @@ public class WeChatNotifyHandler extends WeChatValidator {
         final String associatedData = resource.getAssociatedData();
         final byte[] decrypt = wechatConfig.decrypt(nonce, associatedData, ciphertext);
         if (this.verify()) {
-            return WeChatJsonUtil.fromJson(decrypt, valueType);
+            return WeChatJacksonUtil.fromJson(decrypt, valueType);
         } else {
             throw new WeChatValidationException("回调签名错误, 签名验证失败");
         }

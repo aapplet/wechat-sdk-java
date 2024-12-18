@@ -9,7 +9,7 @@ import io.github.aapplet.wechat.domain.WeChatPayScore;
 import io.github.aapplet.wechat.exception.WeChatParamsException;
 import io.github.aapplet.wechat.params.WeChatRequestParams;
 import io.github.aapplet.wechat.response.WeChatPayScoreCompleteResponse;
-import io.github.aapplet.wechat.util.WeChatJsonUtil;
+import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -93,7 +93,7 @@ public class WeChatPayScoreCompleteRequest implements WeChatRequest.V3<WeChatPay
         var attribute = new WeChatRequestParams<WeChatPayScoreCompleteResponse>(wechatConfig.getPayDomain());
         attribute.setMethod("POST");
         attribute.setRequestPath("/v3/payscore/serviceorder/" + outOrderNo + "/complete");
-        attribute.setRequestBody(WeChatJsonUtil.toJson(this));
+        attribute.setRequestBody(WeChatJacksonUtil.toJson(this));
         attribute.setResponseClass(WeChatPayScoreCompleteResponse.class);
         return attribute;
     }

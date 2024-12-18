@@ -7,7 +7,7 @@ import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.domain.WeChatRefund;
 import io.github.aapplet.wechat.params.WeChatRequestParams;
 import io.github.aapplet.wechat.response.WeChatRefundResponse;
-import io.github.aapplet.wechat.util.WeChatJsonUtil;
+import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -75,7 +75,7 @@ public class WeChatRefundRequest implements WeChatRequest.V3<WeChatRefundRespons
         var attribute = new WeChatRequestParams<WeChatRefundResponse>(wechatConfig.getPayDomain());
         attribute.setMethod("POST");
         attribute.setRequestPath("/v3/refund/domestic/refunds");
-        attribute.setRequestBody(WeChatJsonUtil.toJson(this));
+        attribute.setRequestBody(WeChatJacksonUtil.toJson(this));
         attribute.setResponseClass(WeChatRefundResponse.class);
         return attribute;
     }

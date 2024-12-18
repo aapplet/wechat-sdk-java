@@ -7,7 +7,7 @@ import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.common.WeChatDownload;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.params.WeChatRequestParams;
-import io.github.aapplet.wechat.util.WeChatJsonUtil;
+import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -106,7 +106,7 @@ public class AppletUnlimitedQRCodeRequest implements WeChatRequest.MPDownload<We
         attribute.setMethod("POST");
         attribute.setRequestPath("/wxa/getwxacodeunlimit");
         attribute.setParameters("access_token=" + accessToken);
-        attribute.setRequestBody(WeChatJsonUtil.toJson(this));
+        attribute.setRequestBody(WeChatJacksonUtil.toJson(this));
         attribute.setResponseClass(WeChatDownload.class);
         return attribute;
     }

@@ -2,7 +2,7 @@ package io.github.aapplet.wechat.common;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.base.WeChatResponse;
-import io.github.aapplet.wechat.util.WeChatJsonUtil;
+import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.Data;
 
 /**
@@ -35,7 +35,7 @@ public class WeChatStatusCode {
          * @return 业务错误码实例
          */
         public static WeChatStatusCode.MP fromJson(byte[] bytes) {
-            return WeChatJsonUtil.fromJson(bytes, WeChatStatusCode.MP.class);
+            return WeChatJacksonUtil.fromJson(bytes, WeChatStatusCode.MP.class);
         }
     }
 
@@ -57,7 +57,7 @@ public class WeChatStatusCode {
          * @return 业务错误码实例
          */
         public static WeChatStatusCode.PAY fromJson(byte[] bytes) {
-            return WeChatJsonUtil.fromJson(bytes, WeChatStatusCode.PAY.class);
+            return WeChatJacksonUtil.fromJson(bytes, WeChatStatusCode.PAY.class);
         }
     }
 

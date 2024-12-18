@@ -5,7 +5,7 @@ import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.params.WeChatRequestParams;
-import io.github.aapplet.wechat.util.WeChatJsonUtil;
+import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -67,7 +67,7 @@ public class WeChatAccessTokenRequest implements WeChatRequest.MP<WeChatAccessTo
         var attribute = new WeChatRequestParams<WeChatAccessTokenResponse>(wechatConfig.getMpDomain());
         attribute.setMethod("POST");
         attribute.setRequestPath("/cgi-bin/stable_token");
-        attribute.setRequestBody(WeChatJsonUtil.toJson(this));
+        attribute.setRequestBody(WeChatJacksonUtil.toJson(this));
         attribute.setResponseClass(WeChatAccessTokenResponse.class);
         return attribute;
     }

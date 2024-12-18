@@ -14,7 +14,7 @@ import java.io.IOException;
 /**
  * json工具类
  */
-public class WeChatJsonUtil {
+public class WeChatJacksonUtil {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -32,8 +32,10 @@ public class WeChatJsonUtil {
     }
 
     /**
-     * @param value 对象
-     * @return 对象转Json
+     * 将对象转换为JSON字符串。
+     *
+     * @param value 要转换的对象
+     * @return JSON字符串
      */
     public static String toJson(Object value) {
         try {
@@ -44,10 +46,12 @@ public class WeChatJsonUtil {
     }
 
     /**
-     * @param body      Json字符串
-     * @param valueType 对象class
-     * @param <T>       类型
-     * @return Json转对象
+     * 将JSON字符串反序列化为指定对象类型。
+     *
+     * @param body      JSON字符串
+     * @param valueType 目标对象类
+     * @param <T>       目标对象类型
+     * @return 反序列化后的对象
      */
     public static <T> T fromJson(String body, Class<T> valueType) {
         try {
@@ -58,10 +62,12 @@ public class WeChatJsonUtil {
     }
 
     /**
-     * @param bytes     Json Bytes
-     * @param valueType 对象class
-     * @param <T>       类型
-     * @return Json转对象
+     * 将JSON字节数组反序列化为指定对象类型。
+     *
+     * @param bytes     JSON字节数组
+     * @param valueType 目标对象类
+     * @param <T>       目标对象类型
+     * @return 反序列化后的对象
      */
     public static <T> T fromJson(byte[] bytes, Class<T> valueType) {
         try {
@@ -72,10 +78,12 @@ public class WeChatJsonUtil {
     }
 
     /**
-     * @param value     对象转指定类型
-     * @param valueType 对象class
-     * @param <T>       类型
-     * @return 对象转换
+     * 将一个对象转换为另一个指定类型的对象。
+     *
+     * @param value     要转换的对象
+     * @param valueType 目标对象类
+     * @param <T>       目标对象类型
+     * @return 转换后的对象
      */
     public static <T> T fromObject(Object value, Class<T> valueType) {
         try {

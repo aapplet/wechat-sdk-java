@@ -2,7 +2,7 @@ package io.github.aapplet.wechat.http;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.exception.WeChatValidationException;
-import io.github.aapplet.wechat.util.WeChatJsonUtil;
+import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.Data;
 
 @Data
@@ -69,7 +69,7 @@ public class WeChatHeaders {
      * @return WeChat Headers
      */
     public static WeChatHeaders fromObject(Object value) {
-        return WeChatJsonUtil.fromObject(value, WeChatHeaders.class).check();
+        return WeChatJacksonUtil.fromObject(value, WeChatHeaders.class).check();
     }
 
 }

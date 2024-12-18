@@ -1,7 +1,7 @@
 package io.github.aapplet.wechat.notify;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.github.aapplet.wechat.util.WeChatJsonUtil;
+import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.Data;
 
 /**
@@ -75,7 +75,7 @@ public class WeChatNotify {
      * @return 回调通知对象
      */
     public static WeChatNotify fromJson(String body) {
-        return WeChatJsonUtil.fromJson(body, WeChatNotify.class);
+        return WeChatJacksonUtil.fromJson(body, WeChatNotify.class);
     }
 
 }

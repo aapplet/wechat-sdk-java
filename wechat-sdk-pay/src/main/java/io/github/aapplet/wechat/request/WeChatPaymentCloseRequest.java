@@ -7,7 +7,7 @@ import io.github.aapplet.wechat.common.WeChatNoContent;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.exception.WeChatParamsException;
 import io.github.aapplet.wechat.params.WeChatRequestParams;
-import io.github.aapplet.wechat.util.WeChatJsonUtil;
+import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -47,7 +47,7 @@ public class WeChatPaymentCloseRequest implements WeChatRequest.V3<WeChatNoConte
         var attribute = new WeChatRequestParams<WeChatNoContent>(wechatConfig.getPayDomain());
         attribute.setMethod("POST");
         attribute.setRequestPath("/v3/pay/transactions/out-trade-no/" + outTradeNo + "/close");
-        attribute.setRequestBody(WeChatJsonUtil.toJson(this));
+        attribute.setRequestBody(WeChatJacksonUtil.toJson(this));
         attribute.setResponseClass(WeChatNoContent.class);
         return attribute;
     }

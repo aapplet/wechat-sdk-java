@@ -7,8 +7,8 @@ import io.github.aapplet.wechat.host.WeChatDomainStorage;
 import io.github.aapplet.wechat.http.WeChatHttpClient;
 import io.github.aapplet.wechat.token.WeChatAccessTokenManager;
 import io.github.aapplet.wechat.token.WeChatAccessTokenService;
+import io.github.aapplet.wechat.util.WeChatCertificateUtil;
 import io.github.aapplet.wechat.util.WeChatCryptoUtil;
-import io.github.aapplet.wechat.util.WeChatPemUtil;
 import lombok.Data;
 
 import java.net.http.HttpClient;
@@ -83,10 +83,6 @@ public class WeChatConfig {
      */
     private String schema = "WECHATPAY2-SHA256-RSA2048";
     /**
-     * http连接超时时间,默认10秒
-     */
-    private Duration httpConnectTimeout = Duration.ofSeconds(10);
-    /**
      * HTTP响应超时时间,默认10秒
      */
     private Duration httpResponseTimeout = Duration.ofSeconds(10);
@@ -103,10 +99,6 @@ public class WeChatConfig {
      */
     private Duration healthCheckDetectInterval = Duration.ofSeconds(10);
     /**
-     * Http客户端
-     */
-    private HttpClient httpClient = WeChatHttpClient.getInstance();
-    /**
      * 公众平台域名
      */
     private WeChatDomain mpDomain = WeChatDomainStorage.MP;
@@ -114,14 +106,20 @@ public class WeChatConfig {
      * 商户平台域名
      */
     private WeChatDomain payDomain = WeChatDomainStorage.PAY;
+    /**
+     * Http客户端
+     * <br>
+     * Http连接超时时间默认10秒, 如需修改请重新设置HttpClient
+     */
+    private HttpClient httpClient = WeChatHttpClient.getInstance();
 
     /**
-     * 加载私钥
+     * 加载商户证书私钥
      *
-     * @param path 私钥路径
+     * @param filePath 私钥文件路径
      */
-    public void privateKeyFromPath(String path) {
-        this.privateKey = WeChatPemUtil.loadPrivateKey(path);
+    public void privateKeyFromPath(String filePath) {
+        this.privateKey = WeChatCertificateUtil.getPrivateKey(filePath);
     }
 
     /**

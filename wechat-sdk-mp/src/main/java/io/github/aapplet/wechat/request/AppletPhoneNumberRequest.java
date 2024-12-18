@@ -7,7 +7,7 @@ import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.params.WeChatRequestParams;
 import io.github.aapplet.wechat.response.AppletPhoneNumberResponse;
-import io.github.aapplet.wechat.util.WeChatJsonUtil;
+import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -67,7 +67,7 @@ public class AppletPhoneNumberRequest implements WeChatRequest.MP<AppletPhoneNum
         attribute.setMethod("POST");
         attribute.setRequestPath("/wxa/business/getuserphonenumber");
         attribute.setParameters("access_token=" + accessToken);
-        attribute.setRequestBody(WeChatJsonUtil.toJson(this));
+        attribute.setRequestBody(WeChatJacksonUtil.toJson(this));
         attribute.setResponseClass(AppletPhoneNumberResponse.class);
         return attribute;
     }

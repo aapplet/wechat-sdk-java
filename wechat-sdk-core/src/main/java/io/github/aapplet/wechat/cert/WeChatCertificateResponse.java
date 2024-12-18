@@ -2,7 +2,7 @@ package io.github.aapplet.wechat.cert;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.base.WeChatResponse;
-import io.github.aapplet.wechat.util.WeChatJsonUtil;
+import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.Data;
 
 import java.util.List;
@@ -76,7 +76,7 @@ public class WeChatCertificateResponse implements WeChatResponse.V3 {
      * @return 证书数据实例
      */
     public static WeChatCertificateResponse fromJson(byte[] bytes) {
-        return WeChatJsonUtil.fromJson(bytes, WeChatCertificateResponse.class);
+        return WeChatJacksonUtil.fromJson(bytes, WeChatCertificateResponse.class);
     }
 
 }

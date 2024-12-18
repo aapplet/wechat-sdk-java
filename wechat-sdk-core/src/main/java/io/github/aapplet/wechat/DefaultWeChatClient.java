@@ -14,7 +14,7 @@ import io.github.aapplet.wechat.exception.WeChatValidationException;
 import io.github.aapplet.wechat.http.WeChatHttpRequest;
 import io.github.aapplet.wechat.http.WeChatValidator;
 import io.github.aapplet.wechat.util.RetryTemplate;
-import io.github.aapplet.wechat.util.WeChatJsonUtil;
+import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +48,7 @@ public final class DefaultWeChatClient implements WeChatClient {
             throw new WeChatValidationException("响应签名错误, 验签失败");
         }
         if (httpResponse.statusCode() == 200) {
-            return WeChatJsonUtil.fromJson(httpResponse.body(), attribute.getResponseClass());
+            return WeChatJacksonUtil.fromJson(httpResponse.body(), attribute.getResponseClass());
         }
         if (httpResponse.statusCode() == 204) {
             return attribute.getResponseClass().cast(new WeChatNoContent());
@@ -70,13 +70,13 @@ public final class DefaultWeChatClient implements WeChatClient {
             var httpResponse = WeChatHttpRequest.mp(wechatConfig, attribute);
             var statusCode = WeChatStatusCode.MP.fromJson(httpResponse.body());
             if (statusCode.ok()) {
-                return WeChatJsonUtil.fromJson(httpResponse.body(), attribute.getResponseClass());
+                return WeChatJacksonUtil.fromJson(httpResponse.body(), attribute.getResponseClass());
             }
             if (statusCode.getCode() == 42001) {
                 wechatConfig.getAccessTokenManager().removeAccessToken();
-                throw new WeChatExpiredException(WeChatJsonUtil.toJson(statusCode));
+                throw new WeChatExpiredException(WeChatJacksonUtil.toJson(statusCode));
             }
-            throw new WeChatResponseException(WeChatJsonUtil.toJson(statusCode));
+            throw new WeChatResponseException(WeChatJacksonUtil.toJson(statusCode));
         }, WeChatExpiredException.class);
     }
 
