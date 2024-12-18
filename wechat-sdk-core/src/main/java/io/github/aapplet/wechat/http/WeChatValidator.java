@@ -7,7 +7,7 @@ import lombok.ToString;
 
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.Map;
 
 /**
@@ -66,7 +66,7 @@ public class WeChatValidator {
      * @param certificate 平台证书公钥
      * @return 验签结果
      */
-    public boolean verify(Certificate certificate) {
+    public boolean verify(X509Certificate certificate) {
         return WeChatCryptoUtil.verify(certificate, signatureContent(), wechatHeaders.getSignature());
     }
 

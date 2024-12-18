@@ -10,7 +10,7 @@ import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
-import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.Base64;
 
 /**
@@ -57,7 +57,7 @@ public class WeChatCryptoUtil {
      * @return 验签结果，true表示验证通过，false表示验证失败
      * @throws WeChatException 如果验签过程中出现错误，如算法不支持、公钥无效等
      */
-    public static boolean verify(Certificate certificate, String content, String ciphertext) {
+    public static boolean verify(X509Certificate certificate, String content, String ciphertext) {
         try {
             Signature signature = Signature.getInstance("SHA256withRSA");
             signature.initVerify(certificate);
@@ -83,7 +83,7 @@ public class WeChatCryptoUtil {
      * @return 加密后的密文，Base64编码
      * @throws WeChatException 如果加密过程中出现错误，如算法不支持、证书无效等
      */
-    public static String encrypt(Certificate certificate, String message) {
+    public static String encrypt(X509Certificate certificate, String message) {
         try {
             Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, certificate.getPublicKey());

@@ -47,7 +47,7 @@ public class WeChatResourceUtil {
                 return readExternalFile(filePath);
             } catch (WeChatPathException e) {
                 // 如果外部文件读取失败，尝试从类路径读取
-                return readClassPathFile(CLASSPATH_URL_PREFIX + filePath);
+                return readClassPathFile(filePath);
             }
         }
     }

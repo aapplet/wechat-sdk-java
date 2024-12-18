@@ -24,7 +24,7 @@ public class WeChatCertUtil {
     /**
      * 从指定文件路径读取私钥并解析为 {@link PrivateKey} 对象。
      *
-     * @param filePath 私钥文件的路径
+     * @param filePath 私钥文件路径
      * @return 解析后的私钥对象
      * @throws WeChatException 如果当前 Java 环境不支持 RSA 或者私钥格式无效
      */
