@@ -98,9 +98,9 @@ public class WeChatCryptoUtil {
     }
 
     /**
-     * 使用商户私钥解密敏感字段。
+     * 使用商户证书私钥解密敏感字段。
      * <p>
-     * 参考文档: <a href="https://pay.weixin.qq.com/doc/v3/merchant/4013053265">使用商户私钥解密敏感字段</a>
+     * 参考文档: <a href="https://pay.weixin.qq.com/doc/v3/merchant/4013053265">使用商户证书私钥解密敏感字段</a>
      * </p>
      *
      * @param privateKey 商户证书私钥，用于解密
