@@ -2,8 +2,7 @@ package io.github.aapplet.wechat.http;
 
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.util.WeChatCryptoUtil;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
@@ -13,8 +12,7 @@ import java.util.Map;
 /**
  * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4013053420">如何使用平台证书验签名</a>
  */
-@Getter
-@ToString
+@Data
 public class WeChatValidator {
 
     /**
