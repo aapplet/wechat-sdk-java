@@ -47,19 +47,22 @@ public class WeChatHeaders {
      */
     private WeChatHeaders check() {
         if (requestId == null) {
-            throw new WeChatValidationException("request-id为空, 签名验证失败");
+            throw new WeChatValidationException("Request-ID为空, 签名验证失败");
         }
         if (serial == null) {
-            throw new WeChatValidationException("wechatpay-serial为空, 签名验证失败");
+            throw new WeChatValidationException("Wechatpay-Serial为空, 签名验证失败");
         }
         if (nonce == null) {
-            throw new WeChatValidationException("wechatpay-nonce为空, 签名验证失败");
+            throw new WeChatValidationException("Wechatpay-Nonce为空, 签名验证失败");
         }
         if (timestamp == null) {
-            throw new WeChatValidationException("wechatpay-timestamp为空, 签名验证失败");
+            throw new WeChatValidationException("Wechatpay-Timestamp为空, 签名验证失败");
         }
         if (signature == null) {
-            throw new WeChatValidationException("wechatpay-signature为空, 签名验证失败");
+            throw new WeChatValidationException("Wechatpay-Signature为空, 签名验证失败");
+        }
+        if (signatureType == null) {
+            throw new WeChatValidationException("Wechatpay-Signature-Type为空, 签名验证失败");
         }
         return this;
     }

@@ -30,12 +30,12 @@ public class WeChatNotifyHandler extends WeChatValidator {
      * @return 通知对象
      */
     public <T extends WeChatResponse.Notify> T transform(Class<T> valueType) {
-        final WeChatNotify notification = WeChatNotify.fromJson(responseBody);
-        final WeChatNotify.Resource resource = notification.getResource();
-        final String nonce = resource.getNonce();
-        final String ciphertext = resource.getCiphertext();
-        final String associatedData = resource.getAssociatedData();
-        final byte[] decrypt = wechatConfig.decrypt(nonce, associatedData, ciphertext);
+        WeChatNotify notification = WeChatNotify.fromJson(responseBody);
+        WeChatNotify.Resource resource = notification.getResource();
+        String nonce = resource.getNonce();
+        String ciphertext = resource.getCiphertext();
+        String associatedData = resource.getAssociatedData();
+        byte[] decrypt = wechatConfig.decrypt(nonce, associatedData, ciphertext);
         if (this.verify()) {
             return WeChatJacksonUtil.fromJson(decrypt, valueType);
         } else {
