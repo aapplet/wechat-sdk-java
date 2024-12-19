@@ -38,15 +38,12 @@ public class WeChatResourceUtil {
      * @throws WeChatReadException 如果文件读取过程中发生 I/O 错误
      */
     public static byte[] readAllBytes(String filePath) {
-        // 如果文件路径以 "classpath:" 开头，直接从类路径读取文件
         if (filePath.startsWith(CLASSPATH_URL_PREFIX)) {
             return readClassPathFile(filePath);
         } else {
             try {
-                // 尝试从外部文件读取
                 return readExternalFile(filePath);
             } catch (WeChatPathException e) {
-                // 如果外部文件读取失败，尝试从类路径读取
                 return readClassPathFile(filePath);
             }
         }

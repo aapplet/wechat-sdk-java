@@ -22,4 +22,13 @@ public interface WeChatCertificateManager {
      */
     X509Certificate getCertificate(String serialNumber);
 
+    /**
+     * 设置证书
+     *
+     * @param serialNumber 证书序列号
+     * @param certificate  X.509证书实例
+     * @return X.509证书实例
+     */
+    X509Certificate setCertificate(String serialNumber, X509Certificate certificate);
+
 }

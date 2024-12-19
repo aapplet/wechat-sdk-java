@@ -22,6 +22,7 @@ import java.util.Base64;
 
 /**
  * 微信证书工具类，用于处理商户证书的私钥和平台证书的公钥。
+ * 该工具类提供了从文件加载私钥和公钥的方法，以及将 X.509 证书保存为 PEM 格式文件的方法。
  */
 @Slf4j
 public class WeChatCertUtil {
@@ -29,11 +30,11 @@ public class WeChatCertUtil {
     /**
      * 从指定文件路径读取私钥并解析为 {@link PrivateKey} 对象。
      *
-     * @param filePath 私钥文件路径
+     * @param filePath 私钥文件路径，文件内容应为 PEM 格式。
      * @return 解析后的私钥对象
      * @throws WeChatException 如果当前 Java 环境不支持 RSA 或者私钥格式无效
      */
-    public static PrivateKey getPrivateKey(String filePath) {
+    public static PrivateKey loadPrivateKeyFromPemFile(String filePath) {
         byte[] bytes = WeChatResourceUtil.readAllBytes(filePath);
         String privateKey = new String(bytes, StandardCharsets.UTF_8)
                 .replace("-----BEGIN PRIVATE KEY-----", "")
@@ -50,13 +51,23 @@ public class WeChatCertUtil {
     }
 
     /**
+     * 从指定的文件路径加载 X.509 证书并解析为 {@link X509Certificate} 对象。
+     *
+     * @param filePath 证书文件路径，文件内容应为 PEM 格式。
+     * @return 解析后的 X.509 证书对象
+     */
+    public static X509Certificate loadCertificateFromPemFile(String filePath) {
+        return generateCertificate(WeChatResourceUtil.readAllBytes(filePath));
+    }
+
+    /**
      * 从字节数组中解析 X.509 证书并返回 {@link X509Certificate} 对象。
      *
-     * @param bytes 证书的字节数组
+     * @param bytes 证书的字节数组，可以是 DER 格式或 PEM 格式。
      * @return 解析后的 X.509 证书对象
      * @throws WeChatException 如果证书格式无效
      */
-    public static X509Certificate getCertificate(byte[] bytes) {
+    public static X509Certificate generateCertificate(byte[] bytes) {
         try (InputStream inputStream = new ByteArrayInputStream(bytes)) {
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
             return (X509Certificate) cf.generateCertificate(inputStream);
@@ -66,14 +77,14 @@ public class WeChatCertUtil {
     }
 
     /**
-     * 将 X509 证书导出为 PEM 格式的文件。
+     * 将 X509 证书保存为 PEM 格式的文件。
      *
      * @param certificate 需要导出的 X509 证书对象
      * @param filePath    输出的文件路径，包含文件名。例如："path/to/certificate.pem"
      * @throws CertificateEncodingException 如果证书的编码过程中发生错误
      * @throws IOException                  如果文件操作过程中发生错误
      */
-    public static void exportCertificateToPEM(X509Certificate certificate, String filePath) throws CertificateEncodingException, IOException {
+    public static void saveCertificateToPemFile(X509Certificate certificate, String filePath) throws CertificateEncodingException, IOException {
         // 将证书对象转换为其编码后的字节数组（通常是 DER 格式）
         byte[] certificateBytes = certificate.getEncoded();
         // 将 DER 格式的字节数组编码为 Base64 字符串
@@ -94,7 +105,7 @@ public class WeChatCertUtil {
         // Files.writeString 是 JDK 11 引入的便捷方法，可以直接将字符串写入文件
         Files.writeString(path, certificateString);
         // 打印成功信息
-        log.info("证书已成功导出为 PEM 格式到: {}", path.toAbsolutePath());
+        log.info("证书已成功保存到: {}", path.toAbsolutePath());
     }
 
 }

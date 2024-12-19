@@ -34,7 +34,7 @@ public class WeChatCertificateService implements WeChatCertificateManager {
     /**
      * 存储平台证书的映射表
      * <br>
-     * key   = 商户号 or 证书序列号
+     * key   = 证书序列号 or 商户号
      * <br>
      * value = 平台证书
      */
@@ -57,8 +57,13 @@ public class WeChatCertificateService implements WeChatCertificateManager {
     }
 
     @Override
-    public X509Certificate getCertificate(String key) {
-        return CERTIFICATES.computeIfAbsent(key, this::loadCertificate);
+    public X509Certificate getCertificate(String serialNumber) {
+        return CERTIFICATES.computeIfAbsent(serialNumber, this::loadCertificate);
+    }
+
+    @Override
+    public X509Certificate setCertificate(String serialNumber, X509Certificate certificate) {
+        return CERTIFICATES.put(serialNumber, certificate);
     }
 
     /**
@@ -67,7 +72,7 @@ public class WeChatCertificateService implements WeChatCertificateManager {
      * @param key 证书序列号 or 商户号
      * @return 平台证书
      */
-    private X509Certificate loadCertificate(String key) {
+    private X509Certificate loadCertificate(String serialNumber) {
         // 检查证书有效性
         this.checkCertificates();
         // 发送请求获取证书数据
@@ -88,7 +93,7 @@ public class WeChatCertificateService implements WeChatCertificateManager {
             var nonceStr = encryptCertificate.getNonce();
             var serialNo = item.getSerialNo();
             var decrypt = wechatConfig.decrypt(nonceStr, associatedData, ciphertext);
-            var certificate = WeChatCertUtil.getCertificate(decrypt);
+            var certificate = WeChatCertUtil.generateCertificate(decrypt);
             var issuer = certificate.getIssuerX500Principal().getName();
             if (issuer.contains(wechatConfig.getIssuer())) {
                 newCertificates.put(serialNo, certificate);
@@ -111,7 +116,7 @@ public class WeChatCertificateService implements WeChatCertificateManager {
         } else {
             throw new WeChatValidationException("平台证书的签名验证失败");
         }
-        return CERTIFICATES.get(key);
+        return CERTIFICATES.get(serialNumber);
     }
 
     /**

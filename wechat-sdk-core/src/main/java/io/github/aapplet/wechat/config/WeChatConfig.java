@@ -128,20 +128,54 @@ public class WeChatConfig {
     /**
      * AccessToken管理器
      */
-    private WeChatAccessTokenManager accessTokenManager = new WeChatAccessTokenService(this);
+    private WeChatAccessTokenManager accessTokenManager;
 
     /**
      * 证书管理器
      */
-    private WeChatCertificateManager certificateManager = new WeChatCertificateService(this);
+    private WeChatCertificateManager certificateManager;
+
+    /**
+     * 获取AccessToken管理器
+     *
+     * @return AccessToken管理器
+     */
+    public WeChatAccessTokenManager getAccessTokenManager() {
+        if (accessTokenManager == null) {
+            return new WeChatAccessTokenService(this);
+        }
+        return accessTokenManager;
+    }
+
+    /**
+     * 获取证书管理器
+     *
+     * @return 证书管理器
+     */
+    public WeChatCertificateManager getCertificateManager() {
+        if (certificateManager == null) {
+            return new WeChatCertificateService(this);
+        }
+        return certificateManager;
+    }
 
     /**
      * 从指定文件路径读取私钥并解析为 {@link PrivateKey} 对象。
      *
      * @param filePath 私钥文件路径
      */
-    public void privateKeyFromPath(String filePath) {
-        this.privateKey = WeChatCertUtil.getPrivateKey(filePath);
+    public void loadPrivateKeyFromPemFile(String filePath) {
+        this.privateKey = WeChatCertUtil.loadPrivateKeyFromPemFile(filePath);
+    }
+
+    /**
+     * 从指定的文件路径加载 X.509 证书并保存到证书管理器
+     *
+     * @param filePath     证书文件路径，文件内容应为 PEM 格式。
+     * @param serialNumber 证书序列号
+     */
+    public void loadCertificateFromPemFile(String filePath, String serialNumber) {
+        getCertificateManager().setCertificate(serialNumber, WeChatCertUtil.loadCertificateFromPemFile(filePath));
     }
 
     /**
@@ -165,7 +199,7 @@ public class WeChatConfig {
      * @throws WeChatException 如果验签过程中出现错误，如算法不支持、公钥无效等
      */
     public boolean verify(String serialNumber, String content, String ciphertext) {
-        return WeChatCryptoUtil.verify(certificateManager.getCertificate(serialNumber), content, ciphertext);
+        return WeChatCryptoUtil.verify(getCertificateManager().getCertificate(serialNumber), content, ciphertext);
     }
 
     /**
@@ -176,7 +210,7 @@ public class WeChatConfig {
      * @throws WeChatException 如果加密过程中出现错误，如算法不支持、证书无效等
      */
     public String encrypt(String message) {
-        return WeChatCryptoUtil.encrypt(certificateManager.getCertificate(), message);
+        return WeChatCryptoUtil.encrypt(getCertificateManager().getCertificate(), message);
     }
 
     /**
