@@ -1,8 +1,8 @@
-# wechat-sdk-java
+# WeChat-SDK-Java
 
 ## 概览
 
-- [x] 微信支付API v3
+- [x] 微信支付APIv3
 - [x] 微信公众平台
 - [x] 微信小程序
 - [x] 跨城容灾
@@ -36,13 +36,13 @@ public class WeChatConfiguration {
     @Bean
     WeChatClient client() {
         WeChatConfig wechatConfig = new WeChatConfig();
-        wechatConfig.setAppId(".........Appid............");
-        wechatConfig.setAppSecret(".....AppSecret........");
-        wechatConfig.setMchId(".........MchId............");
-        wechatConfig.setMchKey("........MchKey...........");
-        wechatConfig.setServiceId(".....ServiceId........");
-        wechatConfig.setSerialNo("......SerialNo.........");
-        wechatConfig.loadPrivateKey("...PrivateKey.pem...");
+        wechatConfig.setDebug(true);
+        wechatConfig.setAppId("............AppId............");
+        wechatConfig.setAppSecret("........AppSecret........");
+        wechatConfig.setMerchantId(".......MerchantId.......");
+        wechatConfig.setApiV3Key(".........ApiV3Key.........");
+        wechatConfig.setServiceId("........ServiceId........");
+        wechatConfig.setSerialNumber(".....SerialNumber.....");
         return new DefaultWeChatClient(wechatConfig);
     }
 
@@ -53,6 +53,7 @@ public class WeChatConfiguration {
 
 ```java
         WeChatClient client = client();
+WeChatPaymentJsapiRequest.Bild
 WeChatPaymentJsapiRequest request = new WeChatPaymentJsapiRequest();
         request.
 

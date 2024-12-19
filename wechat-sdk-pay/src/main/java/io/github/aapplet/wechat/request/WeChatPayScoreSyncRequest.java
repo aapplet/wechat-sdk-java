@@ -7,7 +7,6 @@ import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.domain.WeChatPayScore;
 import io.github.aapplet.wechat.exception.WeChatParamsException;
-import io.github.aapplet.wechat.params.WeChatRequestParams;
 import io.github.aapplet.wechat.response.WeChatPayScoreSyncResponse;
 import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.AllArgsConstructor;
@@ -69,7 +68,7 @@ public class WeChatPayScoreSyncRequest implements WeChatRequest.V3<WeChatPayScor
         if (detail == null) {
             throw new WeChatParamsException("内容信息详情不存在");
         }
-        var attribute = new WeChatRequestParams<WeChatPayScoreSyncResponse>(wechatConfig.getPayDomain());
+        var attribute = new WeChatAttributeImpl<WeChatPayScoreSyncResponse>(wechatConfig.getPayDomain());
         attribute.setMethod("POST");
         attribute.setRequestPath("/v3/payscore/serviceorder/" + outOrderNo + "/sync");
         attribute.setRequestBody(WeChatJacksonUtil.toJson(this));

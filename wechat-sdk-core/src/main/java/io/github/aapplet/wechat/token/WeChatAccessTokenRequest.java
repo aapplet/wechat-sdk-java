@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
-import io.github.aapplet.wechat.params.WeChatRequestParams;
+import io.github.aapplet.wechat.request.WeChatAttributeImpl;
 import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -64,7 +64,7 @@ public class WeChatAccessTokenRequest implements WeChatRequest.MP<WeChatAccessTo
         if (forceRefresh == null) {
             forceRefresh = false;
         }
-        var attribute = new WeChatRequestParams<WeChatAccessTokenResponse>(wechatConfig.getMpDomain());
+        var attribute = new WeChatAttributeImpl<WeChatAccessTokenResponse>(wechatConfig.getMpDomain());
         attribute.setMethod("POST");
         attribute.setRequestPath("/cgi-bin/stable_token");
         attribute.setRequestBody(WeChatJacksonUtil.toJson(this));

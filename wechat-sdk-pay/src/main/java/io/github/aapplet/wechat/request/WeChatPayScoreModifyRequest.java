@@ -7,7 +7,6 @@ import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.domain.WeChatPayScore;
 import io.github.aapplet.wechat.exception.WeChatParamsException;
-import io.github.aapplet.wechat.params.WeChatRequestParams;
 import io.github.aapplet.wechat.response.WeChatPayScoreModifyResponse;
 import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.AllArgsConstructor;
@@ -78,7 +77,7 @@ public class WeChatPayScoreModifyRequest implements WeChatRequest.V3<WeChatPaySc
         if (reason == null) {
             throw new WeChatParamsException("修改原因不存在");
         }
-        var attribute = new WeChatRequestParams<WeChatPayScoreModifyResponse>(wechatConfig.getPayDomain());
+        var attribute = new WeChatAttributeImpl<WeChatPayScoreModifyResponse>(wechatConfig.getPayDomain());
         attribute.setMethod("POST");
         attribute.setRequestPath("/v3/payscore/serviceorder/" + outOrderNo + "/modify");
         attribute.setRequestBody(WeChatJacksonUtil.toJson(this));

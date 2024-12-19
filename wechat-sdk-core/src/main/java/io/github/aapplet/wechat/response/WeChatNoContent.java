@@ -1,4 +1,4 @@
-package io.github.aapplet.wechat.common;
+package io.github.aapplet.wechat.response;
 
 import io.github.aapplet.wechat.base.WeChatResponse;
 import lombok.Data;

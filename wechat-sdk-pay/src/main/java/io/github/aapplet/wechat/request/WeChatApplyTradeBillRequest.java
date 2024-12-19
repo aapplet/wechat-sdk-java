@@ -5,7 +5,6 @@ import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.exception.WeChatParamsException;
-import io.github.aapplet.wechat.params.WeChatRequestParams;
 import io.github.aapplet.wechat.response.WeChatApplyBillResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -61,7 +60,7 @@ public class WeChatApplyTradeBillRequest implements WeChatRequest.V3<WeChatApply
 
     @Override
     public WeChatAttribute<WeChatApplyBillResponse> getAttribute(WeChatConfig wechatConfig) {
-        var attribute = new WeChatRequestParams<WeChatApplyBillResponse>(wechatConfig.getPayDomain());
+        var attribute = new WeChatAttributeImpl<WeChatApplyBillResponse>(wechatConfig.getPayDomain());
         attribute.setMethod("GET");
         attribute.setRequestPath("/v3/bill/tradebill");
         attribute.setParameters(this.getParameters());

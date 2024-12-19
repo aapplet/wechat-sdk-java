@@ -50,25 +50,25 @@ public class WeChatCertificateResponse implements WeChatResponse.V3 {
     @Data
     public static class EncryptCertificate {
         /**
-         * 【加密证书的算法】 对开启结果数据进行加密的加密算法，目前只支持AEAD_AES_256_GCM。
-         */
-        @JsonProperty("algorithm")
-        private String algorithm;
-        /**
          * 【加密证书的随机串】 对应到加密算法中的IV。
          */
         @JsonProperty("nonce")
         private String nonce;
         /**
-         * 【加密证书的附加数据】 加密证书的附加数据，固定为“certificate"。
+         * 【加密证书的算法】 对开启结果数据进行加密的加密算法，目前只支持AEAD_AES_256_GCM。
          */
-        @JsonProperty("associated_data")
-        private String associatedData;
+        @JsonProperty("algorithm")
+        private String algorithm;
         /**
          * 【加密后的证书内容】 使用API KEY和上述参数，可以解密出平台证书的明文。证书明文为PEM格式。（注意：更换证书时会出现PEM格式中的证书失效时间与接口返回的证书弃用时间不一致的情况）
          */
         @JsonProperty("ciphertext")
         private String ciphertext;
+        /**
+         * 【加密证书的附加数据】 加密证书的附加数据，固定为“certificate"。
+         */
+        @JsonProperty("associated_data")
+        private String associatedData;
     }
 
     /**

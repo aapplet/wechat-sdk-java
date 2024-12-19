@@ -5,7 +5,6 @@ import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.domain.WeChatPayScore;
-import io.github.aapplet.wechat.params.WeChatRequestParams;
 import io.github.aapplet.wechat.response.WeChatPayScoreCreateResponse;
 import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.AllArgsConstructor;
@@ -98,7 +97,7 @@ public class WeChatPayScoreCreateRequest implements WeChatRequest.V3<WeChatPaySc
         if (notifyUrl == null) {
             notifyUrl = wechatConfig.getPayScoreNotifyUrl();
         }
-        var attribute = new WeChatRequestParams<WeChatPayScoreCreateResponse>(wechatConfig.getPayDomain());
+        var attribute = new WeChatAttributeImpl<WeChatPayScoreCreateResponse>(wechatConfig.getPayDomain());
         attribute.setMethod("POST");
         attribute.setRequestPath("/v3/payscore/serviceorder");
         attribute.setRequestBody(WeChatJacksonUtil.toJson(this));

@@ -1,12 +1,12 @@
 package io.github.aapplet.wechat.cert;
 
-import io.github.aapplet.wechat.common.WeChatStatusCode;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.exception.WeChatRequestException;
 import io.github.aapplet.wechat.exception.WeChatResponseException;
 import io.github.aapplet.wechat.exception.WeChatValidationException;
 import io.github.aapplet.wechat.http.WeChatHttpRequest;
 import io.github.aapplet.wechat.http.WeChatValidator;
+import io.github.aapplet.wechat.response.WeChatStatusCode;
 import io.github.aapplet.wechat.util.WeChatCertUtil;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -26,12 +26,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WeChatCertificateService implements WeChatCertificateManager {
 
     /**
-     * 配置信息
-     */
-    @NonNull
-    private final WeChatConfig wechatConfig;
-
-    /**
      * 存储平台证书的映射表
      * <br>
      * key   = 证书序列号 or 商户号
@@ -39,6 +33,12 @@ public class WeChatCertificateService implements WeChatCertificateManager {
      * value = 平台证书
      */
     private static final Map<String, X509Certificate> CERTIFICATES = new ConcurrentHashMap<>(4);
+
+    /**
+     * 配置信息
+     */
+    @NonNull
+    private final WeChatConfig wechatConfig;
 
     @Override
     public X509Certificate getCertificate() {
@@ -69,7 +69,7 @@ public class WeChatCertificateService implements WeChatCertificateManager {
     /**
      * 加载平台证书
      *
-     * @param key 证书序列号 or 商户号
+     * @param serialNumber 证书序列号 or 商户号
      * @return 平台证书
      */
     private X509Certificate loadCertificate(String serialNumber) {

@@ -21,20 +21,20 @@ public class WeChatNotify {
     @JsonProperty("create_time")
     private String createTime;
     /**
-     * 通知类型
+     * 通知的类型
      */
     @JsonProperty("event_type")
     private String eventType;
-    /**
-     * 通知数据类型
-     */
-    @JsonProperty("resource_type")
-    private String resourceType;
     /**
      * 回调摘要
      */
     @JsonProperty("summary")
     private String summary;
+    /**
+     * 通知数据类型
+     */
+    @JsonProperty("resource_type")
+    private String resourceType;
     /**
      * 通知数据
      */
@@ -50,6 +50,7 @@ public class WeChatNotify {
         private String algorithm;
         /**
          * 数据密文
+         * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012071382">如何解密回调报文</a>
          */
         @JsonProperty("ciphertext")
         private String ciphertext;
@@ -59,15 +60,15 @@ public class WeChatNotify {
         @JsonProperty("associated_data")
         private String associatedData;
         /**
+         * 原始回调类型
+         */
+        @JsonProperty("original_type")
+        private String originalType;
+        /**
          * 随机串
          */
         @JsonProperty("nonce")
         private String nonce;
-        /**
-         * 加密前的对象类型
-         */
-        @JsonProperty("original_type")
-        private String originalType;
     }
 
     /**

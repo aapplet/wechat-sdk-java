@@ -6,7 +6,6 @@ import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.exception.WeChatParamsException;
-import io.github.aapplet.wechat.params.WeChatRequestParams;
 import io.github.aapplet.wechat.response.WeChatPayScoreCancelResponse;
 import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.AllArgsConstructor;
@@ -60,7 +59,7 @@ public class WeChatPayScoreCancelRequest implements WeChatRequest.V3<WeChatPaySc
         if (reason == null) {
             throw new WeChatParamsException("取消原因不存在");
         }
-        var attribute = new WeChatRequestParams<WeChatPayScoreCancelResponse>(wechatConfig.getPayDomain());
+        var attribute = new WeChatAttributeImpl<WeChatPayScoreCancelResponse>(wechatConfig.getPayDomain());
         attribute.setMethod("POST");
         attribute.setRequestPath("/v3/payscore/serviceorder/" + outOrderNo + "/cancel");
         attribute.setRequestBody(WeChatJacksonUtil.toJson(this));

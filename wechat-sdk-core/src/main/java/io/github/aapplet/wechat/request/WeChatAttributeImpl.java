@@ -1,4 +1,4 @@
-package io.github.aapplet.wechat.params;
+package io.github.aapplet.wechat.request;
 
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatDomain;
@@ -13,7 +13,7 @@ import lombok.Data;
  * @param <R> 代表响应类型的泛型参数，必须是 WeChatResponse 的子类型。
  */
 @Data
-public class WeChatRequestParams<R extends WeChatResponse> implements WeChatAttribute<R> {
+public class WeChatAttributeImpl<R extends WeChatResponse> implements WeChatAttribute<R> {
 
     /**
      * 域名分配器，用于动态分配请求的域名。
@@ -23,7 +23,7 @@ public class WeChatRequestParams<R extends WeChatResponse> implements WeChatAttr
     /**
      * @param wechatDomain 域名信息
      */
-    public WeChatRequestParams(WeChatDomain wechatDomain) {
+    public WeChatAttributeImpl(WeChatDomain wechatDomain) {
         this.domainAllocator = new WeChatDomainManager(wechatDomain);
     }
 

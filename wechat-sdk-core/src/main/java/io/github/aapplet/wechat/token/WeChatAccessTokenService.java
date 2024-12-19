@@ -15,23 +15,23 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WeChatAccessTokenService implements WeChatAccessTokenManager {
 
     /**
-     * 配置信息
-     */
-    @NonNull
-    private final WeChatConfig wechatConfig;
-
-    /**
      * key   = AppId
      * value = AccessToken
      */
     private static final Map<String, WeChatAccessToken> ACCESS_TOKENS = new ConcurrentHashMap<>(4);
 
     /**
+     * 配置信息
+     */
+    @NonNull
+    private final WeChatConfig wechatConfig;
+
+    /**
      * 刷新AccessToken
      *
      * @return AccessToken
      */
-    private WeChatAccessToken refreshAccessToken() {
+    WeChatAccessToken refreshAccessToken() {
         var client = new DefaultWeChatClient(wechatConfig);
         var response = client.execute(new WeChatAccessTokenRequest());
         var accessToken = new WeChatAccessToken();

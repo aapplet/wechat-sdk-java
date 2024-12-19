@@ -5,7 +5,6 @@ import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.exception.WeChatParamsException;
-import io.github.aapplet.wechat.params.WeChatRequestParams;
 import io.github.aapplet.wechat.response.WeChatPaymentQueryResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -61,7 +60,7 @@ public class WeChatPaymentQueryRequest implements WeChatRequest.V3<WeChatPayment
         if (mchId == null) {
             mchId = wechatConfig.getMerchantId();
         }
-        var attribute = new WeChatRequestParams<WeChatPaymentQueryResponse>(wechatConfig.getPayDomain());
+        var attribute = new WeChatAttributeImpl<WeChatPaymentQueryResponse>(wechatConfig.getPayDomain());
         attribute.setMethod("GET");
         attribute.setRequestPath(this.getRequestPath());
         attribute.setParameters("mchid=" + mchId);

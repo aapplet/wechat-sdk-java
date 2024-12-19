@@ -1,6 +1,6 @@
 package io.github.aapplet.wechat.exception;
 
-import io.github.aapplet.wechat.common.WeChatStatusCode;
+import io.github.aapplet.wechat.response.WeChatStatusCode;
 
 public class WeChatResponseException extends WeChatException {
 

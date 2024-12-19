@@ -10,7 +10,10 @@ import io.github.aapplet.wechat.token.WeChatAccessTokenManager;
 import io.github.aapplet.wechat.token.WeChatAccessTokenService;
 import io.github.aapplet.wechat.util.WeChatCertUtil;
 import io.github.aapplet.wechat.util.WeChatCryptoUtil;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.net.http.HttpClient;
 import java.security.PrivateKey;
@@ -20,6 +23,9 @@ import java.time.Duration;
  * 配置信息
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @SuppressWarnings("SpellCheckingInspection")
 public class WeChatConfig {
 
@@ -81,41 +87,49 @@ public class WeChatConfig {
     /**
      * 证书颁发者
      */
+    @Builder.Default
     private String issuer = "Tenpay.com Root CA";
 
     /**
      * 认证类型
      */
+    @Builder.Default
     private String schema = "WECHATPAY2-SHA256-RSA2048";
 
     /**
      * HTTP响应超时时间，默认10秒
      */
+    @Builder.Default
     private Duration httpResponseTimeout = Duration.ofSeconds(10);
 
     /**
      * 健康检查连接超时时间，默认10秒
      */
+    @Builder.Default
     private Duration healthCheckConnectTimeout = Duration.ofSeconds(10);
 
     /**
      * 健康检查响应超时时间，默认10秒
      */
+    @Builder.Default
     private Duration healthCheckResponseTimeout = Duration.ofSeconds(10);
 
     /**
      * 健康检查时间间隔，默认10秒
      */
+    @Builder.Default
     private Duration healthCheckDetectInterval = Duration.ofSeconds(10);
 
     /**
      * 微信公众平台域名
      */
+    @Builder.Default
     private WeChatDomain mpDomain = WeChatDomainStorage.MP;
 
     /**
      * 微信商户平台域名
      */
+    @Builder.Default
     private WeChatDomain payDomain = WeChatDomainStorage.PAY;
 
     /**
@@ -123,6 +137,7 @@ public class WeChatConfig {
      * <p>
      * HTTP连接超时时间默认10秒，如需修改请重新设置HttpClient
      */
+    @Builder.Default
     private HttpClient httpClient = WeChatHttpClient.getInstance();
 
     /**
@@ -131,7 +146,7 @@ public class WeChatConfig {
     private WeChatAccessTokenManager accessTokenManager;
 
     /**
-     * 证书管理器
+     * 平台证书管理器
      */
     private WeChatCertificateManager certificateManager;
 
@@ -142,19 +157,19 @@ public class WeChatConfig {
      */
     public WeChatAccessTokenManager getAccessTokenManager() {
         if (accessTokenManager == null) {
-            return new WeChatAccessTokenService(this);
+            this.accessTokenManager = new WeChatAccessTokenService(this);
         }
         return accessTokenManager;
     }
 
     /**
-     * 获取证书管理器
+     * 获取平台证书管理器
      *
-     * @return 证书管理器
+     * @return 平台证书管理器
      */
     public WeChatCertificateManager getCertificateManager() {
         if (certificateManager == null) {
-            return new WeChatCertificateService(this);
+            this.certificateManager = new WeChatCertificateService(this);
         }
         return certificateManager;
     }

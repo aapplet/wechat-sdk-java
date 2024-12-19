@@ -3,10 +3,9 @@ package io.github.aapplet.wechat.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
-import io.github.aapplet.wechat.common.WeChatDownload;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.exception.WeChatParamsException;
-import io.github.aapplet.wechat.params.WeChatRequestParams;
+import io.github.aapplet.wechat.response.WeChatDownload;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -46,7 +45,7 @@ public class WeChatApplyDownloadRequest implements WeChatRequest.V3Download<WeCh
     @Override
     public WeChatAttribute<WeChatDownload> getAttribute(WeChatConfig wechatConfig) {
         final URL url = this.getUrl();
-        var attribute = new WeChatRequestParams<WeChatDownload>(wechatConfig.getPayDomain());
+        var attribute = new WeChatAttributeImpl<WeChatDownload>(wechatConfig.getPayDomain());
         attribute.setMethod("GET");
         attribute.setRequestPath(url.getPath());
         attribute.setParameters(url.getQuery());

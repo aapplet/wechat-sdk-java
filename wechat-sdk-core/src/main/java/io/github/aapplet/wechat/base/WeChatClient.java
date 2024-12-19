@@ -1,7 +1,7 @@
 package io.github.aapplet.wechat.base;
 
-import io.github.aapplet.wechat.common.WeChatDownload;
 import io.github.aapplet.wechat.config.WeChatConfig;
+import io.github.aapplet.wechat.response.WeChatDownload;
 
 /**
  * 客户端

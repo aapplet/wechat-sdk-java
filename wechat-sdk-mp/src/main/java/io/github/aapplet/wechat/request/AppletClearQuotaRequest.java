@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
-import io.github.aapplet.wechat.common.WeChatStatusCode;
 import io.github.aapplet.wechat.config.WeChatConfig;
-import io.github.aapplet.wechat.params.WeChatRequestParams;
+import io.github.aapplet.wechat.response.WeChatStatusCode;
 import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,7 +47,7 @@ public class AppletClearQuotaRequest implements WeChatRequest.MP<WeChatStatusCod
         if (accessToken == null) {
             accessToken = wechatConfig.getAccessTokenManager().getAccessToken();
         }
-        var attribute = new WeChatRequestParams<WeChatStatusCode.MP>(wechatConfig.getMpDomain());
+        var attribute = new WeChatAttributeImpl<WeChatStatusCode.MP>(wechatConfig.getMpDomain());
         attribute.setMethod("POST");
         attribute.setRequestPath("/cgi-bin/clear_quota");
         attribute.setParameters("access_token=" + accessToken);

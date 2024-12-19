@@ -3,10 +3,9 @@ package io.github.aapplet.wechat.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.base.WeChatAttribute;
 import io.github.aapplet.wechat.base.WeChatRequest;
-import io.github.aapplet.wechat.common.WeChatNoContent;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.exception.WeChatParamsException;
-import io.github.aapplet.wechat.params.WeChatRequestParams;
+import io.github.aapplet.wechat.response.WeChatNoContent;
 import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,7 +43,7 @@ public class WeChatPaymentCloseRequest implements WeChatRequest.V3<WeChatNoConte
         if (outTradeNo == null) {
             throw new WeChatParamsException("商户订单号不存在");
         }
-        var attribute = new WeChatRequestParams<WeChatNoContent>(wechatConfig.getPayDomain());
+        var attribute = new WeChatAttributeImpl<WeChatNoContent>(wechatConfig.getPayDomain());
         attribute.setMethod("POST");
         attribute.setRequestPath("/v3/pay/transactions/out-trade-no/" + outTradeNo + "/close");
         attribute.setRequestBody(WeChatJacksonUtil.toJson(this));

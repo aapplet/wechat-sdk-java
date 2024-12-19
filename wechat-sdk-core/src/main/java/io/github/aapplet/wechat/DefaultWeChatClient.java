@@ -3,9 +3,6 @@ package io.github.aapplet.wechat;
 import io.github.aapplet.wechat.base.WeChatClient;
 import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.base.WeChatResponse;
-import io.github.aapplet.wechat.common.WeChatDownload;
-import io.github.aapplet.wechat.common.WeChatNoContent;
-import io.github.aapplet.wechat.common.WeChatStatusCode;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.constant.WeChatConstant;
 import io.github.aapplet.wechat.exception.WeChatExpiredException;
@@ -13,6 +10,9 @@ import io.github.aapplet.wechat.exception.WeChatResponseException;
 import io.github.aapplet.wechat.exception.WeChatValidationException;
 import io.github.aapplet.wechat.http.WeChatHttpRequest;
 import io.github.aapplet.wechat.http.WeChatValidator;
+import io.github.aapplet.wechat.response.WeChatDownload;
+import io.github.aapplet.wechat.response.WeChatNoContent;
+import io.github.aapplet.wechat.response.WeChatStatusCode;
 import io.github.aapplet.wechat.util.RetryTemplate;
 import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.Getter;
@@ -69,7 +69,7 @@ public final class DefaultWeChatClient implements WeChatClient {
             var attribute = request.getAttribute(wechatConfig);
             var httpResponse = WeChatHttpRequest.mp(wechatConfig, attribute);
             var statusCode = WeChatStatusCode.MP.fromJson(httpResponse.body());
-            if (statusCode.ok()) {
+            if (statusCode.ok() && httpResponse.statusCode() == 200) {
                 return WeChatJacksonUtil.fromJson(httpResponse.body(), attribute.getResponseClass());
             }
             if (statusCode.getCode() == 42001) {

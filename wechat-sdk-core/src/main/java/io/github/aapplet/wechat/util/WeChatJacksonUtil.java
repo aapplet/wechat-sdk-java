@@ -47,6 +47,20 @@ public class WeChatJacksonUtil {
     }
 
     /**
+     * 将对象转换为JSON字符串并格式化。
+     *
+     * @param value 要转换的对象
+     * @return JSON字符串
+     */
+    public static String toPrettyJson(Object value) {
+        try {
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(value);
+        } catch (JsonProcessingException e) {
+            throw new WeChatException("对象转Json异常", e);
+        }
+    }
+
+    /**
      * 将JSON字符串反序列化为指定对象类型。
      *
      * @param json      JSON字符串
