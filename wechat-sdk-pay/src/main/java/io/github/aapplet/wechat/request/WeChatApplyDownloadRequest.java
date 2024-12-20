@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,7 +19,6 @@ import java.net.URL;
  */
 @Data
 @Builder
-@Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class WeChatApplyDownloadRequest implements WeChatRequest.V3Download<WeChatDownload> {

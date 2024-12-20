@@ -2,6 +2,7 @@ package io.github.aapplet.wechat.token;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.base.WeChatResponse;
+import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.Data;
 
 /**
@@ -21,5 +22,13 @@ public class WeChatAccessTokenResponse implements WeChatResponse.MP {
      */
     @JsonProperty("expires_in")
     private Integer expiresIn;
+
+    /**
+     * @param bytes AccessToken响应数据
+     * @return AccessToken响应实例
+     */
+    public static WeChatAccessTokenResponse fromJson(byte[] bytes) {
+        return WeChatJacksonUtil.fromJson(bytes, WeChatAccessTokenResponse.class);
+    }
 
 }

@@ -11,14 +11,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 /**
  * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012791856">JSAPI下单</a>
  */
 @Data
 @Builder
-@Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class WeChatPaymentJsapiRequest implements WeChatRequest.V3<WeChatPaymentJsapiResponse> {

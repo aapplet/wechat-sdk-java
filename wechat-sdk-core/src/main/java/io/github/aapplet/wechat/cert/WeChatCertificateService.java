@@ -1,9 +1,9 @@
 package io.github.aapplet.wechat.cert;
 
 import io.github.aapplet.wechat.config.WeChatConfig;
+import io.github.aapplet.wechat.exception.WeChatPublicKeyException;
 import io.github.aapplet.wechat.exception.WeChatRequestException;
 import io.github.aapplet.wechat.exception.WeChatResponseException;
-import io.github.aapplet.wechat.exception.WeChatValidationException;
 import io.github.aapplet.wechat.http.WeChatHttpRequest;
 import io.github.aapplet.wechat.http.WeChatValidator;
 import io.github.aapplet.wechat.response.WeChatStatusCode;
@@ -63,6 +63,9 @@ public class WeChatCertificateService implements WeChatCertificateManager {
 
     @Override
     public X509Certificate setCertificate(String serialNumber, X509Certificate certificate) {
+        if (serialNumber == null || serialNumber.isEmpty()) {
+            throw new WeChatPublicKeyException("微信公钥ID不能为空");
+        }
         return CERTIFICATES.put(serialNumber, certificate);
     }
 
@@ -110,7 +113,7 @@ public class WeChatCertificateService implements WeChatCertificateManager {
             if (issuer.contains(wechatConfig.getIssuer())) {
                 newCertificates.put(item.getSerialNo(), certificate);
             } else {
-                throw new WeChatValidationException("平台证书颁发者验证失败, Unknown Issuer => " + issuer);
+                throw new WeChatPublicKeyException("平台证书颁发者验证失败, Unknown Issuer => " + issuer);
             }
         }
         // 验证签名
@@ -126,7 +129,7 @@ public class WeChatCertificateService implements WeChatCertificateManager {
             CERTIFICATES.putAll(newCertificates);
             CERTIFICATES.put(wechatConfig.getMerchantId(), latestCertificate);
         } else {
-            throw new WeChatValidationException("平台证书的签名验证失败");
+            throw new WeChatPublicKeyException("平台证书的签名验证失败");
         }
         return CERTIFICATES.get(serialNumber);
     }

@@ -1,5 +1,7 @@
 package io.github.aapplet.wechat.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.base.WeChatDomain;
 import io.github.aapplet.wechat.cert.WeChatCertificateManager;
 import io.github.aapplet.wechat.cert.WeChatCertificateService;
@@ -10,10 +12,14 @@ import io.github.aapplet.wechat.token.WeChatAccessTokenManager;
 import io.github.aapplet.wechat.token.WeChatAccessTokenService;
 import io.github.aapplet.wechat.util.WeChatCertUtil;
 import io.github.aapplet.wechat.util.WeChatCryptoUtil;
+import io.github.aapplet.wechat.util.WeChatJacksonUtil;
+import io.github.aapplet.wechat.util.WeChatResourceUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Delegate;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.http.HttpClient;
 import java.security.PrivateKey;
@@ -22,6 +28,7 @@ import java.time.Duration;
 /**
  * 配置信息
  */
+@Slf4j
 @Data
 @Builder
 @NoArgsConstructor
@@ -32,66 +39,103 @@ public class WeChatConfig {
     /**
      * AccessToken管理器
      */
+    @Delegate
     private final WeChatAccessTokenManager accessTokenManager = new WeChatAccessTokenService(this);
 
     /**
      * 平台证书管理器
      */
+    @Delegate
     private final WeChatCertificateManager certificateManager = new WeChatCertificateService(this);
 
     /**
      * 是否开启调试模式
      */
+    @JsonProperty("debug")
     private boolean debug;
 
     /**
      * 微信公众平台应用ID
      */
+    @JsonProperty("appId")
     private String appId;
 
     /**
      * 微信公众平台应用密钥
      */
+    @JsonProperty("appSecret")
     private String appSecret;
 
     /**
      * 商户号
      */
+    @JsonProperty("merchantId")
     private String merchantId;
 
     /**
      * 商户密钥（APIv3）
      */
+    @JsonProperty("apiV3Key")
     private String apiV3Key;
 
     /**
      * 服务ID
      */
+    @JsonProperty("serviceId")
     private String serviceId;
 
     /**
-     * 证书序列号
+     * 商户私钥ID
      */
-    private String serialNumber;
+    @JsonProperty("privateKeyId")
+    private String privateKeyId;
+
+    /**
+     * 商户私钥路径
+     */
+    @JsonProperty("privateKeyPath")
+    private String privateKeyPath;
+
+    /**
+     * 微信支付公钥ID
+     */
+    @JsonProperty("publicKeyId")
+    private String publicKeyId;
+
+    /**
+     * 微信支付公钥路径
+     */
+    @JsonProperty("publicKeyPath")
+    private String publicKeyPath;
 
     /**
      * 支付回调地址
      */
+    @JsonProperty("payNotifyUrl")
     private String payNotifyUrl;
 
     /**
      * 退款回调地址
      */
+    @JsonProperty("refundNotifyUrl")
     private String refundNotifyUrl;
 
     /**
      * 支付分回调地址
      */
+    @JsonProperty("payScoreNotifyUrl")
     private String payScoreNotifyUrl;
+
+    /**
+     * 配置文件路径
+     */
+    @JsonProperty("configFilePath")
+    private String configFilePath;
 
     /**
      * 证书私钥
      */
+    @JsonIgnore
     private PrivateKey privateKey;
 
     /**
@@ -162,11 +206,11 @@ public class WeChatConfig {
     /**
      * 从指定的文件路径加载 X.509 证书并保存到证书管理器
      *
-     * @param filePath     证书文件路径，文件内容应为 PEM 格式。
      * @param serialNumber 证书序列号
+     * @param filePath     证书文件路径，文件内容应为 PEM 格式。
      */
-    public void loadCertificateFromPemFile(String filePath, String serialNumber) {
-        certificateManager.setCertificate(serialNumber, WeChatCertUtil.loadCertificateFromPemFile(filePath));
+    public void loadPublicKeyFromPemFile(String serialNumber, String filePath) {
+        certificateManager.setCertificate(serialNumber, WeChatCertUtil.loadPublicKeyFromPemFile(filePath));
     }
 
     /**
@@ -226,6 +270,50 @@ public class WeChatConfig {
      */
     public byte[] decrypt(String nonce, String associatedData, String ciphertext) {
         return WeChatCryptoUtil.decrypt(apiV3Key, nonce, associatedData, ciphertext);
+    }
+
+    /**
+     * 重新加载配置
+     */
+    public void reload() {
+        try {
+            WeChatConfig wechatConfig = load(configFilePath);
+            this.debug = wechatConfig.isDebug();
+            this.appId = wechatConfig.getAppId();
+            this.appSecret = wechatConfig.getAppSecret();
+            this.merchantId = wechatConfig.getMerchantId();
+            this.apiV3Key = wechatConfig.getApiV3Key();
+            this.serviceId = wechatConfig.getServiceId();
+            this.privateKeyId = wechatConfig.getPrivateKeyId();
+            this.publicKeyId = wechatConfig.getPublicKeyId();
+            this.payNotifyUrl = wechatConfig.getPayNotifyUrl();
+            this.refundNotifyUrl = wechatConfig.getRefundNotifyUrl();
+            this.payScoreNotifyUrl = wechatConfig.getPayScoreNotifyUrl();
+            this.configFilePath = wechatConfig.getConfigFilePath();
+            // 加载商户私钥
+            var privateKeyFilePath = wechatConfig.getPrivateKeyPath();
+            if (!(privateKeyFilePath == null || privateKeyFilePath.isBlank())) {
+                this.loadPrivateKeyFromPemFile(wechatConfig.getPrivateKeyPath());
+            }
+            // 加载微信公钥
+            var publicKeyFilePath = wechatConfig.getPublicKeyPath();
+            if (!(publicKeyFilePath == null || publicKeyFilePath.isBlank())) {
+                this.loadPublicKeyFromPemFile(wechatConfig.getPublicKeyId(), wechatConfig.getPublicKeyPath());
+            }
+        } catch (Exception e) {
+            log.error("配置文件重新加载失败 => {}", e.getMessage());
+        }
+    }
+
+    /**
+     * 加载配置文件
+     *
+     * @param filePath 配置文件路径
+     * @return 配置信息
+     */
+    public static WeChatConfig load(String filePath) {
+        byte[] wechatConfigBytes = WeChatResourceUtil.readAllBytes(filePath);
+        return WeChatJacksonUtil.fromJson(wechatConfigBytes, WeChatConfig.class);
     }
 
 }

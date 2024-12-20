@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 import java.util.StringJoiner;
 
@@ -20,7 +19,6 @@ import java.util.StringJoiner;
  */
 @Data
 @Builder
-@Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class WeChatApplyFundFlowRequest implements WeChatRequest.V3<WeChatApplyBillResponse> {

@@ -10,14 +10,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 /**
  * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012587973">微信支付分-查询退款</a>
  */
 @Data
 @Builder
-@Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class WeChatRefundQueryRequest implements WeChatRequest.V3<WeChatRefundResponse> {

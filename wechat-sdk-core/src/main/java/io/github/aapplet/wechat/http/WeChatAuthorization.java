@@ -30,7 +30,7 @@ public class WeChatAuthorization {
         String timestamp = String.valueOf(System.currentTimeMillis() / 1000);
         String content = method + "\n" + pathParams + "\n" + timestamp + "\n" + nonce + "\n" + bodyContent + "\n";
         String signature = wechatConfig.signature(content);
-        String serialNo = wechatConfig.getSerialNumber();
+        String serialNo = wechatConfig.getPrivateKeyId();
         String schema = wechatConfig.getSchema();
         String mchId = wechatConfig.getMerchantId();
         return schema + " mchid=\"" + mchId + "\",serial_no=\"" + serialNo + "\",nonce_str=\"" + nonce + "\",timestamp=\"" + timestamp + "\",signature=\"" + signature + "\"";

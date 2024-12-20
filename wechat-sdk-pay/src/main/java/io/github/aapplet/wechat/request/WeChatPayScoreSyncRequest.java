@@ -13,14 +13,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 /**
  * <a href="https://pay.weixin.qq.com/doc/v3/merchant/4012587962">同步订单状态</a>
  */
 @Data
 @Builder
-@Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class WeChatPayScoreSyncRequest implements WeChatRequest.V3<WeChatPayScoreSyncResponse> {

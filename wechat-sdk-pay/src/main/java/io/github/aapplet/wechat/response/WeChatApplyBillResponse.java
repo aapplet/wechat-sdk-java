@@ -29,7 +29,7 @@ public class WeChatApplyBillResponse implements WeChatResponse.V3 {
      * @return 下载账单Request
      */
     public WeChatApplyDownloadRequest download() {
-        return new WeChatApplyDownloadRequest().setDownloadUrl(downloadUrl);
+        return WeChatApplyDownloadRequest.builder().downloadUrl(downloadUrl).build();
     }
 
 }

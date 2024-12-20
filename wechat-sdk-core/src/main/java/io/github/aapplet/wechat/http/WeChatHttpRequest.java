@@ -86,8 +86,7 @@ public class WeChatHttpRequest {
                 domainAllocator.healthCheck(wechatConfig);
                 return execute();
             } else {
-                // 主备域名均请求失败
-                throw new WeChatHttpException("网络异常,请检查网络是否畅通", e);
+                throw new WeChatHttpException("主备域名均请求失败, 请检查网络是否畅通");
             }
         }
     }

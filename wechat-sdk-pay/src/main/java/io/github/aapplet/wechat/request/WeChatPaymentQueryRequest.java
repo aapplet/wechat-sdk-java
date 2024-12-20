@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 /**
  * 查询订单API
@@ -19,7 +18,6 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Builder
-@Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class WeChatPaymentQueryRequest implements WeChatRequest.V3<WeChatPaymentQueryResponse> {

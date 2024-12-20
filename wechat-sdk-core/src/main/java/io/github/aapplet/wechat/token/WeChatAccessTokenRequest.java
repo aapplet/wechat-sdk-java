@@ -6,20 +6,10 @@ import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.request.WeChatAttributeImpl;
 import io.github.aapplet.wechat.util.WeChatJacksonUtil;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 /**
  * <a href="https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/mp-access-token/getStableAccessToken.html">获取稳定版接口调用凭据</a>
  */
-@Data
-@Builder
-@Accessors(chain = true)
-@NoArgsConstructor
-@AllArgsConstructor
 public class WeChatAccessTokenRequest implements WeChatRequest.MP<WeChatAccessTokenResponse> {
 
     /**
@@ -38,7 +28,7 @@ public class WeChatAccessTokenRequest implements WeChatRequest.MP<WeChatAccessTo
      * AppSecret
      */
     @JsonProperty("secret")
-    private String secret;
+    private String appSecret;
     /**
      * 填写 client_credential
      */
@@ -55,8 +45,8 @@ public class WeChatAccessTokenRequest implements WeChatRequest.MP<WeChatAccessTo
         if (appId == null) {
             appId = wechatConfig.getAppId();
         }
-        if (secret == null) {
-            secret = wechatConfig.getAppSecret();
+        if (appSecret == null) {
+            appSecret = wechatConfig.getAppSecret();
         }
         if (grantType == null) {
             grantType = "client_credential";

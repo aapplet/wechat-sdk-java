@@ -1,6 +1,9 @@
 package io.github.aapplet.wechat.util;
 
 import io.github.aapplet.wechat.exception.WeChatException;
+import io.github.aapplet.wechat.exception.WeChatPathException;
+import io.github.aapplet.wechat.exception.WeChatPrivateKeyException;
+import io.github.aapplet.wechat.exception.WeChatPublicKeyException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;
@@ -35,18 +38,18 @@ public class WeChatCertUtil {
      * @throws WeChatException 如果当前 Java 环境不支持 RSA 或者私钥格式无效
      */
     public static PrivateKey loadPrivateKeyFromPemFile(String filePath) {
+        if (filePath == null || filePath.isEmpty()) {
+            throw new WeChatPathException("商户私钥路径不能为空");
+        }
         byte[] bytes = WeChatResourceUtil.readAllBytes(filePath);
-        String privateKey = new String(bytes, StandardCharsets.UTF_8)
-                .replace("-----BEGIN PRIVATE KEY-----", "")
-                .replace("-----END PRIVATE KEY-----", "")
-                .replaceAll("\\s+", "");
+        String privateKey = new String(bytes, StandardCharsets.UTF_8).replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", "").replaceAll("\\s+", "");
         try {
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             return keyFactory.generatePrivate(new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKey)));
         } catch (NoSuchAlgorithmException e) {
-            throw new WeChatException("当前Java环境不支持RSA", e);
+            throw new WeChatPrivateKeyException("当前Java环境不支持RSA", e);
         } catch (InvalidKeySpecException e) {
-            throw new WeChatException("无效的私钥", e);
+            throw new WeChatPrivateKeyException("无效的商户私钥", e);
         }
     }
 
@@ -56,7 +59,10 @@ public class WeChatCertUtil {
      * @param filePath 证书文件路径，文件内容应为 PEM 格式。
      * @return 解析后的 X.509 证书对象
      */
-    public static X509Certificate loadCertificateFromPemFile(String filePath) {
+    public static X509Certificate loadPublicKeyFromPemFile(String filePath) {
+        if (filePath == null || filePath.isEmpty()) {
+            throw new WeChatPathException("微信公钥路径不能为空");
+        }
         return generateCertificate(WeChatResourceUtil.readAllBytes(filePath));
     }
 
@@ -72,7 +78,7 @@ public class WeChatCertUtil {
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
             return (X509Certificate) cf.generateCertificate(inputStream);
         } catch (IOException | CertificateException e) {
-            throw new WeChatException("无效的证书", e);
+            throw new WeChatPublicKeyException("无效的公钥证书", e);
         }
     }
 
