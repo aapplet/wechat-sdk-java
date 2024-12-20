@@ -37,7 +37,7 @@ public class WeChatCertUtil {
      * @return 解析后的私钥对象
      * @throws WeChatException 如果当前 Java 环境不支持 RSA 或者私钥格式无效
      */
-    public static PrivateKey loadPrivateKeyFromPemFile(String filePath) {
+    public static PrivateKey loadPrivateKeyFromPath(String filePath) {
         if (filePath == null || filePath.isEmpty()) {
             throw new WeChatPathException("商户私钥路径不能为空");
         }
@@ -59,7 +59,7 @@ public class WeChatCertUtil {
      * @param filePath 证书文件路径，文件内容应为 PEM 格式。
      * @return 解析后的 X.509 证书对象
      */
-    public static X509Certificate loadPublicKeyFromPemFile(String filePath) {
+    public static X509Certificate loadPublicKeyFromPath(String filePath) {
         if (filePath == null || filePath.isEmpty()) {
             throw new WeChatPathException("微信公钥路径不能为空");
         }

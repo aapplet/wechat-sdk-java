@@ -12,5 +12,11 @@
   "payNotifyUrl": "..........支付回调地址.......",
   "refundNotifyUrl": ".......退款回调地址.......",
   "payScoreNotifyUrl": ".....支付分回调地址.....",
-  "configFilePath": "........配置文件路径......."
+  "configFilePath": "........配置文件路径.......",
+  "issuer": "Tenpay.com Root CA",
+  "schema": "WECHATPAY2-SHA256-RSA2048",
+  "httpResponseTimeout": 10000,
+  "healthCheckDetectInterval": 10000,
+  "healthCheckConnectTimeout": 10000,
+  "healthCheckResponseTimeout": 10000
 }

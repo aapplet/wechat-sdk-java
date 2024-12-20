@@ -13,6 +13,7 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.StringJoiner;
 
@@ -39,7 +40,7 @@ public class WeChatHttpRequest {
     private WeChatHttpRequest(WeChatConfig wechatConfig, WeChatAttribute<?> wechatAttribute) {
         this.wechatConfig = wechatConfig;
         this.wechatAttribute = wechatAttribute;
-        this.httpRequestBuilder = HttpRequest.newBuilder().timeout(wechatConfig.getHttpResponseTimeout());
+        this.httpRequestBuilder = HttpRequest.newBuilder().timeout(Duration.ofMillis(wechatConfig.getHttpResponseTimeout()));
     }
 
     /**

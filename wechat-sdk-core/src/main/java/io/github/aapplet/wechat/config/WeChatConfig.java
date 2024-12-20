@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.net.http.HttpClient;
 import java.security.PrivateKey;
-import java.time.Duration;
 
 /**
  * 配置信息
@@ -142,37 +141,43 @@ public class WeChatConfig {
      * 证书颁发者
      */
     @Builder.Default
+    @JsonProperty("issuer")
     private String issuer = "Tenpay.com Root CA";
 
     /**
      * 认证类型
      */
     @Builder.Default
+    @JsonProperty("schema")
     private String schema = "WECHATPAY2-SHA256-RSA2048";
 
     /**
      * HTTP响应超时时间，默认10秒
      */
     @Builder.Default
-    private Duration httpResponseTimeout = Duration.ofSeconds(10);
-
-    /**
-     * 健康检查连接超时时间，默认10秒
-     */
-    @Builder.Default
-    private Duration healthCheckConnectTimeout = Duration.ofSeconds(10);
-
-    /**
-     * 健康检查响应超时时间，默认10秒
-     */
-    @Builder.Default
-    private Duration healthCheckResponseTimeout = Duration.ofSeconds(10);
+    @JsonProperty("httpResponseTimeout")
+    private long httpResponseTimeout = 10 * 1000;
 
     /**
      * 健康检查时间间隔，默认10秒
      */
     @Builder.Default
-    private Duration healthCheckDetectInterval = Duration.ofSeconds(10);
+    @JsonProperty("healthCheckDetectInterval")
+    private long healthCheckDetectInterval = 10 * 1000;
+
+    /**
+     * 健康检查连接超时时间，默认10秒
+     */
+    @Builder.Default
+    @JsonProperty("healthCheckConnectTimeout")
+    private long healthCheckConnectTimeout = 10 * 1000;
+
+    /**
+     * 健康检查响应超时时间，默认10秒
+     */
+    @Builder.Default
+    @JsonProperty("healthCheckResponseTimeout")
+    private long healthCheckResponseTimeout = 10 * 1000;
 
     /**
      * 微信公众平台域名
@@ -199,8 +204,8 @@ public class WeChatConfig {
      *
      * @param filePath 私钥文件路径
      */
-    public void loadPrivateKeyFromPemFile(String filePath) {
-        this.privateKey = WeChatCertUtil.loadPrivateKeyFromPemFile(filePath);
+    public void loadPrivateKeyFromPath(String filePath) {
+        this.privateKey = WeChatCertUtil.loadPrivateKeyFromPath(filePath);
     }
 
     /**
@@ -209,8 +214,8 @@ public class WeChatConfig {
      * @param serialNumber 证书序列号
      * @param filePath     证书文件路径，文件内容应为 PEM 格式。
      */
-    public void loadPublicKeyFromPemFile(String serialNumber, String filePath) {
-        certificateManager.setCertificate(serialNumber, WeChatCertUtil.loadPublicKeyFromPemFile(filePath));
+    public void loadPublicKeyFromPath(String serialNumber, String filePath) {
+        certificateManager.setCertificate(serialNumber, WeChatCertUtil.loadPublicKeyFromPath(filePath));
     }
 
     /**
@@ -277,7 +282,7 @@ public class WeChatConfig {
      */
     public void reload() {
         try {
-            WeChatConfig wechatConfig = load(configFilePath);
+            WeChatConfig wechatConfig = WeChatConfig.load(configFilePath);
             this.debug = wechatConfig.isDebug();
             this.appId = wechatConfig.getAppId();
             this.appSecret = wechatConfig.getAppSecret();
@@ -290,18 +295,16 @@ public class WeChatConfig {
             this.refundNotifyUrl = wechatConfig.getRefundNotifyUrl();
             this.payScoreNotifyUrl = wechatConfig.getPayScoreNotifyUrl();
             this.configFilePath = wechatConfig.getConfigFilePath();
-            // 加载商户私钥
-            var privateKeyFilePath = wechatConfig.getPrivateKeyPath();
-            if (!(privateKeyFilePath == null || privateKeyFilePath.isBlank())) {
-                this.loadPrivateKeyFromPemFile(wechatConfig.getPrivateKeyPath());
-            }
-            // 加载微信公钥
-            var publicKeyFilePath = wechatConfig.getPublicKeyPath();
-            if (!(publicKeyFilePath == null || publicKeyFilePath.isBlank())) {
-                this.loadPublicKeyFromPemFile(wechatConfig.getPublicKeyId(), wechatConfig.getPublicKeyPath());
-            }
+            this.privateKey = wechatConfig.getPrivateKey();
+            this.issuer = wechatConfig.getIssuer();
+            this.schema = wechatConfig.getSchema();
+            this.httpResponseTimeout = wechatConfig.getHttpResponseTimeout();
+            this.healthCheckDetectInterval = wechatConfig.getHealthCheckDetectInterval();
+            this.healthCheckConnectTimeout = wechatConfig.getHealthCheckConnectTimeout();
+            this.healthCheckResponseTimeout = wechatConfig.getHealthCheckResponseTimeout();
+            log.debug("配置信息重新加载成功 => {}", WeChatJacksonUtil.toPrettyJson(wechatConfig));
         } catch (Exception e) {
-            log.error("配置文件重新加载失败 => {}", e.getMessage());
+            log.error("配置信息重新加载失败 => {}", e.getMessage());
         }
     }
 
@@ -312,8 +315,21 @@ public class WeChatConfig {
      * @return 配置信息
      */
     public static WeChatConfig load(String filePath) {
-        byte[] wechatConfigBytes = WeChatResourceUtil.readAllBytes(filePath);
-        return WeChatJacksonUtil.fromJson(wechatConfigBytes, WeChatConfig.class);
+        var configBytes = WeChatResourceUtil.readAllBytes(filePath);
+        var wechatConfig = WeChatJacksonUtil.fromJson(configBytes, WeChatConfig.class);
+        // 加载商户私钥
+        var privateKeyFilePath = wechatConfig.getPrivateKeyPath();
+        if (!(privateKeyFilePath == null || privateKeyFilePath.isBlank())) {
+            wechatConfig.loadPrivateKeyFromPath(privateKeyFilePath);
+            log.debug("加载商户私钥成功");
+        }
+        // 加载微信公钥
+        var publicKeyFilePath = wechatConfig.getPublicKeyPath();
+        if (!(publicKeyFilePath == null || publicKeyFilePath.isBlank())) {
+            wechatConfig.loadPublicKeyFromPath(wechatConfig.getPublicKeyId(), publicKeyFilePath);
+            log.debug("加载微信公钥成功");
+        }
+        return wechatConfig;
     }
 
 }
