@@ -1,6 +1,5 @@
 package io.github.aapplet.wechat.config;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.github.aapplet.wechat.base.WeChatDomain;
 import io.github.aapplet.wechat.cert.WeChatCertificateManager;
@@ -134,7 +133,6 @@ public class WeChatConfig {
     /**
      * 证书私钥
      */
-    @JsonIgnore
     private PrivateKey privateKey;
 
     /**
