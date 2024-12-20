@@ -32,11 +32,11 @@ public class WeChatNotifyHandler extends WeChatValidator {
     public <T extends WeChatResponse.Notify> T transform(Class<T> valueType) {
         WeChatNotify notification = WeChatNotify.fromJson(responseBody);
         WeChatNotify.Resource resource = notification.getResource();
-        String nonce = resource.getNonce();
-        String ciphertext = resource.getCiphertext();
-        String associatedData = resource.getAssociatedData();
-        byte[] decrypt = wechatConfig.decrypt(nonce, associatedData, ciphertext);
-        if (this.verify()) {
+        var associatedData = resource.getAssociatedData();
+        var ciphertext = resource.getCiphertext();
+        var nonce = resource.getNonce();
+        var decrypt = wechatConfig.decrypt(nonce, associatedData, ciphertext);
+        if (verify()) {
             return WeChatJacksonUtil.fromJson(decrypt, valueType);
         } else {
             throw new WeChatValidationException("回调签名错误, 签名验证失败");

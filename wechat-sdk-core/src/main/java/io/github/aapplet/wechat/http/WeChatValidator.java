@@ -48,6 +48,15 @@ public class WeChatValidator {
     }
 
     /**
+     * 获取证书序列号
+     *
+     * @return 证书序列号
+     */
+    public String getSerialNumber() {
+        return wechatHeaders.getSerial();
+    }
+
+    /**
      * <div>应答时间戳\n</div>
      * <div>应答随机串\n</div>
      * <div>应答报文主体\n</div>
@@ -61,20 +70,20 @@ public class WeChatValidator {
     /**
      * 使用平台证书验签名
      *
-     * @param certificate 平台证书公钥
-     * @return 验签结果
+     * @return 签名验证结果
      */
-    public boolean verify(X509Certificate certificate) {
-        return WeChatCryptoUtil.verify(certificate, signatureContent(), wechatHeaders.getSignature());
+    public boolean verify() {
+        return verify(wechatConfig.getCertificateManager().getCertificate(wechatHeaders.getSerial()));
     }
 
     /**
      * 使用平台证书验签名
      *
-     * @return 签名验证结果
+     * @param certificate 平台证书公钥
+     * @return 验签结果
      */
-    public boolean verify() {
-        return wechatConfig.verify(wechatHeaders.getSerial(), signatureContent(), wechatHeaders.getSignature());
+    public boolean verify(X509Certificate certificate) {
+        return WeChatCryptoUtil.verify(certificate, signatureContent(), wechatHeaders.getSignature());
     }
 
 }

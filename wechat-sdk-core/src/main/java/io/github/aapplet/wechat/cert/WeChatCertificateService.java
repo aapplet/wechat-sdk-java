@@ -26,11 +26,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WeChatCertificateService implements WeChatCertificateManager {
 
     /**
-     * 存储平台证书的映射表
+     * 存储证书的映射表
      * <br>
      * key   = 证书序列号 or 商户号
      * <br>
-     * value = 平台证书
+     * value = 证书实例
      */
     private static final Map<String, X509Certificate> CERTIFICATES = new ConcurrentHashMap<>(4);
 
@@ -67,6 +67,19 @@ public class WeChatCertificateService implements WeChatCertificateManager {
     }
 
     /**
+     * 检查并移除过期或未生效的平台证书
+     */
+    private void checkCertificates() {
+        CERTIFICATES.forEach((key, certificate) -> {
+            try {
+                certificate.checkValidity();
+            } catch (CertificateExpiredException | CertificateNotYetValidException e) {
+                CERTIFICATES.remove(key, certificate);
+            }
+        });
+    }
+
+    /**
      * 加载平台证书
      *
      * @param serialNumber 证书序列号 or 商户号
@@ -81,7 +94,7 @@ public class WeChatCertificateService implements WeChatCertificateManager {
             throw new WeChatRequestException(WeChatStatusCode.PAY.fromJson(httpResponse.body()).getMessage());
         }
         var certificateResponse = WeChatCertificateResponse.fromJson(httpResponse.body());
-        if (certificateResponse == null || certificateResponse.getData() == null) {
+        if (certificateResponse.getData() == null) {
             throw new WeChatResponseException("获取的平台证书数据异常");
         }
         // 解密证书
@@ -91,19 +104,18 @@ public class WeChatCertificateService implements WeChatCertificateManager {
             var associatedData = encryptCertificate.getAssociatedData();
             var ciphertext = encryptCertificate.getCiphertext();
             var nonceStr = encryptCertificate.getNonce();
-            var serialNo = item.getSerialNo();
-            var decrypt = wechatConfig.decrypt(nonceStr, associatedData, ciphertext);
-            var certificate = WeChatCertUtil.generateCertificate(decrypt);
+            var certBytes = wechatConfig.decrypt(nonceStr, associatedData, ciphertext);
+            var certificate = WeChatCertUtil.generateCertificate(certBytes);
             var issuer = certificate.getIssuerX500Principal().getName();
             if (issuer.contains(wechatConfig.getIssuer())) {
-                newCertificates.put(serialNo, certificate);
+                newCertificates.put(item.getSerialNo(), certificate);
             } else {
                 throw new WeChatValidationException("平台证书颁发者验证失败, Unknown Issuer => " + issuer);
             }
         }
-        // 验证证书签名
+        // 验证签名
         var validator = new WeChatValidator(wechatConfig, httpResponse);
-        var validatorCertificate = newCertificates.get(validator.getWechatHeaders().getSerial());
+        var validatorCertificate = newCertificates.get(validator.getSerialNumber());
         if (validatorCertificate != null && validator.verify(validatorCertificate)) {
             X509Certificate latestCertificate = null;
             for (X509Certificate certificate : newCertificates.values()) {
@@ -117,19 +129,6 @@ public class WeChatCertificateService implements WeChatCertificateManager {
             throw new WeChatValidationException("平台证书的签名验证失败");
         }
         return CERTIFICATES.get(serialNumber);
-    }
-
-    /**
-     * 检查并移除过期或未生效的平台证书
-     */
-    private void checkCertificates() {
-        CERTIFICATES.forEach((key, certificate) -> {
-            try {
-                certificate.checkValidity();
-            } catch (CertificateExpiredException | CertificateNotYetValidException e) {
-                CERTIFICATES.remove(key, certificate);
-            }
-        });
     }
 
 }

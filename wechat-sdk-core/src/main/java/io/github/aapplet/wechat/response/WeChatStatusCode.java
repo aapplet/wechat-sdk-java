@@ -8,6 +8,7 @@ import lombok.Data;
 /**
  * 微信状态码
  */
+@SuppressWarnings("SpellCheckingInspection")
 public class WeChatStatusCode {
 
     @Data

@@ -218,14 +218,14 @@ public class WeChatConfig {
     /**
      * 使用APIv3密钥解密回调报文和平台证书
      *
-     * @param nonceStr       加密使用的随机串
+     * @param nonce          加密使用的随机串
      * @param associatedData 加密使用的附加数据
      * @param ciphertext     加密后的密文，Base64编码
      * @return 解密后的明文数据
      * @throws WeChatException 如果解密过程中出现错误，如算法不支持、密钥无效等
      */
-    public byte[] decrypt(String nonceStr, String associatedData, String ciphertext) {
-        return WeChatCryptoUtil.decrypt(apiV3Key, nonceStr, associatedData, ciphertext);
+    public byte[] decrypt(String nonce, String associatedData, String ciphertext) {
+        return WeChatCryptoUtil.decrypt(apiV3Key, nonce, associatedData, ciphertext);
     }
 
 }
