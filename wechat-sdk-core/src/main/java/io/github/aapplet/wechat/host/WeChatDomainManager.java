@@ -80,6 +80,7 @@ public class WeChatDomainManager implements WeChatDomainAllocator {
                         join.add(">>>>>Response-Status....：" + response.statusCode());
                         join.add(">>>>>Response-Time......：" + (responseTimestamp - requestTimestamp) + "ms");
                         join.add("====================================================== End ======================================================");
+                        join.add("");
                         log.info(join.toString());
                     }
                 }).exceptionally(throwable -> {
@@ -91,6 +92,7 @@ public class WeChatDomainManager implements WeChatDomainAllocator {
                         join.add(">>>>>Exception.......：" + throwable.getMessage());
                         join.add(">>>>>Response-Time...：" + (responseTimestamp - requestTimestamp) + "ms");
                         join.add("====================================================== End ======================================================");
+                        join.add("");
                         log.error(join.toString());
                     }
                     return null;

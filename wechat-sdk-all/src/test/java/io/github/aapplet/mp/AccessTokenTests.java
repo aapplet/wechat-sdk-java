@@ -14,12 +14,12 @@ public class AccessTokenTests {
      */
     @Test
     @SneakyThrows
-    void forceRefresh() {
+    void getAccessToken() {
         WeChatAccessTokenManager accessTokenManager = wechatConfig.getAccessTokenManager();
         System.out.println(accessTokenManager.getAccessToken());
         System.out.println(accessTokenManager.getAccessToken());
         System.out.println(accessTokenManager.getAccessToken());
-        accessTokenManager.forceRefresh();
+        accessTokenManager.removeAccessToken();
         System.out.println(accessTokenManager.getAccessToken());
         System.out.println(accessTokenManager.getAccessToken());
         System.out.println(accessTokenManager.getAccessToken());

@@ -5,7 +5,6 @@ import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.constant.WeChatConstant;
 import io.github.aapplet.wechat.exception.WeChatHttpException;
-import io.github.aapplet.wechat.host.WeChatDomainAllocator;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -81,14 +80,26 @@ public class WeChatHttpRequest {
         var httpRequest = httpRequestBuilder.uri(URI.create(wechatAttribute.getRequestURL())).build();
         try {
             return logger(httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray()));
-        } catch (IOException | InterruptedException e) {
-            WeChatDomainAllocator domainAllocator = wechatAttribute.getDomainAllocator();
+        } catch (IOException e) {
+            var domainAllocator = wechatAttribute.getDomainAllocator();
             if (domainAllocator.requestRetry()) {
                 domainAllocator.healthCheck(wechatConfig);
+                if (wechatConfig.isDebug()) {
+                    StringJoiner join = new StringJoiner("\n").add(LocalDateTime.now().toString());
+                    join.add("================================================== 主域名请求失败 ==================================================");
+                    join.add(">>>>>Response-URL.........：" + httpRequest.uri());
+                    join.add(">>>>>Response-Exception...：" + e);
+                    join.add("====================================================== End ======================================================");
+                    join.add("");
+                    log.info(join.toString());
+                }
                 return execute();
             } else {
                 throw new WeChatHttpException("主备域名均请求失败, 请检查网络是否畅通");
             }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new WeChatHttpException("Thread was interrupted while sending request to URL: " + httpRequest.uri());
         }
     }
 
@@ -117,6 +128,7 @@ public class WeChatHttpRequest {
             join.add(">>>>>Response-Length....：" + bytes.length);
             join.add(">>>>>Response-Body......：" + responseBody);
             join.add("=================================================== End ===================================================");
+            join.add("");
             log.info(join.toString());
         }
         return httpResponse;

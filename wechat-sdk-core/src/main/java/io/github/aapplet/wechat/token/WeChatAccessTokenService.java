@@ -2,12 +2,13 @@ package io.github.aapplet.wechat.token;
 
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.exception.WeChatRequestException;
+import io.github.aapplet.wechat.exception.WeChatResponseException;
 import io.github.aapplet.wechat.http.WeChatHttpRequest;
+import io.github.aapplet.wechat.response.WeChatStatusCode;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -40,7 +41,11 @@ public class WeChatAccessTokenService implements WeChatAccessTokenManager {
     WeChatAccessToken refreshAccessToken(boolean forceRefresh) {
         var httpResponse = WeChatHttpRequest.mp(wechatConfig, new WeChatAccessTokenRequest(forceRefresh));
         if (httpResponse.statusCode() != 200) {
-            throw new WeChatRequestException(new String(httpResponse.body(), StandardCharsets.UTF_8));
+            throw new WeChatRequestException("AccessToken获取失败, HttpStatusCode:" + httpResponse.statusCode());
+        }
+        var statusCode = WeChatStatusCode.MP.fromJson(httpResponse.body());
+        if (!statusCode.ok()) {
+            throw new WeChatResponseException(statusCode);
         }
         var response = WeChatAccessTokenResponse.fromJson(httpResponse.body());
         var accessToken = new WeChatAccessToken();
@@ -74,6 +79,8 @@ public class WeChatAccessTokenService implements WeChatAccessTokenManager {
         // 防止强制刷新后导致最新AccessToken被删, 这里只删除创建时长大于15秒的AccessToken
         if (accessToken != null && accessToken.duration() > 15 * 1000) {
             ACCESS_TOKENS.remove(appId, accessToken);
+        } else {
+            log.warn("remove access token failed, appId: {}", appId);
         }
     }
 
