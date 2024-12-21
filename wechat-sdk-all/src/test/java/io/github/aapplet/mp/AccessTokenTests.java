@@ -5,6 +5,8 @@ import io.github.aapplet.wechat.token.WeChatAccessTokenManager;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
+import java.util.Objects;
+
 public class AccessTokenTests {
 
     private final WeChatConfig wechatConfig = WeChatConfig.load("config.json");
@@ -16,6 +18,7 @@ public class AccessTokenTests {
     @SneakyThrows
     void getAccessToken() {
         WeChatAccessTokenManager accessTokenManager = wechatConfig.getAccessTokenManager();
+        String accessToken1 = accessTokenManager.getAccessToken();
         System.out.println(accessTokenManager.getAccessToken());
         System.out.println(accessTokenManager.getAccessToken());
         System.out.println(accessTokenManager.getAccessToken());
@@ -28,6 +31,8 @@ public class AccessTokenTests {
         System.out.println(accessTokenManager.getAccessToken());
         System.out.println(accessTokenManager.getAccessToken());
         System.out.println(accessTokenManager.getAccessToken());
+        String accessToken2 = accessTokenManager.getAccessToken();
+        assert Objects.equals(accessToken1, accessToken2) : "AccessToken不一致";
     }
 
 }

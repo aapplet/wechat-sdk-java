@@ -26,6 +26,7 @@ public class CertificateTests {
         System.out.println(certificate2.getNotBefore());
         System.out.println(certificate2.getNotAfter());
         System.out.println(certificate1.equals(certificate2));
+        assert certificate1.equals(certificate2) : "证书不相等，期望证书内容一致，但实际不一致";
     }
 
 }
