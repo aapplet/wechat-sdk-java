@@ -6,6 +6,7 @@ import io.github.aapplet.wechat.base.WeChatResponse;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.constant.WeChatConstant;
 import io.github.aapplet.wechat.exception.WeChatExpiredException;
+import io.github.aapplet.wechat.exception.WeChatRequestException;
 import io.github.aapplet.wechat.exception.WeChatResponseException;
 import io.github.aapplet.wechat.exception.WeChatValidationException;
 import io.github.aapplet.wechat.http.WeChatHttpRequest;
@@ -18,6 +19,8 @@ import io.github.aapplet.wechat.util.WeChatJacksonUtil;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * 默认客户端
@@ -53,6 +56,9 @@ public final class DefaultWeChatClient implements WeChatClient {
         if (httpResponse.statusCode() == 204) {
             return attribute.getResponseClass().cast(new WeChatNoContent());
         }
+        if (httpResponse.statusCode() >= 500) {
+            throw new WeChatRequestException("微信支付请求异常 => " + new String(httpResponse.body(), StandardCharsets.UTF_8));
+        }
         throw new WeChatResponseException(WeChatStatusCode.PAY.fromJson(httpResponse.body()));
     }
 
@@ -68,15 +74,18 @@ public final class DefaultWeChatClient implements WeChatClient {
         return RetryTemplate.submit(() -> {
             var attribute = request.getAttribute(wechatConfig);
             var httpResponse = WeChatHttpRequest.mp(wechatConfig, attribute);
+            if (httpResponse.statusCode() != 200) {
+                throw new WeChatRequestException("公众平台请求异常 => " + new String(httpResponse.body(), StandardCharsets.UTF_8));
+            }
             var statusCode = WeChatStatusCode.MP.fromJson(httpResponse.body());
-            if (statusCode.ok() && httpResponse.statusCode() == 200) {
+            if (statusCode.ok()) {
                 return WeChatJacksonUtil.fromJson(httpResponse.body(), attribute.getResponseClass());
             }
             if (statusCode.getCode() == 42001) {
                 wechatConfig.getAccessTokenManager().removeAccessToken();
-                throw new WeChatExpiredException(WeChatJacksonUtil.toJson(statusCode));
+                throw new WeChatExpiredException(statusCode.getMessage());
             }
-            throw new WeChatResponseException(WeChatJacksonUtil.toJson(statusCode));
+            throw new WeChatResponseException(statusCode.getMessage());
         }, WeChatExpiredException.class);
     }
 
