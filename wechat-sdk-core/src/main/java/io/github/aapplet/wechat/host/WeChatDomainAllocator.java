@@ -15,6 +15,13 @@ public interface WeChatDomainAllocator {
     String getAvailableDomain();
 
     /**
+     * 请求是否重试
+     *
+     * @return 重试状态
+     */
+    boolean isRequestRetryStatus();
+
+    /**
      * 请求重试
      *
      * @return 是否重试

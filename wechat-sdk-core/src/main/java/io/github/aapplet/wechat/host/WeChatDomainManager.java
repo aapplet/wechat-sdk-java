@@ -2,6 +2,7 @@ package io.github.aapplet.wechat.host;
 
 import io.github.aapplet.wechat.base.WeChatDomain;
 import io.github.aapplet.wechat.config.WeChatConfig;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
@@ -31,6 +32,7 @@ public class WeChatDomainManager implements WeChatDomainAllocator {
     /**
      * 重试状态
      */
+    @Getter
     private boolean requestRetryStatus = false;
 
     /**
@@ -80,7 +82,6 @@ public class WeChatDomainManager implements WeChatDomainAllocator {
                         join.add(">>>>>Response-Status....：" + response.statusCode());
                         join.add(">>>>>Response-Time......：" + (responseTimestamp - requestTimestamp) + "ms");
                         join.add("====================================================== End ======================================================");
-                        join.add("");
                         log.info(join.toString());
                     }
                 }).exceptionally(throwable -> {
@@ -92,7 +93,6 @@ public class WeChatDomainManager implements WeChatDomainAllocator {
                         join.add(">>>>>Exception.......：" + throwable.getMessage());
                         join.add(">>>>>Response-Time...：" + (responseTimestamp - requestTimestamp) + "ms");
                         join.add("====================================================== End ======================================================");
-                        join.add("");
                         log.error(join.toString());
                     }
                     return null;

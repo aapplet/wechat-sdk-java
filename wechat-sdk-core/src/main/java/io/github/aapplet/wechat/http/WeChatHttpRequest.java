@@ -5,6 +5,7 @@ import io.github.aapplet.wechat.base.WeChatRequest;
 import io.github.aapplet.wechat.config.WeChatConfig;
 import io.github.aapplet.wechat.constant.WeChatConstant;
 import io.github.aapplet.wechat.exception.WeChatHttpException;
+import io.github.aapplet.wechat.util.RetryTemplate;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -76,31 +77,32 @@ public class WeChatHttpRequest {
      * @return Http Response
      */
     private HttpResponse<byte[]> execute() {
-        var httpClient = wechatConfig.getHttpClient();
-        var httpRequest = httpRequestBuilder.uri(URI.create(wechatAttribute.getRequestURL())).build();
-        try {
-            return logger(httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray()));
-        } catch (IOException e) {
-            var domainAllocator = wechatAttribute.getDomainAllocator();
-            if (domainAllocator.requestRetry()) {
-                domainAllocator.healthCheck(wechatConfig);
-                if (wechatConfig.isDebug()) {
-                    StringJoiner join = new StringJoiner("\n").add(LocalDateTime.now().toString());
-                    join.add("================================================== 主域名请求失败 ==================================================");
-                    join.add(">>>>>Response-URL.........：" + httpRequest.uri());
-                    join.add(">>>>>Response-Exception...：" + e);
-                    join.add("====================================================== End ======================================================");
-                    join.add("");
-                    log.info(join.toString());
+        return RetryTemplate.submit(() -> {
+            var httpClient = wechatConfig.getHttpClient();
+            var httpRequest = httpRequestBuilder.uri(URI.create(wechatAttribute.getRequestURL())).build();
+            try {
+                return logger(httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofByteArray()));
+            } catch (IOException e) {
+                var domainAllocator = wechatAttribute.getDomainAllocator();
+                if (domainAllocator.requestRetry()) {
+                    domainAllocator.healthCheck(wechatConfig);
+                    if (wechatConfig.isDebug()) {
+                        StringJoiner join = new StringJoiner("\n").add(LocalDateTime.now().toString());
+                        join.add("================================================== 请求失败 ==================================================");
+                        join.add(">>>>>Response-URL.........：" + httpRequest.uri());
+                        join.add(">>>>>Response-Exception...：" + e);
+                        join.add("==================================================== End ====================================================");
+                        log.info(join.toString());
+                    }
+                    throw new WeChatHttpException(httpRequest.uri().toString(), e);
+                } else {
+                    throw new WeChatHttpException("主备域名均请求失败, 请检查网络是否畅通");
                 }
-                return execute();
-            } else {
-                throw new WeChatHttpException("主备域名均请求失败, 请检查网络是否畅通");
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new WeChatHttpException("Thread was interrupted while sending request to URL: " + httpRequest.uri());
             }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new WeChatHttpException("Thread was interrupted while sending request to URL: " + httpRequest.uri());
-        }
+        }, WeChatHttpException.class);
     }
 
     /**
@@ -115,10 +117,12 @@ public class WeChatHttpRequest {
             var httpRequest = httpResponse.request();
             var requestBody = wechatAttribute.getRequestBody();
             var responseBody = new String(bytes, 0, Math.min(4096, bytes.length), StandardCharsets.UTF_8);
+            var retryStatus = wechatAttribute.getDomainAllocator().isRequestRetryStatus();
             var join = new StringJoiner("\n").add(LocalDateTime.now().toString());
-            join.add("================================================== Start ==================================================");
+            join.add("================================================== Request ==================================================");
             join.add(">>>>>Request-URL........：" + httpRequest.uri());
             join.add(">>>>>Request-Method.....：" + httpRequest.method());
+            join.add(">>>>>Request-Retry......：" + retryStatus);
             join.add(">>>>>Request-MchId......：" + wechatConfig.getMerchantId());
             join.add(">>>>>Request-AppId......：" + wechatConfig.getAppId());
             join.add(">>>>>Request-Body.......：" + requestBody);
@@ -127,8 +131,7 @@ public class WeChatHttpRequest {
             join.add(">>>>>Response-Status....：" + httpResponse.statusCode());
             join.add(">>>>>Response-Length....：" + bytes.length);
             join.add(">>>>>Response-Body......：" + responseBody);
-            join.add("=================================================== End ===================================================");
-            join.add("");
+            join.add("==================================================== End ====================================================");
             log.info(join.toString());
         }
         return httpResponse;

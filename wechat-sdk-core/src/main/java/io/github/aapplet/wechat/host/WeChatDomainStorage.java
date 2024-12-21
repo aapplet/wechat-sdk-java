@@ -11,7 +11,7 @@ public enum WeChatDomainStorage implements WeChatDomain {
     /**
      * 公众平台域名配置
      */
-    MP("https://api.weixin.qq.com", "https://api2.weixin.qq.com", "https://api.weixin.qq.com/sns/jscode2session"),
+    MP("http://127.0.0.1", "https://api2.weixin.qq.com", "https://api.weixin.qq.com/sns/jscode2session"),
     /**
      * 商户平台域名配置
      */
